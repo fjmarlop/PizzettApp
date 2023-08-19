@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "465713776753",
+    "project_id": "pizzetapp",
+    "storage_bucket": "pizzetapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465713776753:android:5b233c660d1a507604b3d0",
+        "android_client_info": {
+          "package_name": "es.fjmarlop.pizzeta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "465713776753-ig8u5dn45t26ejonqis69gvtdggia4h0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "es.fjmarlop.pizzeta",
+            "certificate_hash": "eefb2321e6afa4646fd58bca1b58c0623fef577a"
+          }
+        },
+        {
+          "client_id": "465713776753-vfh3p9dggaampbvs1r8ugrcjtmlulpa8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa4XCi_9gAcatjmFWYhFwizgjITTan-8Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "465713776753-vfh3p9dggaampbvs1r8ugrcjtmlulpa8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
