@@ -148,8 +148,8 @@ fun UsuarioCreate(usuario: String, isValido: Boolean, onTextChanged: (String) ->
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0x0847BB02),
-            focusedContainerColor = Color(0x0847BB02),
+            unfocusedContainerColor = Color(0xFFFF5F5F5),
+            focusedContainerColor = Color(0xFFFF5F5F5),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             errorContainerColor = Color(0xFFf5CBCB),
@@ -170,11 +170,11 @@ fun PasswordCreate(password: String, onTextChanged: (String) -> Unit, isValido: 
             .clip(RoundedCornerShape(12.dp)),
         placeholder = { Text("Contraseña") },
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0x0847BB02),
-            focusedContainerColor = Color(0x0847BB02),
+            unfocusedContainerColor = Color(0xFFFF5F5F5),
+            focusedContainerColor = Color(0xFFFF5F5F5),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            errorContainerColor = Color(0xFFf5CBCB),
+            errorContainerColor = Color(0xFFf5CBCB),//guardar pa luego 0x0847BB02
         ),
         singleLine = true,
         maxLines = 1,
@@ -213,8 +213,8 @@ fun ReplyPasswordCreate(password: String, onTextChanged: (String) -> Unit, isVal
             .clip(RoundedCornerShape(12.dp)),
         placeholder = { Text("Repita la contraseña") },
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0x0847BB02),
-            focusedContainerColor = Color(0x0847BB02),
+            unfocusedContainerColor = Color(0xFFFF5F5F5),
+            focusedContainerColor = Color(0xFFFF5F5F5),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             errorContainerColor = Color(0xFFf5CBCB),

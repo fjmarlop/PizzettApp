@@ -50,9 +50,11 @@ fun ProfileScreen(
     navController: NavHostController,
     mainViewModel: MainViewModel
 ) {
-    MainScafold(content = { cuerpoProvisional(userData = userData) { onSignOut() } },
+    MainScafold(
+        content = { cuerpoProvisional(userData = userData) { onSignOut() } },
         navHostController = navController,
-        mainViewModel = mainViewModel)
+        mainViewModel = mainViewModel
+    )
 
 }
 
@@ -86,6 +88,8 @@ fun cuerpoProvisional(
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onSignOut) {
             Text(text = "Sign out")
         }

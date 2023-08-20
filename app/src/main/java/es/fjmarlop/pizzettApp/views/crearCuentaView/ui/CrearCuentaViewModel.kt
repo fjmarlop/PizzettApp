@@ -1,6 +1,5 @@
 package es.fjmarlop.pizzettApp.views.crearCuentaView.ui
 
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import es.fjmarlop.pizzettApp.core.navegacion.Rutas
+import es.fjmarlop.pizzettApp.core.utils.Utils
 import javax.inject.Inject
 
 @HiltViewModel
-class CrearCuentaViewModel @Inject constructor(): ViewModel(){
+class CrearCuentaViewModel @Inject constructor(private val utils: Utils): ViewModel(){
     fun onCreateEmailChanged(email: String) {
         _usuario.value = email
         _isEmailValido.value = isEmailValido(email)
@@ -62,9 +61,9 @@ class CrearCuentaViewModel @Inject constructor(): ViewModel(){
             .createUserWithEmailAndPassword(_usuario.value.toString(), _password.value.toString())
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    navHostController.navigate(Rutas.CrearCuentaScreen.ruta)
+                    utils.navigateToLogin(navHostController)
                 } else {
-                    Log.i("PizzApp Info", "No se ha podido crear la cuenta")
+                    utils.mensajeToast("No se ha podido crear la cuenta")
                 }
             }
     }

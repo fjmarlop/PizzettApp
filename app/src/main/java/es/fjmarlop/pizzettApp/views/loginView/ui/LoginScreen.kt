@@ -68,7 +68,6 @@ import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import es.fjmarlop.pizzeta.R
-import es.fjmarlop.pizzettApp.core.navegacion.Rutas
 import es.fjmarlop.pizzettApp.views.loginView.domain.googleLogin.GoogleAuthUiClient
 import es.fjmarlop.pizzettApp.views.loginView.domain.googleLogin.SignInState
 import kotlinx.coroutines.launch
@@ -164,10 +163,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.size(8.dp))
             BotonSesionFacebook(
                 onAuthComplete = {
-                    loginViewModel.navegarHacia(
-                        navController,
-                        Rutas.MainScreen
-                    )
+                    loginViewModel.navegarMain(navController)
                 },
                 onAuthError = { loginViewModel.enviarMensaje("No ha sido posible el inicio de sesión con Facebook") })
             Formulario(

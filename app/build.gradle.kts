@@ -90,15 +90,15 @@ dependencies {
     //Facebook
     implementation("com.facebook.android:facebook-android-sdk:[8,9)")
     implementation("com.facebook.android:facebook-login:latest.release")
-
     //corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
-    //Preferences DataStore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.activity:activity-ktx:1.7.2")
     //Imagenes online
     implementation("io.coil-kt:coil-compose:2.4.0")
-    //Splash
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    //Room
+    implementation("androidx.room:room-runtime:2.5.2")
+    kapt("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
 
 }
 

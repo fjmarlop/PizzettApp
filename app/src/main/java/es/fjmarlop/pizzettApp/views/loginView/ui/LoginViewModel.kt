@@ -8,9 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
-import es.fjmarlop.pizzettApp.core.navegacion.Rutas
 import es.fjmarlop.pizzettApp.core.utils.Utils
+import es.fjmarlop.pizzettApp.models.UserModel
 import es.fjmarlop.pizzettApp.views.loginView.domain.emailPassLogin.EmailAuthUiClient
+import es.fjmarlop.pizzettApp.views.loginView.domain.emailPassLogin.SaveEmailUseCase
 import es.fjmarlop.pizzettApp.views.loginView.domain.googleLogin.GoogleAuthUiClient
 import es.fjmarlop.pizzettApp.views.loginView.domain.googleLogin.SignInResult
 import es.fjmarlop.pizzettApp.views.loginView.domain.googleLogin.SignInState
@@ -24,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val emailAuthUiClient: EmailAuthUiClient,
+    private val saveEmailUseCase: SaveEmailUseCase,
     private val utils: Utils
 ) :
     ViewModel() {
@@ -43,6 +45,7 @@ class LoginViewModel @Inject constructor(
     private val _isShowForm = MutableLiveData<Boolean>()
     val isShowForm: LiveData<Boolean> = _isShowForm
 
+
     fun onLoginTextChanged(usuario: String, password: String) {
         _usuario.value = usuario
         _password.value = password
@@ -55,18 +58,21 @@ class LoginViewModel @Inject constructor(
 
     fun loginSessionEmail(navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.Main) {
-            emailAuthUiClient.invoke(
+            emailAuthUiClient.sigInEmailPass(
                 _usuario.value.toString(),
                 _password.value.toString(),
                 navHostController
             )
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            saveEmailUseCase.invoke(UserModel(_usuario.value.toString()))
         }
     }
 
     fun goToCrearCuentaScreen(navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.Main) {
             _isShowForm.value = false
-            utils.navigateTo(navHostController,Rutas.CrearCuentaScreen)
+            utils.navigateToCrearCuenta(navHostController)
         }
     }
 
@@ -88,15 +94,18 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun checkSignedInUser(navController: NavHostController, googleAuthUiClient: GoogleAuthUiClient) {
+    fun checkSignedInUser(
+        navController: NavHostController,
+        googleAuthUiClient: GoogleAuthUiClient
+    ) {
         if (googleAuthUiClient.getSignedInUser() != null) {
-            utils.navigateTo(navController, Rutas.MainScreen)
+            utils.navigateToMain(navController)
         }
     }
 
     fun handleSignInSuccess(navController: NavHostController) {
         enviarMensaje("Has iniciado sesión. ¡Bienvenid@!")
-        utils.navigateTo(navController, Rutas.MainScreen)
+        utils.navigateToMain(navController)
         resetState()
     }
 
@@ -116,8 +125,9 @@ class LoginViewModel @Inject constructor(
         utils.mensajeToast(msg)
     }
 
-     fun navegarHacia(navController: NavHostController, ruta: Rutas) {
-        utils.navigateTo(navController, ruta)
+
+    fun navegarMain(navController: NavHostController) {
+        utils.navigateToMain(navController)
     }
 
 }

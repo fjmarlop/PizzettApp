@@ -1,5 +1,6 @@
 package es.fjmarlop.pizzettApp.views.mainScreen.ui
 
+import android.util.Patterns
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
@@ -37,28 +38,64 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import es.fjmarlop.pizzeta.R
+import es.fjmarlop.pizzettApp.views.loginView.domain.googleLogin.GoogleAuthUiClient
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel, navHostController: NavHostController) {
-    MainScafold(content = { VistaHome() }, navHostController = navHostController, mainViewModel)
+fun MainScreen(mainViewModel: MainViewModel, navHostController: NavHostController, gooleAuthUiClient: GoogleAuthUiClient) {
+    MainScafold(
+        content = { VistaHome(mainViewModel, gooleAuthUiClient) },
+        navHostController = navHostController,
+        mainViewModel
+    )
 }
 
 @Composable
-fun VistaHome() {
+fun VistaHome(mainViewModel: MainViewModel, gooleAuthUiClient: GoogleAuthUiClient) {
+
+    val userData = gooleAuthUiClient.getSignedInUser()
+
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+
+    val uiState by produceState<MainUiState>(
+        initialValue = MainUiState.Loading,
+        key1 = lifecycle,
+        key2 = mainViewModel
+    ) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            mainViewModel.uiState.collect { value = it }
+        }
+    }
+
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        TextWelcome(nombre = "Francico Javier")
+        when (uiState) {
+            is MainUiState.Error -> {}
+            MainUiState.Loading -> {}
+            is MainUiState.Success -> {
+                var nombre = ""
+                if(userData?.username != null ){
+                    nombre = userData.username
+                } else{
+                    nombre = (uiState as MainUiState.Success).email
+                }
+                TextWelcome(nombre = obtenerUsername(nombre))
+            }
+        }
         Spacer(modifier = Modifier.size(12.dp))
         TitleCarrusel(string = "¿Qué te apetece comer hoy?")
         DividerMain()
@@ -72,7 +109,7 @@ fun VistaHome() {
 @Composable
 fun TextWelcome(nombre: String) {
     Text(
-        text = "Hola $nombre.",
+        text = "Hola, $nombre.",
         modifier = Modifier.padding(16.dp),
         fontSize = 30.sp,
         fontWeight = FontWeight.ExtraBold,
@@ -81,8 +118,10 @@ fun TextWelcome(nombre: String) {
         )
     )
 }
+
+
 @Composable
-fun DividerMain(){
+fun DividerMain() {
     Divider(Modifier.padding(vertical = 6.dp), color = Color(0xFFBF0030), thickness = 2.dp)
 }
 
@@ -106,12 +145,12 @@ fun Carrusel() {
             .clip(RoundedCornerShape(20.dp))
     )
     {
-        ItemCarrusel( "Ensaladas", imagen = R.drawable.ensalada)
-        ItemCarrusel( "Pizzas", imagen = R.drawable.pizzas)
-        ItemCarrusel( "Pastas", imagen = R.drawable.pastas)
-        ItemCarrusel( "Gratinados", imagen = R.drawable.gratinados)
-        ItemCarrusel( "Postres", imagen = R.drawable.postres)
-        ItemCarrusel( "Bebidas", imagen = R.drawable.bebidas)
+        ItemCarrusel("Ensaladas", imagen = R.drawable.ensalada)
+        ItemCarrusel("Pizzas", imagen = R.drawable.pizzas)
+        ItemCarrusel("Pastas", imagen = R.drawable.pastas)
+        ItemCarrusel("Gratinados", imagen = R.drawable.gratinados)
+        ItemCarrusel("Postres", imagen = R.drawable.postres)
+        ItemCarrusel("Bebidas", imagen = R.drawable.bebidas)
     }
 }
 
@@ -199,9 +238,9 @@ fun ToolBar(onClickMore: () -> Unit) {
         title = { },
         //title = { Text(text = stringResource(id = R.string.app_name)) },
         colors = TopAppBarDefaults.topAppBarColors(
-          //  containerColor = Color(0xFF126e0c),
-           // titleContentColor = Color.White,
-           // actionIconContentColor = Color.White
+            //  containerColor = Color(0xFF126e0c),
+            // titleContentColor = Color.White,
+            // actionIconContentColor = Color.White
         ),
         actions = {
             IconButton(onClick = { onClickMore() }) {
@@ -252,5 +291,16 @@ fun BottomBar(
                 contentDescription = "Cuenta"
             )
         }, label = { Text(text = "Cuenta") })
+    }
+}
+
+private fun obtenerUsername(email: String): String {
+    val emailPattern = Patterns.EMAIL_ADDRESS.matcher(email)
+    if (emailPattern.matches()){
+        val partes = email.split("@")
+        return partes.firstOrNull() ?: ""
+    } else{
+        val partes = email.split(" ")
+        return partes.firstOrNull() ?: ""
     }
 }

@@ -18,6 +18,7 @@ class ProfileViewModel @Inject constructor(private val utils: Utils) : ViewModel
             googleAuthUiClient.signOut()
             utils.mensajeToast("Has finalizado sesión")
             navController.popBackStack()
+            utils.navigateToLogin(navController)
         }
     }
 }

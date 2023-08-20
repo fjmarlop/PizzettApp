@@ -31,13 +31,14 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-
     private val welcomeViewModel: WelcomeViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
     private val crearCuentaViewModel: CrearCuentaViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
     private val profileViewModel: ProfileViewModel  by viewModels()
     private val ofertasViewModel: OfertasViewModel by viewModels()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

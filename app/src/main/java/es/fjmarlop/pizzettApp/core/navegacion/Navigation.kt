@@ -59,7 +59,7 @@ fun Navegador(
             CrearCuentaScreen(crearCuentaViewModel = crearCuentaViewModel, navController = navigationController)
         }
         composable(Rutas.MainScreen.ruta){
-            MainScreen(mainViewModel = mainViewModel, navHostController = navigationController)
+            MainScreen(mainViewModel = mainViewModel, navHostController = navigationController, googleAuthUiClient)
         }
         composable(Rutas.OfertasScreen.ruta){
             OfertasScreen(mainViewModel = mainViewModel, ofertasViewModel = ofertasViewModel ,navHostController = navigationController)
