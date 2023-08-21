@@ -6,11 +6,13 @@ sealed class Rutas(val ruta: String) {
 
     object LoginScreen: Rutas("SignIn")
 
-    object ProfileScreen: Rutas("Profile")
+    object ProfileScreen: Rutas("ProfileScreen")
 
     object CrearCuentaScreen: Rutas("CrearCuentaScreen")
 
     object MainScreen: Rutas("MainScreen")
 
     object OfertasScreen: Rutas("OfertasScreen")
+
+    object RecuperarContrasenaScreen: Rutas("RecuperarContrasenaScreen")
 }

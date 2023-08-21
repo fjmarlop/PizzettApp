@@ -18,6 +18,7 @@ class EmailAuthUiClient @Inject constructor(
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     utils.mensajeToast("Has iniciado sesión. ¡Bienvenid@!")
+                    navHostController.popBackStack()
                     utils.navigateToMain(navHostController)
                 } else {
                     utils.mensajeToast("Error inicio de sesión, el usuario o la contraseña no son válidos")

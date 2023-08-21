@@ -7,9 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.models.UserModel
 import es.fjmarlop.pizzettApp.views.loginView.domain.emailPassLogin.EmailAuthUiClient
 import es.fjmarlop.pizzettApp.views.loginView.domain.emailPassLogin.SaveEmailUseCase
 import es.fjmarlop.pizzettApp.views.loginView.domain.googleLogin.GoogleAuthUiClient
@@ -64,14 +65,11 @@ class LoginViewModel @Inject constructor(
                 navHostController
             )
         }
-        viewModelScope.launch(Dispatchers.IO) {
-            saveEmailUseCase.invoke(UserModel(_usuario.value.toString()))
-        }
     }
 
     fun goToCrearCuentaScreen(navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.Main) {
-            _isShowForm.value = false
+            closeForm()
             utils.navigateToCrearCuenta(navHostController)
         }
     }
@@ -128,6 +126,23 @@ class LoginViewModel @Inject constructor(
 
     fun navegarMain(navController: NavHostController) {
         utils.navigateToMain(navController)
+    }
+
+    fun goToOlvidarContrasena(navController: NavHostController) {
+        closeForm()
+        utils.navigateToRecuperarContrasena(navController)
+    }
+
+    fun restaurarContrasena(usuario: String, navController: NavHostController) {
+        Firebase.auth.sendPasswordResetEmail(usuario)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    utils.mensajeToast("Mensaje enviado, revise su bandeja de correo")
+                    //navController.popBackStack()
+                    utils.navigateToLogin(navController)
+
+                }
+            }
     }
 
 }

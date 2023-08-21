@@ -174,7 +174,7 @@ fun PasswordCreate(password: String, onTextChanged: (String) -> Unit, isValido: 
             focusedContainerColor = Color(0xFFFF5F5F5),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            errorContainerColor = Color(0xFFf5CBCB),//guardar pa luego 0x0847BB02
+            errorContainerColor = Color(0xFFf5CBCB),
         ),
         singleLine = true,
         maxLines = 1,

@@ -48,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -202,7 +203,7 @@ fun BotonSesionEmail(onPressButton: () -> Unit) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(imageVector = Icons.Default.Mail, contentDescription = "logo Email")
+            Image(imageVector = Icons.Filled.Mail, contentDescription = "logo Email", colorFilter = ColorFilter.tint(Color(0xFFBF0030)))
             Text(
                 text = "Iniciar sesión con email",
                 modifier = Modifier.padding(horizontal = 8.dp),
@@ -339,7 +340,7 @@ fun Formulario(
                 Spacer(modifier = Modifier.size(12.dp))
                 RegistrarCuenta { loginViewModel.goToCrearCuentaScreen(navController) }
                 Spacer(modifier = Modifier.size(8.dp))
-                OlvidoContraseña()
+                OlvidoContraseña { loginViewModel.goToOlvidarContrasena(navController)}
                 Spacer(modifier = Modifier.size(16.dp))
             }
         }
@@ -347,8 +348,8 @@ fun Formulario(
 }
 
 @Composable
-fun OlvidoContraseña() {
-    Text(text = "¿Has olvidado la contraseña?", modifier = Modifier.clickable { /*TODO*/ })
+fun OlvidoContraseña(onClickOlvidoContrasena: () -> Unit) {
+    Text(text = "¿Has olvidado la contraseña?", modifier = Modifier.clickable { onClickOlvidoContrasena() })
 }
 
 @Composable
@@ -359,6 +360,7 @@ fun RegistrarCuenta(onClick: () -> Unit) {
         Text(
             text = "Crear cuenta",
             fontWeight = FontWeight.Bold,
+            color = Color(0xFFBF0030),
             modifier = Modifier.clickable { onClick() })
     }
 }

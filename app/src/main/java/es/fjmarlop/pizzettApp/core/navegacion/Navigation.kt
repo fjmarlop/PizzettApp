@@ -8,12 +8,13 @@ import es.fjmarlop.pizzettApp.views.crearCuentaView.ui.CrearCuentaScreen
 import es.fjmarlop.pizzettApp.views.crearCuentaView.ui.CrearCuentaViewModel
 import es.fjmarlop.pizzettApp.views.loginView.domain.googleLogin.GoogleAuthUiClient
 import es.fjmarlop.pizzettApp.views.loginView.ui.LoginViewModel
+import es.fjmarlop.pizzettApp.views.loginView.ui.RecuperarContrasenaScreen
 import es.fjmarlop.pizzettApp.views.loginView.ui.SignIn
 import es.fjmarlop.pizzettApp.views.mainScreen.ui.MainScreen
 import es.fjmarlop.pizzettApp.views.mainScreen.ui.MainViewModel
 import es.fjmarlop.pizzettApp.views.ofertasView.ui.OfertasScreen
 import es.fjmarlop.pizzettApp.views.ofertasView.ui.OfertasViewModel
-import es.fjmarlop.pizzettApp.views.perfilView.ui.Profile
+import es.fjmarlop.pizzettApp.views.perfilView.ui.ProfileScreen
 import es.fjmarlop.pizzettApp.views.perfilView.ui.ProfileViewModel
 import es.fjmarlop.pizzettApp.views.welcomeView.ui.WelcomeScreen
 import es.fjmarlop.pizzettApp.views.welcomeView.ui.WelcomeViewModel
@@ -48,7 +49,7 @@ fun Navegador(
             )
         }
         composable(Rutas.ProfileScreen.ruta) {
-            Profile(
+            ProfileScreen(
                 profileViewModel = profileViewModel,
                 navController = navigationController,
                 googleAuthUiClient = googleAuthUiClient,
@@ -64,6 +65,8 @@ fun Navegador(
         composable(Rutas.OfertasScreen.ruta){
             OfertasScreen(mainViewModel = mainViewModel, ofertasViewModel = ofertasViewModel ,navHostController = navigationController)
         }
-
+        composable(Rutas.RecuperarContrasenaScreen.ruta){
+            RecuperarContrasenaScreen(loginViewModel = loginViewModel, navHostController = navigationController)
+        }
     }
 }

@@ -56,7 +56,7 @@ fun vistaOfertas() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
+        Spacer(modifier = Modifier.size(10.dp))
         Text(
             text = "Conoce nuestras ofertas",
             fontFamily = FontFamily(Font(R.font.roboto_condensed)),
@@ -159,7 +159,7 @@ fun ItemOferta(
             contentDescription = "Oferta",
             contentScale = ContentScale.Crop,
             modifier = Modifier
-               // .height(220.dp)
+                // .height(220.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
         )
@@ -191,7 +191,8 @@ fun TextWithShadow(
                     x = 5.dp,
                     y = 3.dp
                 )
-                .alpha(0.75f).height((IntrinsicSize.Min)),
+                .alpha(0.75f)
+                .height((IntrinsicSize.Min)),
             fontFamily = FontFamily(Font(R.font.rashavine)),
             fontSize = tamanioText.sp,
             letterSpacing = 2.sp

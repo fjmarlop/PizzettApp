@@ -38,4 +38,8 @@ class Utils @Inject constructor(
     fun navigateToCrearCuenta(navController: NavHostController){
         navController.navigate(Rutas.CrearCuentaScreen.ruta)
     }
+
+    fun navigateToRecuperarContrasena(navController: NavHostController){
+        navController.navigate(Rutas.RecuperarContrasenaScreen.ruta)
+    }
 }
