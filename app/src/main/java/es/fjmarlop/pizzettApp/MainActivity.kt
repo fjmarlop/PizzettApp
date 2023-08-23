@@ -10,15 +10,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
-import es.fjmarlop.pizzettApp.core.navegacion.Navegador
+import es.fjmarlop.pizzettApp.core.navigation.Navegador
+import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountViewModel
+import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.GoogleAuthUiClient
+import es.fjmarlop.pizzettApp.screens.login.ui.LoginViewModel
+import es.fjmarlop.pizzettApp.screens.main.ui.MainViewModel
+import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasViewModel
+import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileViewModel
+import es.fjmarlop.pizzettApp.screens.welcome.ui.WelcomeViewModel
 import es.fjmarlop.pizzettApp.ui.theme.PizzetaTheme
-import es.fjmarlop.pizzettApp.views.crearCuentaView.ui.CrearCuentaViewModel
-import es.fjmarlop.pizzettApp.views.loginView.domain.googleLogin.GoogleAuthUiClient
-import es.fjmarlop.pizzettApp.views.loginView.ui.LoginViewModel
-import es.fjmarlop.pizzettApp.views.mainScreen.ui.MainViewModel
-import es.fjmarlop.pizzettApp.views.ofertasView.ui.OfertasViewModel
-import es.fjmarlop.pizzettApp.views.perfilView.ui.ProfileViewModel
-import es.fjmarlop.pizzettApp.views.welcomeView.ui.WelcomeViewModel
 
 
 @AndroidEntryPoint
@@ -33,12 +33,10 @@ class MainActivity : ComponentActivity() {
 
     private val welcomeViewModel: WelcomeViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
-    private val crearCuentaViewModel: CrearCuentaViewModel by viewModels()
+    private val createAccountViewModel: CreateAccountViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
     private val profileViewModel: ProfileViewModel  by viewModels()
     private val ofertasViewModel: OfertasViewModel by viewModels()
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     Navegador(
                         loginViewModel = loginViewModel,
                         welcomeViewModel = welcomeViewModel,
-                        crearCuentaViewModel = crearCuentaViewModel,
+                        createAccountViewModel = createAccountViewModel,
                         mainViewModel = mainViewModel,
                         profileViewModel = profileViewModel,
                         ofertasViewModel = ofertasViewModel,
@@ -65,6 +63,16 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    /**
+     * Sobrescribo el método para anular su función y
+     * forzar a navegar por la barra de aplicación.
+     *
+     * Buscar solución mas eficiente.
+     * */
+   // override fun onBackPressed(){
+
+   // }
 
 }
 
