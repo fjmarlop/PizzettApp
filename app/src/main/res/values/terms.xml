@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <string name="html_termsOfUse">
+        <![CDATA[
+            <h2>Condiciones del Servicio de la PizzettApp</h2>
+            <h1>Fecha de entrada en vigencia: 01/08/2023</h1>
+            <h2>Aceptación de los Términos</h2>
+            <p>Bienvenido a la PizzettApp. Al acceder o utilizar nuestros servicios, aceptas cumplir con estas Condiciones del Servicio.
+            Si no estás de acuerdo con alguna parte de estas condiciones, te recomendamos que no utilices nuestra aplicación.</p>
+            <h2>Uso Aceptable</h2>
+            <p>Al utilizar la PizzettApp, te comprometes a no:</p>
+            <ul>
+                <li>Violentar leyes locales, nacionales o internacionales.</li>
+                <li>Publicar contenido ofensivo, difamatorio o ilegal.</li>
+                <li>Utilizar la PizzettApp para fines comerciales sin nuestro consentimiento.</li>
+                <li>Interferir con la seguridad o el funcionamiento de la PizzettApp o sus sistemas.</li>
+                <li>Acceder a áreas restringidas de la PizzettApp sin autorización.</li>
+            </ul>
+            <h2>Derechos de Propiedad Intelectual</h2>
+            <p>El contenido y los materiales proporcionados por la PizzettApp, incluidos textos, imágenes, logotipos y marcas registradas,
+            están protegidos por derechos de propiedad intelectual. No puedes utilizar, copiar ni distribuir estos materiales sin nuestro consentimiento.</p>
+            <h2>Limitación de Responsabilidad</h2>
+            <p>la PizzettApp proporciona su servicio "tal cual", sin garantías de ningún tipo. No nos responsabilizamos por cualquier daño directo,
+            indirecto, incidental, especial o consecuente que surja del uso de nuestra aplicación.</p>
+            <h2>Cambios en las Condiciones</h2>
+            <p>Nos reservamos el derecho de actualizar estas Condiciones del Servicio en cualquier momento.
+            Te notificaremos sobre cualquier cambio importante mediante una notificación en la PizzettApp.
+            Si continúas utilizando nuestra aplicación después de dichos cambios, se considerará que has aceptado las nuevas condiciones.</p>
+            <h2>Terminación del Servicio</h2>
+            <p>Nos reservamos el derecho de suspender o cancelar tu acceso a la PizzettApp en caso de violación de estas Condiciones del Servicio
+            u otras actividades inapropiadas.</p>
+            <h2>Ley Aplicable</h2>
+            <p>Estas Condiciones del Servicio se regirán e interpretarán de acuerdo con las leyes españolas.
+            Cualquier disputa relacionada con estas condiciones estará sujeta a la jurisdicción exclusiva de los tribunales de andaluces y españoles.</p>
+            <p>Gracias por utilizar la PizzettApp.</p>
+]]>
+    </string>
+</resources>

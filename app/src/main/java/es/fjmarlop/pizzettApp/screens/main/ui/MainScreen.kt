@@ -1,6 +1,5 @@
 package es.fjmarlop.pizzettApp.screens.main.ui
 
-import android.util.Patterns
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
@@ -36,6 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -49,30 +50,44 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import es.fjmarlop.pizzeta.R
-import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.GoogleAuthUiClient
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel, navHostController: NavHostController, gooleAuthUiClient: GoogleAuthUiClient) {
+fun MainScreen(
+    mainViewModel: MainViewModel,
+    navHostController: NavHostController
+) {
+
+    LaunchedEffect(true) {
+        mainViewModel.addUser()
+        mainViewModel.resetIndex()
+    }
+
     MainScafold(
-        content = { VistaHome(mainViewModel, gooleAuthUiClient) },
+        content = { VistaHome(mainViewModel) },
         navHostController = navHostController,
         mainViewModel
     )
 }
 
 @Composable
-fun VistaHome(mainViewModel: MainViewModel, gooleAuthUiClient: GoogleAuthUiClient) {
+fun VistaHome(mainViewModel: MainViewModel) {
 
+    LaunchedEffect(true) {
+        mainViewModel.getUser()
+    }
+
+    val user by mainViewModel.user.observeAsState()
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
 
-        val user = Firebase.auth.currentUser
-        var name = if (user?.displayName == null) user?.email else user?.displayName
-
-        name?.let { obtenerUsername(it) }?.let { TextWelcome(nombre = it) }
+        user?.let {
+            TextWelcome(
+                nombre = if (it.name.isNullOrEmpty()) mainViewModel.obtenerUsername(it.email) else mainViewModel.obtenerUsername(
+                    it.name
+                )
+            )
+        }
 
         Spacer(modifier = Modifier.size(12.dp))
         TitleCarrusel(string = "¿Qué te apetece comer hoy?")
@@ -173,7 +188,7 @@ fun MainScafold(
     mainViewModel: MainViewModel
 ) {
 
-    val index: Int by mainViewModel.index.observeAsState(initial = 0)
+    val index by mainViewModel.index.collectAsState()
 
     Scaffold(
         //topBar = { ToolBar(onClickMore = {}) },
@@ -272,13 +287,3 @@ fun BottomBar(
     }
 }
 
-private fun obtenerUsername(email: String): String {
-    val emailPattern = Patterns.EMAIL_ADDRESS.matcher(email)
-    return if (emailPattern.matches()){
-        val partes = email.split("@")
-        partes.firstOrNull() ?: ""
-    } else{
-        val partes = email.split(" ")
-        partes.firstOrNull() ?: ""
-    }
-}

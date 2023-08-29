@@ -1,6 +1,7 @@
 package es.fjmarlop.pizzettApp.core.utils
 
 import android.content.Context
+import android.util.Patterns
 import android.widget.Toast
 import androidx.navigation.NavHostController
 import es.fjmarlop.pizzettApp.core.navigation.Rutas
@@ -19,6 +20,10 @@ class Utils @Inject constructor(
         ).show()
     }
 
+    fun isEmailValid(email: String): Boolean {
+        val emailPattern = Patterns.EMAIL_ADDRESS.matcher(email)
+        return emailPattern.matches()
+    }
 
     fun navigateToMain(navController: NavHostController){
         navController.navigate(Rutas.MainScreen.ruta)
@@ -50,5 +55,8 @@ class Utils @Inject constructor(
     }
     fun navigateToTermsOfUses(navController: NavHostController){
         navController.navigate(Rutas.TermOfUses.ruta)
+    }
+    fun navigateToDetailsProfile(navController: NavHostController){
+        navController.navigate(Rutas.DetailsProfile.ruta)
     }
 }

@@ -7,11 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.screens.login.domain.emailPassLogin.EmailAuthUiClient
 import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.GoogleAuthUiClient
 import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.SignInResult
 import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.SignInState
@@ -24,10 +24,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val emailAuthUiClient: EmailAuthUiClient,
     private val utils: Utils
 ) :
     ViewModel() {
+
+    private val userFirebase = Firebase.auth.currentUser
 
     private val _state = MutableStateFlow(SignInState())
     val state = _state.asStateFlow()
@@ -66,11 +67,17 @@ class LoginViewModel @Inject constructor(
 
     fun loginSessionEmail(navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.Main) {
-            emailAuthUiClient.sigInEmailPass(
-                _userEmail.value.toString(),
-                _password.value.toString(),
-                navHostController
-            )
+            FirebaseAuth.getInstance()
+                .signInWithEmailAndPassword(_userEmail.value.toString(), _password.value.toString())
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        utils.mensajeToast("Has iniciado sesión. ¡Bienvenid@!")
+                        navHostController.popBackStack()
+                        utils.navigateToMain(navHostController)
+                    } else {
+                        utils.mensajeToast("Error inicio de sesión, el usuario o la contraseña no son válidos")
+                    }
+                }
         }
     }
 
@@ -112,6 +119,7 @@ class LoginViewModel @Inject constructor(
         utils.navigateToMain(navController)
         resetState()
     }
+
 
     private fun resetState() {
         _state.update { SignInState() }

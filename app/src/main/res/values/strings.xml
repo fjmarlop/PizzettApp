@@ -2,88 +2,8 @@
     <string name="app_name">PizzettApp</string>
     <string name="web_client_id">465713776753-84f1k21q2kbr4a1csiui4bt0aaciglfr.apps.googleusercontent.com</string>
 
-
     <string name="facebook_app_id">845462663525625</string>
     <string name="fb_login_protocol_scheme">fb845462663525625</string>
     <string name="facebook_client_token">90f0392c960ae01ab94ad95f3576e040</string>
-
-    <string name="html_privacy">
-        <![CDATA[
-            <h2> Política de privacidad de la PizzettApp</h2>
-            <h2>Fecha de entrada en vigencia: 01/08/2023</h2>
-            <h2>Introducción</h2>
-            <p>Bienvenido a la PizzettApp. En la PizzettApp, nos tomamos muy en serio la privacidad de nuestros usuarios.
-            Esta Política de Privacidad describe cómo recopilamos, usamos, compartimos y protegemos la información personal
-            que recopilamos de los usuarios de nuestra aplicación. Al utilizar la PizzettApp, aceptas los términos descritos en esta política.</p>
-            <h2>Información que Recopilamos</h2>
-            <ol>
-                <li><strong>Información de Registro:</strong> Cuando creas una cuenta en la PizzettApp, podemos recopilar información
-                    como tu nombre, dirección de correo electrónico y contraseña.</li>
-                <li><strong>Información de Uso:</strong> Recopilamos información sobre cómo interactúas con la PizzettApp, como las
-                    páginas que visitas, las funciones que utilizas y el tiempo que pasas en la aplicación.</li>
-                <li><strong>Información del Dispositivo:</strong> Podemos recopilar información sobre tu dispositivo, incluidos el modelo,
-                    el sistema operativo, la versión de la aplicación y la identificación del dispositivo único.</li>
-            </ol>
-            <h2>Cómo Usamos la Información</h2>
-            <ol>
-                <li>Utilizamos la información que recopilamos para brindarte una experiencia personalizada en la PizzettApp, incluido
-                    el contenido relevante y las recomendaciones.</li>
-                <li>Utilizamos la información para mejorar nuestros servicios, realizar análisis y comprender mejor las necesidades de nuestros usuarios.</li>
-                <li>Podemos utilizar tu dirección de correo electrónico para enviarte actualizaciones, noticias y promociones relacionadas
-                    con la PizzettApp, siempre y cuando hayas otorgado tu consentimiento para recibir dichas comunicaciones.</li>
-            </ol>
-            <h2>Compartir Información</h2>
-            <p>No compartimos tu información personal con terceros, excepto en situaciones específicas como el cumplimiento de la ley
-            o cuando hayas dado tu consentimiento expreso.</p>
-            <h2>Seguridad de la Información</h2>
-            <p>Tomamos medidas para proteger la información personal de nuestros usuarios. Utilizamos medidas de seguridad técnicas y organizativas
-            para prevenir el acceso no autorizado, la divulgación o la modificación de la información.</p>
-            <h2>Tus Derechos</h2>
-            <p>Puedes acceder, corregir o eliminar la información personal que hemos recopilado sobre ti. Si deseas ejercer alguno de estos
-            derechos, contáctanos a través de <a href="[correo electrónico de contacto]">contacto@laPizzetta.es</a>.</p>
-            <h2>Cambios en esta Política de Privacidad</h2>
-            <p>Nos reservamos el derecho de actualizar esta Política de Privacidad en cualquier momento. Te notificaremos sobre cualquier
-            cambio importante en la forma en que tratamos la información personal enviando una notificación a la dirección de correo electrónico
-            que proporcionaste o mediante un aviso destacado en la PizzettApp.</p>
-            <p>Gracias por confiar en la PizzettApp.</p>
-
-        ]]>
-    </string>
-
-    <string name="html_termsOfUse">
-        <![CDATA[
-            <h2>Condiciones del Servicio de la PizzettApp</h2>
-            <h1>Fecha de entrada en vigencia: 01/08/2023</h1>
-            <h2>Aceptación de los Términos</h2>
-            <p>Bienvenido a la PizzettApp. Al acceder o utilizar nuestros servicios, aceptas cumplir con estas Condiciones del Servicio.
-            Si no estás de acuerdo con alguna parte de estas condiciones, te recomendamos que no utilices nuestra aplicación.</p>
-            <h2>Uso Aceptable</h2>
-            <p>Al utilizar la PizzettApp, te comprometes a no:</p>
-            <ul>
-                <li>Violentar leyes locales, nacionales o internacionales.</li>
-                <li>Publicar contenido ofensivo, difamatorio o ilegal.</li>
-                <li>Utilizar la PizzettApp para fines comerciales sin nuestro consentimiento.</li>
-                <li>Interferir con la seguridad o el funcionamiento de la PizzettApp o sus sistemas.</li>
-                <li>Acceder a áreas restringidas de la PizzettApp sin autorización.</li>
-            </ul>
-            <h2>Derechos de Propiedad Intelectual</h2>
-            <p>El contenido y los materiales proporcionados por la PizzettApp, incluidos textos, imágenes, logotipos y marcas registradas,
-            están protegidos por derechos de propiedad intelectual. No puedes utilizar, copiar ni distribuir estos materiales sin nuestro consentimiento.</p>
-            <h2>Limitación de Responsabilidad</h2>
-            <p>la PizzettApp proporciona su servicio "tal cual", sin garantías de ningún tipo. No nos responsabilizamos por cualquier daño directo,
-            indirecto, incidental, especial o consecuente que surja del uso de nuestra aplicación.</p>
-            <h2>Cambios en las Condiciones</h2>
-            <p>Nos reservamos el derecho de actualizar estas Condiciones del Servicio en cualquier momento.
-            Te notificaremos sobre cualquier cambio importante mediante una notificación en la PizzettApp.
-            Si continúas utilizando nuestra aplicación después de dichos cambios, se considerará que has aceptado las nuevas condiciones.</p>
-            <h2>Terminación del Servicio</h2>
-            <p>Nos reservamos el derecho de suspender o cancelar tu acceso a la PizzettApp en caso de violación de estas Condiciones del Servicio
-            u otras actividades inapropiadas.</p>
-            <h2>Ley Aplicable</h2>
-            <p>Estas Condiciones del Servicio se regirán e interpretarán de acuerdo con las leyes españolas.
-            Cualquier disputa relacionada con estas condiciones estará sujeta a la jurisdicción exclusiva de los tribunales de andaluces y españoles.</p>
-            <p>Gracias por utilizar la PizzettApp.</p>
-]]>
-    </string>
 
 </resources>

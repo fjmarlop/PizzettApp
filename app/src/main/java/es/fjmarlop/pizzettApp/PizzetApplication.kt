@@ -9,8 +9,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import es.fjmarlop.pizzettApp.core.roomDatabase.AddressDao
 import es.fjmarlop.pizzettApp.core.roomDatabase.PizzettAppDB
-import es.fjmarlop.pizzettApp.core.roomDatabase.PizzettAppDao
+import es.fjmarlop.pizzettApp.core.roomDatabase.UserDao
 import javax.inject.Singleton
 
 @HiltAndroidApp
@@ -30,14 +31,22 @@ object AppModule {
 @InstallIn(SingletonComponent::class)
 object DataBaseRoomModule{
 
+    private const val DATABASE_NAME = "pizzettAppDataBase"
+
     @Provides
-    fun providesPizzettAppDao(pizzettAppDB: PizzettAppDB):PizzettAppDao{
-        return pizzettAppDB.pizzettAppDao()
+    fun providesUserDao(pizzettAppDB: PizzettAppDB):UserDao{
+        return pizzettAppDB.userDao()
     }
+
+    @Provides
+    fun providesAddressDao(pizzettAppDB: PizzettAppDB):AddressDao{
+        return pizzettAppDB.addressDao()
+    }
+
     @Provides
     @Singleton
     fun providePizzettAppDB(@ApplicationContext application: Context): PizzettAppDB{
-        return Room.databaseBuilder(application, PizzettAppDB::class.java,"pizzettAppDataBase").build()
+        return Room.databaseBuilder(application, PizzettAppDB::class.java, DATABASE_NAME).build()
     }
 }
 

@@ -8,6 +8,8 @@ import es.fjmarlop.pizzettApp.screens.conditions.PrivacyPolices
 import es.fjmarlop.pizzettApp.screens.conditions.TermsOfUses
 import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountScreen
 import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountViewModel
+import es.fjmarlop.pizzettApp.screens.detailsAccount.ui.DetailProfileViewModel
+import es.fjmarlop.pizzettApp.screens.detailsAccount.ui.DetailsProfileScreen
 import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.GoogleAuthUiClient
 import es.fjmarlop.pizzettApp.screens.login.ui.LoginViewModel
 import es.fjmarlop.pizzettApp.screens.login.ui.SignIn
@@ -30,7 +32,8 @@ fun Navegador(
     googleAuthUiClient: GoogleAuthUiClient,
     mainViewModel: MainViewModel,
     profileViewModel: ProfileViewModel,
-    ofertasViewModel: OfertasViewModel
+    ofertasViewModel: OfertasViewModel,
+    detailProfileViewModel: DetailProfileViewModel
 ) {
 
     val navigationController = rememberNavController()
@@ -68,14 +71,12 @@ fun Navegador(
         composable(Rutas.MainScreen.ruta) {
             MainScreen(
                 mainViewModel = mainViewModel,
-                navHostController = navigationController,
-                googleAuthUiClient
+                navHostController = navigationController
             )
         }
         composable(Rutas.OfferScreen.ruta) {
             OfertasScreen(
                 mainViewModel = mainViewModel,
-                ofertasViewModel = ofertasViewModel,
                 navHostController = navigationController
             )
         }
@@ -93,6 +94,9 @@ fun Navegador(
         }
         composable(Rutas.TermOfUses.ruta){
             TermsOfUses()
+        }
+        composable(Rutas.DetailsProfile.ruta){
+            DetailsProfileScreen(detailProfileViewModel = detailProfileViewModel, navigationController)
         }
     }
 }

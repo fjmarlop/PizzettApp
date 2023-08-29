@@ -49,6 +49,7 @@ fun ProfileScreen(
     googleAuthUiClient: GoogleAuthUiClient,
     mainViewModel: MainViewModel
 ) {
+
     MainScafold(
         navHostController = navController,
         mainViewModel = mainViewModel,
@@ -78,7 +79,7 @@ fun Perfil(
         Divider(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), color = Color(0xFFBF0030))
         Spacer(modifier = Modifier.size(10.dp))
         PerfilBody(
-            onclickDetallesCuenta = { /*TODO*/ },
+            onclickDetallesCuenta = { profileViewModel.goToDetailsProfile(navController) },
             onclickAyuda = { /*TODO*/ },
             onclickLibretaDirecciones = { /*TODO*/ })
         Divider(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), color = Color(0xFFBF0030))

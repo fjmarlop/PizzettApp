@@ -38,8 +38,7 @@ import es.fjmarlop.pizzettApp.screens.main.ui.MainViewModel
 @Composable
 fun OfertasScreen(
     mainViewModel: MainViewModel,
-    navHostController: NavHostController,
-    ofertasViewModel: OfertasViewModel
+    navHostController: NavHostController
 ) {
     MainScafold(content = { vistaOfertas() }, navHostController = navHostController, mainViewModel)
 }
@@ -127,6 +126,7 @@ fun OfertaCompleta(
             imagenRes = imagenRes
         )
         CondicionesOferta(condiciones = condiciones, condicionesLinea2 = condicionesLinea2)
+        Spacer(modifier = Modifier.size(12.dp))
     }
 }
 

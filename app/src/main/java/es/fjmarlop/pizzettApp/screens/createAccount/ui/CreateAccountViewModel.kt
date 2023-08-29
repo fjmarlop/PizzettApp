@@ -33,8 +33,9 @@ class CreateAccountViewModel @Inject constructor(private val utils: Utils): View
     private fun isPasswordValida(password: String): Boolean {
         val passwordLength = password.length >= 6
         val tenerUnNumero = password.any { it.isDigit() }
-        val tenerUnaMayuscla = password.any { it.isUpperCase() }
-        return passwordLength && tenerUnNumero && tenerUnaMayuscla
+        val tenerUnaMayuscula = password.any { it.isUpperCase() }
+        val tenerUnaMinuscula = password.any { it.isLowerCase() }
+        return passwordLength && tenerUnNumero && tenerUnaMayuscula && tenerUnaMinuscula
     }
 
     private fun isPasswordsIguales(): Boolean {
