@@ -28,7 +28,7 @@ fun WelcomeScreen(welcomeViewModel: WelcomeViewModel, navHostController: NavHost
         )
         CircularProgressIndicator(modifier = Modifier.padding(32.dp))
         LaunchedEffect(key1 = true) {
-            delay(3000)
+            delay(1500)
             welcomeViewModel.goToLoginScreen(navHostController)
         }
     }

@@ -1,6 +1,6 @@
 package es.fjmarlop.pizzettApp.screens.main.domain
 
-import es.fjmarlop.pizzettApp.entities.toUserModel
+import es.fjmarlop.pizzettApp.entities.roomEntities.toUserModel
 import es.fjmarlop.pizzettApp.models.UserModel
 import es.fjmarlop.pizzettApp.models.toEntity
 import es.fjmarlop.pizzettApp.screens.main.data.MainRepositoty

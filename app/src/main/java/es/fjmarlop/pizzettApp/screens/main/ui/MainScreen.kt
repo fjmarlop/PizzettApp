@@ -2,6 +2,7 @@ package es.fjmarlop.pizzettApp.screens.main.ui
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import es.fjmarlop.pizzeta.R
+import es.fjmarlop.pizzettApp.core.navigation.Rutas
+import kotlinx.coroutines.delay
 
 @Composable
 fun MainScreen(
@@ -64,16 +67,17 @@ fun MainScreen(
     }
 
     MainScafold(
-        content = { VistaHome(mainViewModel) },
+        content = { VistaHome(mainViewModel, navHostController) },
         navHostController = navHostController,
         mainViewModel
     )
 }
 
 @Composable
-fun VistaHome(mainViewModel: MainViewModel) {
+fun VistaHome(mainViewModel: MainViewModel, navHostController: NavHostController) {
 
     LaunchedEffect(true) {
+        delay(500)
         mainViewModel.getUser()
     }
 
@@ -92,7 +96,7 @@ fun VistaHome(mainViewModel: MainViewModel) {
         Spacer(modifier = Modifier.size(12.dp))
         TitleCarrusel(string = "¿Qué te apetece comer hoy?")
         DividerMain()
-        Carrusel()
+        Carrusel(navHostController)
         Spacer(modifier = Modifier.size(24.dp))
         TitleCarrusel(string = "Conoce nuestros BestSeller")
         DividerMain()
@@ -129,7 +133,7 @@ fun TitleCarrusel(string: String) {
 }
 
 @Composable
-fun Carrusel() {
+fun Carrusel(navHostController: NavHostController) {
     val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
@@ -138,18 +142,21 @@ fun Carrusel() {
             .clip(RoundedCornerShape(20.dp))
     )
     {
-        ItemCarrusel("Ensaladas", imagen = R.drawable.ensalada)
-        ItemCarrusel("Pizzas", imagen = R.drawable.pizzas)
-        ItemCarrusel("Pastas", imagen = R.drawable.pastas)
-        ItemCarrusel("Gratinados", imagen = R.drawable.gratinados)
-        ItemCarrusel("Postres", imagen = R.drawable.postres)
-        ItemCarrusel("Bebidas", imagen = R.drawable.bebidas)
+        ItemCarrusel("Ensaladas", imagen = R.drawable.ensalada) { }
+        ItemCarrusel(
+            "Pizzas",
+            imagen = R.drawable.pizzas
+        ) { navHostController.navigate(Rutas.Pizzas.ruta) }
+        ItemCarrusel("Pastas", imagen = R.drawable.pastas) {}
+        ItemCarrusel("Gratinados", imagen = R.drawable.gratinados) {}
+        ItemCarrusel("Postres", imagen = R.drawable.postres) {}
+        ItemCarrusel("Bebidas", imagen = R.drawable.bebidas) {}
     }
 }
 
 @Composable
-fun ItemCarrusel(plato: String, @DrawableRes imagen: Int) {
-    Column {
+fun ItemCarrusel(plato: String, @DrawableRes imagen: Int, onClickItem: () -> Unit) {
+    Column(Modifier.clickable { onClickItem() }) {
         ImagenCarrusel(imagen = imagen, plato)
         Text(
             text = plato,

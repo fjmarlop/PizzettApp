@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import es.fjmarlop.pizzettApp.screens.address.ui.AddressScreen
+import es.fjmarlop.pizzettApp.screens.address.ui.AddressViewModel
 import es.fjmarlop.pizzettApp.screens.conditions.PrivacyPolices
 import es.fjmarlop.pizzettApp.screens.conditions.TermsOfUses
 import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountScreen
@@ -18,6 +20,8 @@ import es.fjmarlop.pizzettApp.screens.main.ui.MainScreen
 import es.fjmarlop.pizzettApp.screens.main.ui.MainViewModel
 import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasScreen
 import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasViewModel
+import es.fjmarlop.pizzettApp.screens.pizzas.ui.PizzasScreen
+import es.fjmarlop.pizzettApp.screens.pizzas.ui.PizzasViewModel
 import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileScreen
 import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileViewModel
 import es.fjmarlop.pizzettApp.screens.recoveryPassword.RecuperarContrasenaScreen
@@ -33,7 +37,9 @@ fun Navegador(
     mainViewModel: MainViewModel,
     profileViewModel: ProfileViewModel,
     ofertasViewModel: OfertasViewModel,
-    detailProfileViewModel: DetailProfileViewModel
+    detailProfileViewModel: DetailProfileViewModel,
+    addressViewModel: AddressViewModel,
+    pizzasViewModel: PizzasViewModel
 ) {
 
     val navigationController = rememberNavController()
@@ -97,6 +103,12 @@ fun Navegador(
         }
         composable(Rutas.DetailsProfile.ruta){
             DetailsProfileScreen(detailProfileViewModel = detailProfileViewModel, navigationController)
+        }
+        composable(Rutas.Address.ruta){
+            AddressScreen(addressViewModel = addressViewModel, navigationController)
+        }
+        composable(Rutas.Pizzas.ruta){
+            PizzasScreen(pizzasViewModel = pizzasViewModel, navHostController = navigationController)
         }
     }
 }

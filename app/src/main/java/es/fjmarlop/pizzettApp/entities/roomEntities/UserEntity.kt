@@ -1,4 +1,4 @@
-package es.fjmarlop.pizzettApp.entities
+package es.fjmarlop.pizzettApp.entities.roomEntities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

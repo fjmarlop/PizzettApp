@@ -1,10 +1,10 @@
-package es.fjmarlop.pizzettApp.core.roomDatabase
+package es.fjmarlop.pizzettApp.core.roomDatabase.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import es.fjmarlop.pizzettApp.entities.UserEntity
+import es.fjmarlop.pizzettApp.entities.roomEntities.UserEntity
 
 @Dao
 interface UserDao {
@@ -13,7 +13,7 @@ interface UserDao {
     suspend fun insertUser(user: UserEntity)
 
     @Query("Select * from user_table")
-    suspend fun getUser():UserEntity
+    suspend fun getUser(): UserEntity
 
 
     @Query("Select COUNT(*) from user_table")

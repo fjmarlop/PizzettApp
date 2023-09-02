@@ -1,6 +1,6 @@
 package es.fjmarlop.pizzettApp.screens.login.data
 
-import es.fjmarlop.pizzettApp.core.roomDatabase.UserDao
+import es.fjmarlop.pizzettApp.core.roomDatabase.dao.UserDao
 import javax.inject.Inject
 import javax.inject.Singleton
 

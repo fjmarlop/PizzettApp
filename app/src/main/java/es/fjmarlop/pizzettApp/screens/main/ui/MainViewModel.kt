@@ -101,8 +101,10 @@ class MainViewModel @Inject constructor(
 
     fun getUser() {
         viewModelScope.launch(Dispatchers.IO) {
-            val user = mainDomainService.getUser()
-            _user.postValue(user)
+            if (mainDomainService.getUserCount() > 0) {
+                val user = mainDomainService.getUser()
+                _user.postValue(user)
+            }
         }
     }
 }

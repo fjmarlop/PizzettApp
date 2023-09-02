@@ -12,5 +12,7 @@ sealed class Rutas(val ruta: String) {
     object PrivacyPolices : Rutas("PrivacyPolices")
     object TermOfUses : Rutas("TermOfUses")
     object DetailsProfile: Rutas("DetailsProfileScreen")
+    object Address: Rutas("AddressScreen")
+    object Pizzas: Rutas("PizzasScreen")
 
 }

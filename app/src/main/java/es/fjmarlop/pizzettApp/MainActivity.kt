@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import es.fjmarlop.pizzettApp.core.navigation.Navegador
+import es.fjmarlop.pizzettApp.screens.address.ui.AddressViewModel
 import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountViewModel
 import es.fjmarlop.pizzettApp.screens.detailsAccount.ui.DetailProfileViewModel
 import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.GoogleAuthUiClient
 import es.fjmarlop.pizzettApp.screens.login.ui.LoginViewModel
+import es.fjmarlop.pizzettApp.screens.pizzas.ui.PizzasViewModel
 import es.fjmarlop.pizzettApp.screens.main.ui.MainViewModel
 import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasViewModel
 import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileViewModel
@@ -39,6 +41,8 @@ class MainActivity : ComponentActivity() {
     private val profileViewModel: ProfileViewModel  by viewModels()
     private val ofertasViewModel: OfertasViewModel by viewModels()
     private val detailProfileViewModel: DetailProfileViewModel by viewModels()
+    private val addressViewModel: AddressViewModel by viewModels()
+    private val pizzasViewModel: PizzasViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +63,10 @@ class MainActivity : ComponentActivity() {
                         profileViewModel = profileViewModel,
                         ofertasViewModel = ofertasViewModel,
                         detailProfileViewModel = detailProfileViewModel,
-                        googleAuthUiClient = googleAuthUiClient
+                        googleAuthUiClient = googleAuthUiClient,
+                        addressViewModel = addressViewModel,
+                        pizzasViewModel = pizzasViewModel,
+
                     )
 
                 }

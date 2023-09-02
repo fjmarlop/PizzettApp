@@ -21,6 +21,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -75,40 +78,55 @@ fun Perfil(
             .fillMaxSize()
             .padding(12.dp)
     ) {
-        PerfilHeader()
+        PerfilHeader(profileViewModel)
         Divider(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), color = Color(0xFFBF0030))
         Spacer(modifier = Modifier.size(10.dp))
         PerfilBody(
             onclickDetallesCuenta = { profileViewModel.goToDetailsProfile(navController) },
             onclickAyuda = { /*TODO*/ },
-            onclickLibretaDirecciones = { /*TODO*/ })
+            onclickLibretaDirecciones = { profileViewModel.goToAddress(navController) })
         Divider(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), color = Color(0xFFBF0030))
         PerfilButtons(
-            onclickEliminarCuenta = { profileViewModel.onClickEliminarCuenta(googleAuthUiClient, navController) },
+            onclickEliminarCuenta = {
+                profileViewModel.onClickEliminarCuenta(
+                    googleAuthUiClient,
+                    navController
+                )
+            },
             onclickCerrarSesion = { profileViewModel.onSignOut(googleAuthUiClient, navController) })
 
     }
 }
 
 @Composable
-fun PerfilHeader() {
-    val user = Firebase.auth.currentUser
+fun PerfilHeader(profileViewModel: ProfileViewModel) {
+
+    LaunchedEffect(true){
+        profileViewModel.getUser()
+    }
+
+    val userFireBase = Firebase.auth.currentUser
+
+    val user by profileViewModel.user.observeAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp), verticalAlignment = Alignment.CenterVertically
     ) {
-        ImagenPerfil(user = user)
-        Column(modifier = Modifier.padding(horizontal = 14.dp)) {
-            user?.displayName?.let {
+        ImagenPerfil(user = userFireBase)
+
+        user?.let {
+            Column(modifier = Modifier.padding(horizontal = 14.dp)) {
+                user?.name?.let {
                 Text(
                     text = it,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Black
                 )
+                }
+                Spacer(modifier = Modifier.size(5.dp))
+                user?.email?.let { Text(text = it) }
             }
-            Spacer(modifier = Modifier.size(5.dp))
-            user?.email?.let { Text(text = it) }
         }
     }
 }
