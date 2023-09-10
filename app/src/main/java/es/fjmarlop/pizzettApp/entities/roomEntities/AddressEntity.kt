@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import es.fjmarlop.pizzettApp.models.AddressModel
+import es.fjmarlop.pizzettApp.models.roomModels.AddressModel
 
 @Entity(tableName = "address_table", indices = [Index(value = ["name"], unique = true)])
 data class AddressEntity(

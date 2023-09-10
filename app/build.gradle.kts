@@ -70,7 +70,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.0")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.0")
     //paquete de iconos adicionales de compose
-    implementation("androidx.compose.material:material-icons-extended:1.5.0")
+    implementation("androidx.compose.material:material-icons-extended:1.5.1")
     //navigation
     implementation("androidx.navigation:navigation-compose:2.7.0")
     //livedata
@@ -85,8 +85,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
     implementation("com.google.firebase:firebase-analytics-ktx:21.3.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
+    implementation("com.google.firebase:firebase-storage-ktx:20.2.1")
     //Play Services Auth
-    implementation("com.google.android.gms:play-services-auth:20.6.0")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     //Facebook
     implementation("com.facebook.android:facebook-android-sdk:[8,9)")
     implementation("com.facebook.android:facebook-login:latest.release")

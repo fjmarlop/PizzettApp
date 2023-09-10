@@ -9,7 +9,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.models.UserModel
+import es.fjmarlop.pizzettApp.models.roomModels.UserModel
 import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.GoogleAuthUiClient
 import es.fjmarlop.pizzettApp.screens.profile.domain.ProfileDomainService
 import kotlinx.coroutines.Dispatchers

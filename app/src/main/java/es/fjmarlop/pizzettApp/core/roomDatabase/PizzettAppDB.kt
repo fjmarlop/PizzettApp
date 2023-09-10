@@ -7,6 +7,13 @@ import es.fjmarlop.pizzettApp.core.roomDatabase.dao.UserDao
 import es.fjmarlop.pizzettApp.entities.roomEntities.AddressEntity
 import es.fjmarlop.pizzettApp.entities.roomEntities.UserEntity
 
+/**
+ * @author Fco Javier Marmolejo López
+ *
+ * Clase abstracta para crear la base de datos interna con room.
+ *
+ * */
+
 @Database(entities = [UserEntity::class, AddressEntity::class], version = 1)//exportSchema = false  falta por agregar
 abstract class PizzettAppDB() : RoomDatabase() {
 

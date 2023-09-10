@@ -18,15 +18,22 @@ import es.fjmarlop.pizzettApp.screens.login.ui.SignIn
 import es.fjmarlop.pizzettApp.screens.login.ui.SignInEmail
 import es.fjmarlop.pizzettApp.screens.main.ui.MainScreen
 import es.fjmarlop.pizzettApp.screens.main.ui.MainViewModel
+import es.fjmarlop.pizzettApp.screens.main.ui.ProductoViewModel
 import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasScreen
 import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasViewModel
-import es.fjmarlop.pizzettApp.screens.pizzas.ui.PizzasScreen
-import es.fjmarlop.pizzettApp.screens.pizzas.ui.PizzasViewModel
 import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileScreen
 import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileViewModel
 import es.fjmarlop.pizzettApp.screens.recoveryPassword.RecuperarContrasenaScreen
 import es.fjmarlop.pizzettApp.screens.welcome.ui.WelcomeScreen
 import es.fjmarlop.pizzettApp.screens.welcome.ui.WelcomeViewModel
+
+/**
+ * @author Fco Javier Marmolejo López
+ *
+ * Fichero encargado de controlar la navegación dentro de la aplicación.
+ * Controla todas las vistas que tiene la app.
+ *
+ * */
 
 @Composable
 fun Navegador(
@@ -39,10 +46,11 @@ fun Navegador(
     ofertasViewModel: OfertasViewModel,
     detailProfileViewModel: DetailProfileViewModel,
     addressViewModel: AddressViewModel,
-    pizzasViewModel: PizzasViewModel
+    productoViewModel: ProductoViewModel
 ) {
 
     val navigationController = rememberNavController()
+
     NavHost(
         navController = navigationController,
         startDestination = Rutas.WelcomeScreen.ruta
@@ -77,7 +85,8 @@ fun Navegador(
         composable(Rutas.MainScreen.ruta) {
             MainScreen(
                 mainViewModel = mainViewModel,
-                navHostController = navigationController
+                navHostController = navigationController,
+                productoViewModel = productoViewModel
             )
         }
         composable(Rutas.OfferScreen.ruta) {
@@ -107,8 +116,6 @@ fun Navegador(
         composable(Rutas.Address.ruta){
             AddressScreen(addressViewModel = addressViewModel, navigationController)
         }
-        composable(Rutas.Pizzas.ruta){
-            PizzasScreen(pizzasViewModel = pizzasViewModel, navHostController = navigationController)
-        }
+
     }
 }

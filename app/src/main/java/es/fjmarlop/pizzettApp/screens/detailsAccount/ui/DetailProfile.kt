@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.Rule
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -260,20 +259,3 @@ fun ProfileDetailTerms() {
     }
 }
 
-@Composable
-fun SaveButtons() {
-    OutlinedButton(onClick = { /*TODO*/ }) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(imageVector = Icons.Default.Save, contentDescription = "Save")
-            Text(
-                text = "Guardar",
-                modifier = Modifier.padding(horizontal = 12.dp),
-                fontSize = 16.sp
-            )
-        }
-    }
-}

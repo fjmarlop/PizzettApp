@@ -16,8 +16,8 @@ import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountViewModel
 import es.fjmarlop.pizzettApp.screens.detailsAccount.ui.DetailProfileViewModel
 import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.GoogleAuthUiClient
 import es.fjmarlop.pizzettApp.screens.login.ui.LoginViewModel
-import es.fjmarlop.pizzettApp.screens.pizzas.ui.PizzasViewModel
 import es.fjmarlop.pizzettApp.screens.main.ui.MainViewModel
+import es.fjmarlop.pizzettApp.screens.main.ui.ProductoViewModel
 import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasViewModel
 import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileViewModel
 import es.fjmarlop.pizzettApp.screens.welcome.ui.WelcomeViewModel
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
     private val ofertasViewModel: OfertasViewModel by viewModels()
     private val detailProfileViewModel: DetailProfileViewModel by viewModels()
     private val addressViewModel: AddressViewModel by viewModels()
-    private val pizzasViewModel: PizzasViewModel by viewModels()
+    private val productoViewModel: ProductoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                         detailProfileViewModel = detailProfileViewModel,
                         googleAuthUiClient = googleAuthUiClient,
                         addressViewModel = addressViewModel,
-                        pizzasViewModel = pizzasViewModel,
+                        productoViewModel = productoViewModel,
 
                     )
 

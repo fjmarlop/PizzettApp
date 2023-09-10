@@ -1,4 +1,4 @@
-package es.fjmarlop.pizzettApp.models
+package es.fjmarlop.pizzettApp.models.roomModels
 
 import es.fjmarlop.pizzettApp.entities.roomEntities.UserEntity
 

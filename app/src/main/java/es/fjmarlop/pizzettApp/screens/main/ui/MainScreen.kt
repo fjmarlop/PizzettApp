@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,32 +15,45 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Wysiwyg
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -48,17 +62,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import es.fjmarlop.pizzeta.R
-import es.fjmarlop.pizzettApp.core.navigation.Rutas
+import es.fjmarlop.pizzettApp.models.ProductoModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    productoViewModel: ProductoViewModel
 ) {
 
     LaunchedEffect(true) {
@@ -67,21 +85,28 @@ fun MainScreen(
     }
 
     MainScafold(
-        content = { VistaHome(mainViewModel, navHostController) },
+        content = { VistaHome(mainViewModel, productoViewModel) },
         navHostController = navHostController,
         mainViewModel
     )
 }
 
 @Composable
-fun VistaHome(mainViewModel: MainViewModel, navHostController: NavHostController) {
+fun VistaHome(
+    mainViewModel: MainViewModel,
+    productoViewModel: ProductoViewModel
+) {
+
+    val user by mainViewModel.user.observeAsState()
+    val categoria by productoViewModel.categoria.collectAsState()
+    val list by productoViewModel.productsList.collectAsState()
+    val activateButtonAddLine by mainViewModel.activateButtonAddLine.collectAsState()
 
     LaunchedEffect(true) {
         delay(500)
         mainViewModel.getUser()
     }
 
-    val user by mainViewModel.user.observeAsState()
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
 
@@ -93,14 +118,16 @@ fun VistaHome(mainViewModel: MainViewModel, navHostController: NavHostController
             )
         }
 
-        Spacer(modifier = Modifier.size(12.dp))
         TitleCarrusel(string = "¿Qué te apetece comer hoy?")
         DividerMain()
-        Carrusel(navHostController)
+        Carrusel(productoViewModel)
         Spacer(modifier = Modifier.size(24.dp))
-        TitleCarrusel(string = "Conoce nuestros BestSeller")
-        DividerMain()
+
+        ProductList(list = list, title = categoria, mainViewModel = mainViewModel, activar = activateButtonAddLine)
+
     }
+
+
 }
 
 @Composable
@@ -133,7 +160,7 @@ fun TitleCarrusel(string: String) {
 }
 
 @Composable
-fun Carrusel(navHostController: NavHostController) {
+fun Carrusel(productoViewModel: ProductoViewModel) {
     val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
@@ -142,15 +169,24 @@ fun Carrusel(navHostController: NavHostController) {
             .clip(RoundedCornerShape(20.dp))
     )
     {
-        ItemCarrusel("Ensaladas", imagen = R.drawable.ensalada) { }
-        ItemCarrusel(
-            "Pizzas",
-            imagen = R.drawable.pizzas
-        ) { navHostController.navigate(Rutas.Pizzas.ruta) }
-        ItemCarrusel("Pastas", imagen = R.drawable.pastas) {}
-        ItemCarrusel("Gratinados", imagen = R.drawable.gratinados) {}
-        ItemCarrusel("Postres", imagen = R.drawable.postres) {}
-        ItemCarrusel("Bebidas", imagen = R.drawable.bebidas) {}
+        ItemCarrusel("Ensaladas", imagen = R.drawable.ensalada) {
+            productoViewModel.onClickCategoria("Ensaladas")
+        }
+        ItemCarrusel("Pizzas", imagen = R.drawable.pizzas) {
+            productoViewModel.onClickCategoria("Pizzas")
+        }
+        ItemCarrusel("Pastas", imagen = R.drawable.pastas) {
+            productoViewModel.onClickCategoria("Pastas")
+        }
+        ItemCarrusel("Gratinados", imagen = R.drawable.gratinados) {
+            productoViewModel.onClickCategoria("Gratinados")
+        }
+        ItemCarrusel("Postres", imagen = R.drawable.postres) {
+            productoViewModel.onClickCategoria("Postres")
+        }
+        ItemCarrusel("Bebidas", imagen = R.drawable.bebidas) {
+            productoViewModel.onClickCategoria("Bebidas")
+        }
     }
 }
 
@@ -171,8 +207,8 @@ fun ImagenCarrusel(@DrawableRes imagen: Int, description: String) {
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 16.dp)
-            .width(100.dp)
-            .height(100.dp),
+            .width(80.dp)
+            .height(80.dp),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 15.dp
@@ -196,9 +232,10 @@ fun MainScafold(
 ) {
 
     val index by mainViewModel.index.collectAsState()
+    val lineas by mainViewModel.lineasPedido.collectAsState()
 
     Scaffold(
-        //topBar = { ToolBar(onClickMore = {}) },
+
         bottomBar = {
             BottomBar(
                 index = index,
@@ -217,6 +254,7 @@ fun MainScafold(
                 onClickCuenta = {
                     mainViewModel.onClickCuenta(4, navHostController)
                 },
+                cantidadLineas = lineas.size
             )
         }
 
@@ -231,25 +269,8 @@ fun MainScafold(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ToolBar(onClickMore: () -> Unit) {
-    TopAppBar(
-        title = { },
-        //title = { Text(text = stringResource(id = R.string.app_name)) },
-        colors = TopAppBarDefaults.topAppBarColors(
-            //  containerColor = Color(0xFF126e0c),
-            // titleContentColor = Color.White,
-            // actionIconContentColor = Color.White
-        ),
-        actions = {
-            IconButton(onClick = { onClickMore() }) {
-                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Mas")
-            }
-        }
-    )
-}
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomBar(
     index: Int,
@@ -257,7 +278,8 @@ fun BottomBar(
     onClickOfertas: () -> Unit,
     onClickCarrito: () -> Unit,
     onClickMisPedidos: () -> Unit,
-    onClickCuenta: () -> Unit
+    onClickCuenta: () -> Unit,
+    cantidadLineas: Int = 0
 ) {
 
     NavigationBar() {
@@ -274,10 +296,19 @@ fun BottomBar(
             )
         }, label = { Text(text = "Ofertas") })
         NavigationBarItem(selected = index == 2, onClick = { onClickCarrito() }, icon = {
-            Icon(
-                imageVector = Icons.Default.ShoppingCart,
-                contentDescription = "Carrito"
-            )
+
+            BadgedBox(
+                badge = {
+                    if (cantidadLineas > 0)
+                        Badge { Text(text = cantidadLineas.toString()) }
+                }, modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Icon(
+                    Icons.Filled.ShoppingCart,
+                    contentDescription = "shoppingCart"
+                )
+            }
+
         }, label = { Text(text = "Compra") })
         NavigationBarItem(selected = index == 3, onClick = { onClickMisPedidos() }, icon = {
             Icon(
@@ -294,3 +325,228 @@ fun BottomBar(
     }
 }
 
+@Composable
+fun ProductList(list: List<ProductoModel>, title: String, mainViewModel: MainViewModel, activar: Boolean) {
+    TitleCarrusel(string = title)
+    DividerMain()
+    LazyColumn() {
+        items(list) { producto ->
+            ProductItem(producto = producto, mainViewModel = mainViewModel, activar = activar)
+        }
+    }
+}
+
+
+@Composable
+fun ProductItem(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boolean) {
+    Spacer(modifier = Modifier.size(12.dp))
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        ITemBody(producto = producto, mainViewModel = mainViewModel, activar = activar)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ITemBody(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boolean) {
+
+    val sheetState = rememberModalBottomSheetState()
+    var isSheetOpen by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val ingredients =
+        producto.ingredients.sortedBy { it.id }.joinToString(", ") { it.ingredientName }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                isSheetOpen = true
+                scope.launch { sheetState.isVisible }
+            }
+
+    ) {
+        Text(
+            text = producto.nombre_producto,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+        Spacer(modifier = Modifier.size(4.dp))
+
+        Text(
+            text = ingredients,
+            fontSize = 12.sp,
+            color = Color(0xFFA93700),
+            modifier = Modifier.padding(horizontal = 16.dp),
+            textAlign = TextAlign.Justify
+        )
+        Spacer(modifier = Modifier.size(12.dp))
+        Divider()
+    }
+    if (isSheetOpen) {
+        ItemSheet(
+            onDismiss = { isSheetOpen = false },
+            producto = producto,
+            mainViewModel = mainViewModel,
+            activar = activar)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ItemSheet(
+    onDismiss: () -> Unit,
+    producto: ProductoModel,
+    mainViewModel: MainViewModel,
+    activar: Boolean
+) {
+
+
+
+    ModalBottomSheet(
+        onDismissRequest = { onDismiss() },
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        dragHandle = { false }) {
+        Box() {
+            LaunchedEffect(true ){
+                mainViewModel.resetValues()
+            }
+            Column {
+                SheetImagen(producto = producto)
+                Spacer(modifier = Modifier.size(18.dp))
+                SheetText(producto = producto)
+                Spacer(modifier = Modifier.size(18.dp))
+                Divider()
+                SheetTamanoPvp(producto = producto, mainViewModel = mainViewModel)
+                Divider()
+                Spacer(modifier = Modifier.size(18.dp))
+                SheetCantidad(mainViewModel = mainViewModel)
+                OutlinedButton(
+                    enabled = activar,
+                    onClick = {
+                        mainViewModel.addOrderLine(producto)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                ) {
+                    Text(text = "Añadir al pedido")
+                }
+                Spacer(modifier = Modifier.size(70.dp))
+            }
+        }
+    }
+}
+
+
+@Composable
+fun SheetImagen(producto: ProductoModel) {
+    val img = rememberAsyncImagePainter(producto.imagen_producto)
+
+    if (producto.nombre_producto.isNotBlank()) {
+        Image(
+            painter = img,
+            contentDescription = null, modifier = Modifier
+                .height(220.dp)
+                .fillMaxWidth(), contentScale = ContentScale.FillWidth
+        )
+    } else {
+        Image(
+            painter = painterResource(id = R.drawable.logo_la_pizzetta),
+            contentDescription = null,
+            modifier = Modifier
+                .height(250.dp)
+        )
+    }
+}
+
+@Composable
+fun SheetText(producto: ProductoModel) {
+
+    val ingredients = producto.ingredients.sortedBy { it.id }
+        .joinToString(", ") { it.ingredientName }
+    val categoria = producto.categoria.joinToString { it.nombre_categoria }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+        Text(
+            text = producto.nombre_producto,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.size(14.dp))
+
+        if (categoria == "Pizzas") {
+            Text(
+                text = producto.descripcion + ingredients,
+                fontSize = 18.sp,
+                color = Color(0xFFA93700),
+                modifier = Modifier.padding(horizontal = 24.dp),
+                textAlign = TextAlign.Justify
+            )
+        } else {
+            Text(
+                text = producto.descripcion,
+                fontSize = 14.sp,
+                color = Color(0xFFA93700),
+                modifier = Modifier.padding(horizontal = 24.dp),
+                textAlign = TextAlign.Justify
+            )
+
+        }
+    }
+}
+
+@Composable
+fun SheetTamanoPvp(producto: ProductoModel,mainViewModel: MainViewModel) {
+
+    var tamanoSelected by remember { mutableIntStateOf(0) }
+
+    val list = producto.tamanios.sortedBy { it.pvp }
+
+    list.forEach { item ->
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.padding(horizontal = 18.dp)
+        ) {
+            RadioButton(
+                selected = tamanoSelected == item.id,
+                onClick = {
+                    tamanoSelected = item.id
+                    /* TODO FALTA IMPLEMENTAR GUARDAR ELECCION */
+                    mainViewModel.onTamanoSelected(item)
+                })
+            Text(text = "Tamaño ${item.tamano}, pvp: ${item.pvp} €")
+        }
+    }
+}
+
+@Composable
+fun SheetCantidad(mainViewModel: MainViewModel) {
+
+    val cantidad by mainViewModel.cantidad.collectAsState()
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Cantidad",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { mainViewModel.restarCantidad() }, enabled = cantidad > 0) {
+                Icon(imageVector = Icons.Default.Remove, contentDescription = null)
+            }
+
+            Text(
+                text = cantidad.toString(),
+                fontSize = 18.sp,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            IconButton(onClick = { mainViewModel.aumentarCantidad() }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+            }
+        }
+    }
+}

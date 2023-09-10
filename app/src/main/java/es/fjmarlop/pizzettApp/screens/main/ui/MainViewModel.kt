@@ -11,7 +11,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.models.UserModel
+import es.fjmarlop.pizzettApp.models.LineaPedidoModel
+import es.fjmarlop.pizzettApp.models.ProductoModel
+import es.fjmarlop.pizzettApp.models.TamaniosModel
+import es.fjmarlop.pizzettApp.models.roomModels.UserModel
 import es.fjmarlop.pizzettApp.screens.main.domain.MainDomainService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +34,18 @@ class MainViewModel @Inject constructor(
 
     private val _user = MutableLiveData<UserModel>()
     val user: LiveData<UserModel> = _user
+
+    private val _activateButtonAddLine = MutableStateFlow(false)
+    val activateButtonAddLine: StateFlow<Boolean> = _activateButtonAddLine
+
+    private var _lineasPedido = MutableStateFlow<List<LineaPedidoModel>>(emptyList())
+    val lineasPedido: StateFlow<List<LineaPedidoModel>> = _lineasPedido
+
+    private lateinit var tamanoSelected: TamaniosModel
+    private var isTamanoSelected = false
+
+    private val _cantidad = MutableStateFlow(0)
+    val cantidad: StateFlow<Int> = _cantidad
 
     fun onClickInicio(int: Int, navHostController: NavHostController) {
         viewModelScope.launch {
@@ -106,5 +121,34 @@ class MainViewModel @Inject constructor(
                 _user.postValue(user)
             }
         }
+    }
+
+    fun onTamanoSelected(item: TamaniosModel) {
+        tamanoSelected = item
+        isTamanoSelected = true
+    }
+
+    fun restarCantidad() {
+        _cantidad.value -= 1
+        _activateButtonAddLine.value = comprobarCantidad()
+    }
+
+    fun aumentarCantidad() {
+        _cantidad.value += 1
+        _activateButtonAddLine.value = comprobarCantidad()
+    }
+
+    private fun comprobarCantidad(): Boolean {
+        return _cantidad.value > 0
+    }
+
+    fun resetValues() {
+        _cantidad.value = 0
+        isTamanoSelected = false
+        _activateButtonAddLine.value = comprobarCantidad()
+    }
+
+    fun addOrderLine(producto: ProductoModel) {
+        //lineasPedido
     }
 }

@@ -1,5 +1,16 @@
 package es.fjmarlop.pizzettApp.core.navigation
 
+/**
+ * @author Fco Javier Marmolejo López
+ *
+ *  sealed class s un tipo de clase especial que se utiliza para representar una
+ *  jerarquía de clases en la que se sabe de antemano todos los subtipos posibles.
+ *
+ *  Maneja la ruta de todas las vistas de la aplicación
+ *
+ * */
+
+
 sealed class Rutas(val ruta: String) {
     object WelcomeScreen : Rutas("WelcomeScreen")
     object LoginScreen : Rutas("SignIn")
@@ -13,6 +24,5 @@ sealed class Rutas(val ruta: String) {
     object TermOfUses : Rutas("TermOfUses")
     object DetailsProfile: Rutas("DetailsProfileScreen")
     object Address: Rutas("AddressScreen")
-    object Pizzas: Rutas("PizzasScreen")
 
 }
