@@ -38,15 +38,18 @@ class MainViewModel @Inject constructor(
     private val _activateButtonAddLine = MutableStateFlow(false)
     val activateButtonAddLine: StateFlow<Boolean> = _activateButtonAddLine
 
-    private var _lineasPedido = MutableStateFlow<List<LineaPedidoModel>>(emptyList())
-    val lineasPedido: StateFlow<List<LineaPedidoModel>> = _lineasPedido
+     var lineasPedido: MutableList<LineaPedidoModel> = emptyList<LineaPedidoModel>().toMutableList()
+    private var tamanoSeleccionado: MutableSet<TamaniosModel> = emptySet<TamaniosModel>().toMutableSet()
 
     private lateinit var tamanoSelected: TamaniosModel
+
     private var isTamanoSelected = false
 
     private val _cantidad = MutableStateFlow(0)
     val cantidad: StateFlow<Int> = _cantidad
 
+    private val _lineasTotal = MutableStateFlow(0)
+    val lineasTotal: StateFlow<Int> = _lineasTotal
     fun onClickInicio(int: Int, navHostController: NavHostController) {
         viewModelScope.launch {
             _index.emit(int)
@@ -149,6 +152,21 @@ class MainViewModel @Inject constructor(
     }
 
     fun addOrderLine(producto: ProductoModel) {
-        //lineasPedido
+
+        tamanoSeleccionado.add(tamanoSelected)
+
+        val productoElegido = ProductoModel(
+            producto.id_producto,
+            producto.nombre_producto,
+            producto.imagen_producto,
+            producto.descripcion,
+            producto.categoria,
+            producto.ingredients,
+            tamanoSeleccionado)
+
+        val linea = LineaPedidoModel(productoElegido, _cantidad.value)
+
+        lineasPedido.add(linea)
+        _lineasTotal.value = lineasPedido.size
     }
 }

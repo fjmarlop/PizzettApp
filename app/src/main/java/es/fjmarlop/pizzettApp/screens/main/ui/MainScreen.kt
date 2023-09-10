@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Person
@@ -232,7 +233,7 @@ fun MainScafold(
 ) {
 
     val index by mainViewModel.index.collectAsState()
-    val lineas by mainViewModel.lineasPedido.collectAsState()
+    val lineasTotales by mainViewModel.lineasTotal.collectAsState()
 
     Scaffold(
 
@@ -254,7 +255,7 @@ fun MainScafold(
                 onClickCuenta = {
                     mainViewModel.onClickCuenta(4, navHostController)
                 },
-                cantidadLineas = lineas.size
+                cantidadLineas = lineasTotales
             )
         }
 
@@ -279,7 +280,7 @@ fun BottomBar(
     onClickCarrito: () -> Unit,
     onClickMisPedidos: () -> Unit,
     onClickCuenta: () -> Unit,
-    cantidadLineas: Int = 0
+    cantidadLineas: Int
 ) {
 
     NavigationBar() {
@@ -341,13 +342,14 @@ fun ProductList(list: List<ProductoModel>, title: String, mainViewModel: MainVie
 fun ProductItem(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boolean) {
     Spacer(modifier = Modifier.size(12.dp))
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        ITemBody(producto = producto, mainViewModel = mainViewModel, activar = activar)
+        ITemBody(producto = producto, mainViewModel = mainViewModel, activar = activar, modifier = Modifier.weight(1f))
+        Icon(imageVector = Icons.Default.Android, contentDescription = null)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ITemBody(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boolean) {
+fun ITemBody(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boolean, modifier: Modifier) {
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by remember { mutableStateOf(false) }
@@ -356,7 +358,7 @@ fun ITemBody(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boo
         producto.ingredients.sortedBy { it.id }.joinToString(", ") { it.ingredientName }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable {
                 isSheetOpen = true
@@ -400,8 +402,6 @@ fun ItemSheet(
     activar: Boolean
 ) {
 
-
-
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -424,6 +424,7 @@ fun ItemSheet(
                     enabled = activar,
                     onClick = {
                         mainViewModel.addOrderLine(producto)
+                        onDismiss()
                     },
                     modifier = Modifier
                         .fillMaxWidth()

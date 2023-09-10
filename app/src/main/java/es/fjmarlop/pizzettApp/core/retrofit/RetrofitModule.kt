@@ -21,8 +21,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class RetrofitModule {
 
-    private val baseUrl = "http://192.168.0.171:8080/"
-    //private val baseUrl = "http://192.168.0.26:8080/"
+    private val baseUrl = "http://192.168.0.171:8080/"      // Win
+    //private val baseUrl = "http://192.168.0.26:8080/"     // Mac
 
     @Singleton
     @Provides
