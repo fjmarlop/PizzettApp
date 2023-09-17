@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -79,13 +80,13 @@ fun Perfil(
             .padding(12.dp)
     ) {
         PerfilHeader(profileViewModel)
-        Divider(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), color = Color(0xFFBF0030))
+        Divider(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), color = MaterialTheme.colorScheme.primary)
         Spacer(modifier = Modifier.size(10.dp))
         PerfilBody(
             onclickDetallesCuenta = { profileViewModel.goToDetailsProfile(navController) },
             onclickAyuda = { /*TODO*/ },
             onclickLibretaDirecciones = { profileViewModel.goToAddress(navController) })
-        Divider(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), color = Color(0xFFBF0030))
+        Divider(Modifier.padding(horizontal = 10.dp, vertical = 5.dp), color = MaterialTheme.colorScheme.primary)
         PerfilButtons(
             onclickEliminarCuenta = {
                 profileViewModel.onClickEliminarCuenta(
@@ -188,7 +189,7 @@ fun BodyItem(onclick: () -> Unit, icon: ImageVector, text: String) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onclick() }) {
-        Image(imageVector = icon, contentDescription = text, modifier = Modifier.size(30.dp))
+        Image(imageVector = icon, contentDescription = text, modifier = Modifier.size(30.dp), colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary))
         Text(text = text, fontSize = 20.sp, modifier = Modifier.padding(horizontal = 12.dp))
     }
     Spacer(modifier = Modifier.size(16.dp))
