@@ -137,7 +137,7 @@ fun ImagenPerfil(user: FirebaseUser?) {
 
     if (user?.photoUrl != null) {
         AsyncImage(
-            model = user?.photoUrl,
+            model = user.photoUrl,
             contentDescription = "Foto de perfil",
             modifier = Modifier
                 .size(80.dp)

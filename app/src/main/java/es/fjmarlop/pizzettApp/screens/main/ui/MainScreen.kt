@@ -68,7 +68,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import es.fjmarlop.pizzeta.R
-import es.fjmarlop.pizzettApp.models.ProductoModel
+import es.fjmarlop.pizzettApp.models.databaseModels.ProductoModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

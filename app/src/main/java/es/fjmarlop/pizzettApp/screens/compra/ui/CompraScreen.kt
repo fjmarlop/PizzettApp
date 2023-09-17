@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import es.fjmarlop.pizzettApp.models.LineaPedidoModel
+import es.fjmarlop.pizzettApp.models.databaseModels.LineaPedidoModel
 import es.fjmarlop.pizzettApp.models.roomModels.UserModel
 import es.fjmarlop.pizzettApp.screens.main.ui.MainScafold
 import es.fjmarlop.pizzettApp.screens.main.ui.MainViewModel

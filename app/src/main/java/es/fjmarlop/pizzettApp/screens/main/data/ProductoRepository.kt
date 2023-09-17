@@ -2,7 +2,7 @@ package es.fjmarlop.pizzettApp.screens.main.data
 
 import es.fjmarlop.pizzettApp.core.retrofit.dao.ProductoDao
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.models.ProductoModel
+import es.fjmarlop.pizzettApp.models.databaseModels.ProductoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException

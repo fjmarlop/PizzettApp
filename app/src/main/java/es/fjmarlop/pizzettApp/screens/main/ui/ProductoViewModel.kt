@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.models.ProductoModel
+import es.fjmarlop.pizzettApp.models.databaseModels.ProductoModel
 import es.fjmarlop.pizzettApp.screens.main.domain.ProductoDomainService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

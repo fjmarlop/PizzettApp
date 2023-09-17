@@ -1,6 +1,6 @@
 package es.fjmarlop.pizzettApp.core.retrofit.dao
 
-import es.fjmarlop.pizzettApp.models.ProductoModel
+import es.fjmarlop.pizzettApp.models.databaseModels.ProductoModel
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
