@@ -1,6 +1,7 @@
 package es.fjmarlop.pizzettApp.screens.recoveryPassword
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LockReset
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,7 +70,7 @@ fun RecuperarContrasenaScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CloseButton(loginViewModel = loginViewModel, navController = navHostController)
+        CloseButtonRecovery(loginViewModel = loginViewModel, navController = navHostController)
         Box(
             modifier = Modifier
                 .padding(horizontal = 32.dp)
@@ -111,5 +114,14 @@ fun RecuperarContrasenaScreen(
             }
         }
 
+    }
+}
+
+@Composable
+fun CloseButtonRecovery(loginViewModel: LoginViewModel, navController: NavHostController) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        IconButton(onClick = { loginViewModel.goToEmailLogin(navController) }) {
+            Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+        }
     }
 }

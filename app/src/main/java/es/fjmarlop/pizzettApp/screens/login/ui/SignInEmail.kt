@@ -214,7 +214,7 @@ fun Password(password: String, focusRequester: FocusRequester, onTextChanged: (S
                 Icon(
                     imageVector = imagen,
                     contentDescription = "show password",
-                    tint = MaterialTheme.colorScheme.tertiary
+                    //tint = MaterialTheme.colorScheme.tertiary
                 )
             }
         },

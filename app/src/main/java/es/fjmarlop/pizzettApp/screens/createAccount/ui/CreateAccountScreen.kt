@@ -18,6 +18,8 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -137,14 +139,13 @@ fun CreateButton(
 @Composable
 fun UserCreate(user: String, isValid: Boolean, onTextChanged: (String) -> Unit) {
 
-    TextField(
+    OutlinedTextField(
         value = user,
         onValueChange = { onTextChanged(it) },
         modifier = Modifier
-            .fillMaxWidth()
-
-            .clip(RoundedCornerShape(12.dp)),
-        placeholder = { Text(text = "Email") },
+            .fillMaxWidth(),
+        label = { Text(text = "Correo electrónico")},
+        placeholder = { Text(text = "Introduce tu dirección correo") },
         maxLines = 1,
         singleLine = true,
         isError = !isValid,
@@ -153,11 +154,11 @@ fun UserCreate(user: String, isValid: Boolean, onTextChanged: (String) -> Unit) 
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFFF7FFEE),
-            focusedContainerColor = Color(0xFFF7FFEE),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            errorContainerColor = Color(0xFFf5CBCB),
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            focusedLabelColor = MaterialTheme.colorScheme.tertiary,
         )
     )
 
@@ -166,20 +167,19 @@ fun UserCreate(user: String, isValid: Boolean, onTextChanged: (String) -> Unit) 
 @Composable
 fun PasswordCreate(password: String, onTextChanged: (String) -> Unit, isValido: Boolean) {
     var passwordVisibility by remember { mutableStateOf(false) }
-    TextField(
+    OutlinedTextField(
         value = password,
         onValueChange = { onTextChanged(it) },
         modifier = Modifier
-            .fillMaxWidth()
-
-            .clip(RoundedCornerShape(12.dp)),
-        placeholder = { Text("Contraseña") },
+            .fillMaxWidth(),
+        label = { Text(text = "Contraseña")},
+        placeholder = { Text("Introduce tu contraseña") },
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFFF7FFEE),
-            focusedContainerColor = Color(0xFFF7FFEE),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            errorContainerColor = Color(0xFFf5CBCB),
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            focusedLabelColor = MaterialTheme.colorScheme.tertiary,
         ),
         singleLine = true,
         maxLines = 1,
@@ -209,19 +209,19 @@ fun PasswordCreate(password: String, onTextChanged: (String) -> Unit, isValido: 
 @Composable
 fun ReplyPasswordCreate(password: String, onTextChanged: (String) -> Unit, isValido: Boolean) {
     var passwordVisibility by remember { mutableStateOf(false) }
-    TextField(
+    OutlinedTextField(
         value = password,
         onValueChange = { onTextChanged(it) },
         modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp)),
-        placeholder = { Text("Repita la contraseña") },
+            .fillMaxWidth(),
+        label = { Text(text = "Contraseña")},
+        placeholder = { Text("Repite tu contraseña") },
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFFF7FFEE),
-            focusedContainerColor = Color(0xFFF7FFEE),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            errorContainerColor = Color(0xFFf5CBCB),
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            focusedLabelColor = MaterialTheme.colorScheme.tertiary,
         ),
         singleLine = true,
         maxLines = 1,

@@ -159,6 +159,11 @@ class LoginViewModel @Inject constructor(
         utils.navigateToLogin(navController)
     }
 
+    fun goToEmailLogin(navController: NavHostController){
+        navController.popBackStack()
+        utils.navigateToSignInEmail(navController)
+    }
+
     fun goToPrivacyPolices(navController: NavHostController) {
         utils.navigateToPrivacyPolices(navController)
     }

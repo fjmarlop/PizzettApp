@@ -44,7 +44,7 @@ class CreateAccountViewModel @Inject constructor(private val utils: Utils): View
         return pass == replyPass
     }
 
-    fun isEmailValido(email: String): Boolean {
+    private fun isEmailValido(email: String): Boolean {
         val emailPattern = Patterns.EMAIL_ADDRESS.matcher(email)
         return emailPattern.matches()
     }
@@ -71,7 +71,7 @@ class CreateAccountViewModel @Inject constructor(private val utils: Utils): View
 
     fun goToBack(navController: NavHostController) {
         navController.popBackStack()
-        utils.navigateToLogin(navController)
+        utils.navigateToSignInEmail(navController)
     }
 
     private val _usuario = MutableLiveData<String>()
