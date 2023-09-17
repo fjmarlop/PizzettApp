@@ -24,5 +24,6 @@ sealed class Rutas(val ruta: String) {
     object TermOfUses : Rutas("TermOfUses")
     object DetailsProfile: Rutas("DetailsProfileScreen")
     object Address: Rutas("AddressScreen")
+    object Compra: Rutas("CompraScreen")
 
 }

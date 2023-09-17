@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -21,8 +21,9 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,13 +32,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -107,13 +111,23 @@ fun SignInEmailBody(
     loginViewModel: LoginViewModel,
     navController: NavHostController
 ) {
+
+    // Crear dos FocusRequester para controlar el foco entre los TextField
+    val focusRequesterUser = remember { FocusRequester() }
+    val focusRequesterPass = remember { FocusRequester() }
+
     Spacer(modifier = Modifier.size(16.dp))
     Usuario(
         usuario = usuario,
+        focusRequester = focusRequesterUser,
+        onClickImeActionDone = {
+            focusRequesterPass.requestFocus()
+        },
         onTextChanged = { loginViewModel.onLoginTextChanged(it, password) })
     Spacer(modifier = Modifier.size(12.dp))
     Password(
         password = password,
+        focusRequester = focusRequesterPass,
         onTextChanged = { loginViewModel.onLoginTextChanged(usuario, it) })
     Spacer(modifier = Modifier.size(12.dp))
     LoginButton(
@@ -130,45 +144,66 @@ fun SignInEmailBody(
 
 
 @Composable
-fun Usuario(usuario: String, onTextChanged: (String) -> Unit) {
-    TextField(
+fun Usuario(
+    usuario: String,
+    focusRequester: FocusRequester,
+    onClickImeActionDone: () -> Unit,
+    onTextChanged: (String) -> Unit
+) {
+    OutlinedTextField(
         value = usuario,
         onValueChange = { onTextChanged(it) },
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp)),
-        placeholder = { Text(text = "Email") },
+            .focusRequester(focusRequester),
+        label = { Text(text = "Correo electrónico") },
+        placeholder = { Text(text = "Introduce direccion de correo") },
         maxLines = 1,
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Done
+        ),
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFFF7FFEE),
-            focusedContainerColor = Color(0xFFF7FFEE),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        )
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+        ),
+        keyboardActions = KeyboardActions(onDone = { onClickImeActionDone() })
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Password(password: String, onTextChanged: (String) -> Unit) {
+fun Password(password: String, focusRequester: FocusRequester, onTextChanged: (String) -> Unit) {
     var passwordVisibility by remember { mutableStateOf(false) }
-    TextField(
+
+    // Obtener el controlador de teclado
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    OutlinedTextField(
         value = password,
         onValueChange = { onTextChanged(it) },
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp)),
-        placeholder = { Text("Contraseña") },
+            .focusRequester(focusRequester),
+        label = { Text(text = "Contraseña") },
+        placeholder = { Text("Introduce tu contraseña") },
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color(0xFFF7FFEE),
-            focusedContainerColor = Color(0xFFF7FFEE),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+            cursorColor = MaterialTheme.colorScheme.tertiary,
+            focusedLabelColor = MaterialTheme.colorScheme.tertiary,
         ),
         singleLine = true,
         maxLines = 1,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done
+        ),
         trailingIcon = {
             val imagen = if (passwordVisibility) {
                 Icons.Filled.VisibilityOff
@@ -176,14 +211,21 @@ fun Password(password: String, onTextChanged: (String) -> Unit) {
                 Icons.Filled.Visibility
             }
             IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                Icon(imageVector = imagen, contentDescription = "show password")
+                Icon(
+                    imageVector = imagen,
+                    contentDescription = "show password",
+                    tint = MaterialTheme.colorScheme.tertiary
+                )
             }
         },
         visualTransformation = if (passwordVisibility) {
             VisualTransformation.None
         } else {
             PasswordVisualTransformation()
-        }
+        },
+        keyboardActions = KeyboardActions(onDone = {
+            keyboardController?.hide()
+        })
     )
 }
 
@@ -220,7 +262,7 @@ fun RegistrarCuenta(onClick: () -> Unit) {
         Text(
             text = "Crear cuenta",
             fontWeight = FontWeight.Bold,
-            color = Color(0xFFBF0030),
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable { onClick() })
     }
 }

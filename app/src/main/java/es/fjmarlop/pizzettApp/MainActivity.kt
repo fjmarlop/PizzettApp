@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import es.fjmarlop.pizzettApp.core.navigation.Navegador
 import es.fjmarlop.pizzettApp.screens.address.ui.AddressViewModel
+import es.fjmarlop.pizzettApp.screens.compra.ui.CompraViewModel
 import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountViewModel
 import es.fjmarlop.pizzettApp.screens.detailsAccount.ui.DetailProfileViewModel
 import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.GoogleAuthUiClient
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
     private val detailProfileViewModel: DetailProfileViewModel by viewModels()
     private val addressViewModel: AddressViewModel by viewModels()
     private val productoViewModel: ProductoViewModel by viewModels()
+    private val compraViewModel: CompraViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +68,7 @@ class MainActivity : ComponentActivity() {
                         googleAuthUiClient = googleAuthUiClient,
                         addressViewModel = addressViewModel,
                         productoViewModel = productoViewModel,
-
+                        compraViewModel = compraViewModel
                     )
 
                 }

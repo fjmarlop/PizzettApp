@@ -4,7 +4,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import es.fjmarlop.pizzettApp.core.retrofit.dao.PizzaDao
 import es.fjmarlop.pizzettApp.core.retrofit.dao.ProductoDao
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -31,12 +30,6 @@ class RetrofitModule {
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
-
-    @Singleton
-    @Provides
-    fun providePizzaDao(retrofit: Retrofit): PizzaDao {
-        return retrofit.create(PizzaDao::class.java)
     }
 
     @Singleton

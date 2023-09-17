@@ -1,4 +1,4 @@
 package es.fjmarlop.pizzettApp.models
 
-data class LineaPedidoModel (val producto: ProductoModel, val cantidad: Int) {
+data class LineaPedidoModel (val producto: ProductoLineaPedidoModel, val cantidad: Int) {
 }

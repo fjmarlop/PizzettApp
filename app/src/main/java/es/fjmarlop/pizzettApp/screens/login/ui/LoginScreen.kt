@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +31,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -117,7 +117,7 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-       // contentAlignment = Alignment.Center
+        // contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             LogoRestaurante()
@@ -132,11 +132,31 @@ fun LoginScreen(
                 },
                 onAuthError = { loginViewModel.sendMessage("No ha sido posible el inicio de sesión con Facebook") })
 
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter){
-                Row(Modifier.fillMaxWidth()) {
-                    Text(text = "Política de privacidad.", modifier = Modifier.weight(1f).clickable { loginViewModel.goToPrivacyPolices(navController) })
-                    Text(text = "Condiciones de uso.", modifier = Modifier.weight(1f).clickable { loginViewModel.goToTermOfUses(navController) })
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                Column {
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Política de privacidad.",
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable { loginViewModel.goToPrivacyPolices(navController) },
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "Condiciones de uso.",
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable { loginViewModel.goToTermOfUses(navController) },
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                Text(text = "Cuando inicia sesión acepta las politicas de privacidad y las condiciones de uso", fontSize = 8.sp)
                 }
+
             }
 
         }
@@ -158,10 +178,12 @@ fun LogoRestaurante() {
         textAlign = TextAlign.Center
     )
     Spacer(modifier = Modifier.size(18.dp))
-    Text(text = "Para acceder a todas las características y beneficios, necesitas iniciar sesión en tu cuenta." +
-            " No te preocupes, ¡es súper fácil! Simplemente ingresa tus credenciales de inicio" +
-            " de sesión. Si no tienes cuenta te animamos a crearte una. ¡Gracias por elegir la PizzettApp!",
-        fontSize = 14.sp, textAlign = TextAlign.Justify)
+    Text(
+        text = "Para acceder a todas las características y beneficios, necesitas iniciar sesión en tu cuenta." +
+                " No te preocupes, ¡es súper fácil! Simplemente ingresa tus credenciales de inicio" +
+                " de sesión. Si no tienes cuenta te animamos a crearte una. ¡Gracias por elegir la PizzettApp!",
+        fontSize = 14.sp, textAlign = TextAlign.Justify
+    )
 
 }
 
@@ -175,7 +197,7 @@ fun BotonSesionEmail(onPressButton: () -> Unit) {
             Image(
                 imageVector = Icons.Filled.Mail,
                 contentDescription = "logo Email",
-                colorFilter = ColorFilter.tint(Color(0xFFBF0030))
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )
             Text(
                 text = "Iniciar sesión con email",

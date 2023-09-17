@@ -6,6 +6,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import es.fjmarlop.pizzettApp.screens.address.ui.AddressScreen
 import es.fjmarlop.pizzettApp.screens.address.ui.AddressViewModel
+import es.fjmarlop.pizzettApp.screens.compra.ui.CompraScreen
+import es.fjmarlop.pizzettApp.screens.compra.ui.CompraViewModel
 import es.fjmarlop.pizzettApp.screens.conditions.PrivacyPolices
 import es.fjmarlop.pizzettApp.screens.conditions.TermsOfUses
 import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountScreen
@@ -46,7 +48,8 @@ fun Navegador(
     ofertasViewModel: OfertasViewModel,
     detailProfileViewModel: DetailProfileViewModel,
     addressViewModel: AddressViewModel,
-    productoViewModel: ProductoViewModel
+    productoViewModel: ProductoViewModel,
+    compraViewModel: CompraViewModel
 ) {
 
     val navigationController = rememberNavController()
@@ -115,6 +118,9 @@ fun Navegador(
         }
         composable(Rutas.Address.ruta){
             AddressScreen(addressViewModel = addressViewModel, navigationController)
+        }
+        composable(Rutas.Compra.ruta){
+            CompraScreen(mainViewModel = mainViewModel, compraViewModel = compraViewModel, navHostController = navigationController)
         }
 
     }

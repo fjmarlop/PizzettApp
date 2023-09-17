@@ -12,6 +12,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.utils.Utils
 import es.fjmarlop.pizzettApp.models.LineaPedidoModel
+import es.fjmarlop.pizzettApp.models.ProductoLineaPedidoModel
 import es.fjmarlop.pizzettApp.models.ProductoModel
 import es.fjmarlop.pizzettApp.models.TamaniosModel
 import es.fjmarlop.pizzettApp.models.roomModels.UserModel
@@ -35,21 +36,39 @@ class MainViewModel @Inject constructor(
     private val _user = MutableLiveData<UserModel>()
     val user: LiveData<UserModel> = _user
 
+    //activa  el botón de añadir al pedido si cumple con los requisitos
+    //(tamaño seleccionado y cantidad > 0)
     private val _activateButtonAddLine = MutableStateFlow(false)
     val activateButtonAddLine: StateFlow<Boolean> = _activateButtonAddLine
 
-     var lineasPedido: MutableList<LineaPedidoModel> = emptyList<LineaPedidoModel>().toMutableList()
-    private var tamanoSeleccionado: MutableSet<TamaniosModel> = emptySet<TamaniosModel>().toMutableSet()
-
-    private lateinit var tamanoSelected: TamaniosModel
-
-    private var isTamanoSelected = false
-
+    //valor que recoge el número de unidades elegidas por el usuario
     private val _cantidad = MutableStateFlow(0)
     val cantidad: StateFlow<Int> = _cantidad
 
+    //estado para manejar el total de lineas introducidas para que aparezcan en el
+    //Badge del carrito
     private val _lineasTotal = MutableStateFlow(0)
     val lineasTotal: StateFlow<Int> = _lineasTotal
+
+    // variable que recoge todas las línea de pedido que introduzca el usuario
+    private var lineasPedido: MutableList<LineaPedidoModel> = emptyList<LineaPedidoModel>().toMutableList()
+
+    // variable que recoge el tamaño seleccionado por el cliente,
+    // sobretodo tener en cuenta las pizzas que existen 3 tamaños
+    // este set se agrega al producto seleccionado
+    private var tamanoSeleccionado: MutableSet<TamaniosModel> = emptySet<TamaniosModel>().toMutableSet()
+
+    //valor del tamaño y pvp del producto seleccionado
+    private lateinit var tamanoSelected: TamaniosModel
+
+    //comprobar si el tamaño ha sido seleccionado
+    private var isTamanoSelected = false
+
+    //estado para comprobar las líneas totales del pedido del usuario.
+    private var _listaLineasPedido = MutableStateFlow<List<LineaPedidoModel>>(emptyList())
+    val listaLineasPedido: StateFlow<List<LineaPedidoModel>> = _listaLineasPedido
+
+
     fun onClickInicio(int: Int, navHostController: NavHostController) {
         viewModelScope.launch {
             _index.emit(int)
@@ -68,7 +87,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _index.emit(int)
         }
-        // utils.navigateTo(navHostController, Rutas.MainScreen)
+         utils.navigateToCompra(navHostController)
     }
 
     fun onClickPedidos(int: Int, navHostController: NavHostController) {
@@ -155,18 +174,20 @@ class MainViewModel @Inject constructor(
 
         tamanoSeleccionado.add(tamanoSelected)
 
-        val productoElegido = ProductoModel(
-            producto.id_producto,
-            producto.nombre_producto,
-            producto.imagen_producto,
-            producto.descripcion,
-            producto.categoria,
-            producto.ingredients,
-            tamanoSeleccionado)
+        val productoElegido = ProductoLineaPedidoModel(
+            id_producto = producto.id_producto,
+            nombre_producto = producto.nombre_producto,
+            categoria = producto.categoria.joinToString { it.nombre_categoria },
+            tamano = tamanoSelected.tamano,
+            pvp =  tamanoSelected.pvp
+        )
 
         val linea = LineaPedidoModel(productoElegido, _cantidad.value)
 
         lineasPedido.add(linea)
         _lineasTotal.value = lineasPedido.size
+
+        //para controla el estado para engancharlo a la UI
+       _listaLineasPedido.value = lineasPedido
     }
 }

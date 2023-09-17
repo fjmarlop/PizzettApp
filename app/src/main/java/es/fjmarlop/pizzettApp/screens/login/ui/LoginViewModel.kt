@@ -167,4 +167,9 @@ class LoginViewModel @Inject constructor(
         utils.navigateToTermsOfUses(navController)
     }
 
+    fun resetView() {
+        _userEmail.value = ""
+        _isRecoveryEnable.value = false
+    }
+
 }

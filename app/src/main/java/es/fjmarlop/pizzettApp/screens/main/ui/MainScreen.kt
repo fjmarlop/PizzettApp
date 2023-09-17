@@ -21,7 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.filled.Person
@@ -124,7 +123,12 @@ fun VistaHome(
         Carrusel(productoViewModel)
         Spacer(modifier = Modifier.size(24.dp))
 
-        ProductList(list = list, title = categoria, mainViewModel = mainViewModel, activar = activateButtonAddLine)
+        ProductList(
+            list = list,
+            title = categoria,
+            mainViewModel = mainViewModel,
+            activar = activateButtonAddLine
+        )
 
     }
 
@@ -327,7 +331,12 @@ fun BottomBar(
 }
 
 @Composable
-fun ProductList(list: List<ProductoModel>, title: String, mainViewModel: MainViewModel, activar: Boolean) {
+fun ProductList(
+    list: List<ProductoModel>,
+    title: String,
+    mainViewModel: MainViewModel,
+    activar: Boolean
+) {
     TitleCarrusel(string = title)
     DividerMain()
     LazyColumn() {
@@ -340,16 +349,26 @@ fun ProductList(list: List<ProductoModel>, title: String, mainViewModel: MainVie
 
 @Composable
 fun ProductItem(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boolean) {
+
     Spacer(modifier = Modifier.size(12.dp))
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        ITemBody(producto = producto, mainViewModel = mainViewModel, activar = activar, modifier = Modifier.weight(1f))
-        Icon(imageVector = Icons.Default.Android, contentDescription = null)
+        ITemBody(
+            producto = producto,
+            mainViewModel = mainViewModel,
+            activar = activar,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ITemBody(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boolean, modifier: Modifier) {
+fun ITemBody(
+    producto: ProductoModel,
+    mainViewModel: MainViewModel,
+    activar: Boolean,
+    modifier: Modifier
+) {
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by remember { mutableStateOf(false) }
@@ -389,7 +408,8 @@ fun ITemBody(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boo
             onDismiss = { isSheetOpen = false },
             producto = producto,
             mainViewModel = mainViewModel,
-            activar = activar)
+            activar = activar
+        )
     }
 }
 
@@ -407,7 +427,7 @@ fun ItemSheet(
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         dragHandle = { false }) {
         Box() {
-            LaunchedEffect(true ){
+            LaunchedEffect(true) {
                 mainViewModel.resetValues()
             }
             Column {
@@ -500,7 +520,7 @@ fun SheetText(producto: ProductoModel) {
 }
 
 @Composable
-fun SheetTamanoPvp(producto: ProductoModel,mainViewModel: MainViewModel) {
+fun SheetTamanoPvp(producto: ProductoModel, mainViewModel: MainViewModel) {
 
     var tamanoSelected by remember { mutableIntStateOf(0) }
 

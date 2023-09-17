@@ -88,4 +88,8 @@ class Utils @Inject constructor(
     fun navigateToAddress(navController: NavHostController){
         navController.navigate(Rutas.Address.ruta)
     }
+
+    fun navigateToCompra(navController: NavHostController){
+        navController.navigate(Rutas.Compra.ruta)
+    }
 }
