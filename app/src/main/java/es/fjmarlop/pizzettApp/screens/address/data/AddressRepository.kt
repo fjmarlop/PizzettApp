@@ -1,7 +1,7 @@
 package es.fjmarlop.pizzettApp.screens.address.data
 
-import es.fjmarlop.pizzettApp.core.roomDatabase.dao.AddressDao
-import es.fjmarlop.pizzettApp.entities.roomEntities.AddressEntity
+import es.fjmarlop.pizzettApp.core.roomDB.dao.AddressDao
+import es.fjmarlop.pizzettApp.core.roomDB.entities.AddressEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton

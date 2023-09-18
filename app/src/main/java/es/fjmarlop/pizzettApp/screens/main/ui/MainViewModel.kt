@@ -11,11 +11,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.models.databaseModels.LineaPedidoModel
-import es.fjmarlop.pizzettApp.models.databaseModels.ProductoLineaPedidoModel
-import es.fjmarlop.pizzettApp.models.databaseModels.ProductoModel
-import es.fjmarlop.pizzettApp.models.databaseModels.TamaniosModel
-import es.fjmarlop.pizzettApp.models.roomModels.UserModel
+import es.fjmarlop.pizzettApp.core.retrofit.models.LineaPedidoModel
+import es.fjmarlop.pizzettApp.core.retrofit.models.ProductoLineaPedidoModel
+import es.fjmarlop.pizzettApp.core.retrofit.models.ProductoModel
+import es.fjmarlop.pizzettApp.core.retrofit.models.TamaniosModel
+import es.fjmarlop.pizzettApp.core.roomDB.models.UserModel
 import es.fjmarlop.pizzettApp.screens.main.domain.MainDomainService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

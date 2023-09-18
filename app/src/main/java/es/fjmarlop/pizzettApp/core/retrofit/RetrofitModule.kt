@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import es.fjmarlop.pizzettApp.core.retrofit.dao.ProductoDao
+import es.fjmarlop.pizzettApp.core.retrofit.apiServices.ProductoApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -18,7 +18,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RetrofitModule {
+object RetrofitModule {
 
     private val baseUrl = "http://192.168.0.171:8080/"      // Win
     //private val baseUrl = "http://192.168.0.26:8080/"     // Mac
@@ -34,8 +34,8 @@ class RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideProductoDao(retrofit: Retrofit): ProductoDao {
-        return retrofit.create(ProductoDao::class.java)
+    fun provideProductoDao(retrofit: Retrofit): ProductoApi {
+        return retrofit.create(ProductoApi::class.java)
     }
 
 

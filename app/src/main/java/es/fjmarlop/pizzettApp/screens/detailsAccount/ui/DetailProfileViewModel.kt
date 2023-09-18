@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.models.roomModels.UserModel
+import es.fjmarlop.pizzettApp.core.roomDB.models.UserModel
 import es.fjmarlop.pizzettApp.screens.detailsAccount.domain.DetailsProfileDomainService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

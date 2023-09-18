@@ -1,11 +1,11 @@
-package es.fjmarlop.pizzettApp.core.roomDatabase.dao
+package es.fjmarlop.pizzettApp.core.roomDB.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import es.fjmarlop.pizzettApp.entities.roomEntities.AddressEntity
+import es.fjmarlop.pizzettApp.core.roomDB.entities.AddressEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

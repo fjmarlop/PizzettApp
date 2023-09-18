@@ -1,6 +1,7 @@
-package es.fjmarlop.pizzettApp.core.retrofit.dao
+package es.fjmarlop.pizzettApp.core.retrofit.apiServices
 
-import es.fjmarlop.pizzettApp.models.databaseModels.ProductoModel
+import es.fjmarlop.pizzettApp.core.retrofit.models.ProductoModel
+import es.fjmarlop.pizzettApp.core.retrofit.responses.ProductoResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -15,8 +16,12 @@ import retrofit2.http.Path
  * en la aplicación.
  *
  **/
-interface ProductoDao {
+interface ProductoApi {
 
     @GET("/pizzettApp/{cat}")
     suspend fun getProductosPorCategoria(@Header("Authorization") authHeader: String, @Path("cat") cat: String): List<ProductoModel>
+
+    @GET("/pizzettApp/productos")
+    suspend fun getAllProducts():List<ProductoResponse>
+
 }

@@ -9,9 +9,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import es.fjmarlop.pizzettApp.core.roomDatabase.dao.AddressDao
-import es.fjmarlop.pizzettApp.core.roomDatabase.PizzettAppDB
-import es.fjmarlop.pizzettApp.core.roomDatabase.dao.UserDao
+import es.fjmarlop.pizzettApp.core.roomDB.PizzettAppDB
+import es.fjmarlop.pizzettApp.core.roomDB.dao.AddressDao
+import es.fjmarlop.pizzettApp.core.roomDB.dao.ProductDao
+import es.fjmarlop.pizzettApp.core.roomDB.dao.UserDao
 import javax.inject.Singleton
 
 @HiltAndroidApp
@@ -41,6 +42,11 @@ object DataBaseRoomModule{
     @Provides
     fun providesAddressDao(pizzettAppDB: PizzettAppDB): AddressDao {
         return pizzettAppDB.addressDao()
+    }
+
+    @Provides
+    fun providesProductDao(pizzettAppDB: PizzettAppDB): ProductDao{
+        return pizzettAppDB.productDao()
     }
 
     @Provides

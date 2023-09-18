@@ -1,6 +1,6 @@
-package es.fjmarlop.pizzettApp.models.roomModels
+package es.fjmarlop.pizzettApp.core.roomDB.models
 
-import es.fjmarlop.pizzettApp.entities.roomEntities.AddressEntity
+import es.fjmarlop.pizzettApp.core.roomDB.entities.AddressEntity
 
 data class AddressModel(
     val id: Int,

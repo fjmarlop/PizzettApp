@@ -1,6 +1,6 @@
 package es.fjmarlop.pizzettApp.screens.main.domain
 
-import es.fjmarlop.pizzettApp.models.databaseModels.ProductoModel
+import es.fjmarlop.pizzettApp.core.retrofit.models.ProductoModel
 import es.fjmarlop.pizzettApp.screens.main.data.ProductoRepository
 import javax.inject.Inject
 

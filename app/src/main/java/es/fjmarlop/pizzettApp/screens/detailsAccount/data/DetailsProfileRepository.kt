@@ -1,7 +1,7 @@
 package es.fjmarlop.pizzettApp.screens.detailsAccount.data
 
-import es.fjmarlop.pizzettApp.core.roomDatabase.dao.UserDao
-import es.fjmarlop.pizzettApp.entities.roomEntities.UserEntity
+import es.fjmarlop.pizzettApp.core.roomDB.dao.UserDao
+import es.fjmarlop.pizzettApp.core.roomDB.entities.UserEntity
 import javax.inject.Inject
 import javax.inject.Singleton
 

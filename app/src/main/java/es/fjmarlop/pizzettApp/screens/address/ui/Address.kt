@@ -52,7 +52,7 @@ import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import es.fjmarlop.pizzeta.R
-import es.fjmarlop.pizzettApp.models.roomModels.AddressModel
+import es.fjmarlop.pizzettApp.core.roomDB.models.AddressModel
 
 @Composable
 fun AddressScreen(addressViewModel: AddressViewModel, navHostController: NavHostController) {

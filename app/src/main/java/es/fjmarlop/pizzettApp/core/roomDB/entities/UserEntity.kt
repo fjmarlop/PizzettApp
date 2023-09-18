@@ -1,10 +1,10 @@
-package es.fjmarlop.pizzettApp.entities.roomEntities
+package es.fjmarlop.pizzettApp.core.roomDB.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import es.fjmarlop.pizzettApp.models.roomModels.UserModel
+import es.fjmarlop.pizzettApp.core.roomDB.models.UserModel
 
 @Entity(tableName = "user_table", indices = [Index(value = ["email"] ,unique = true)])
 data class UserEntity(

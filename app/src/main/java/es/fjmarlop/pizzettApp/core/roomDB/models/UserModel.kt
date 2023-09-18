@@ -1,6 +1,6 @@
-package es.fjmarlop.pizzettApp.models.roomModels
+package es.fjmarlop.pizzettApp.core.roomDB.models
 
-import es.fjmarlop.pizzettApp.entities.roomEntities.UserEntity
+import es.fjmarlop.pizzettApp.core.roomDB.entities.UserEntity
 
 data class UserModel(val email: String, val name: String, val phone: String)
 

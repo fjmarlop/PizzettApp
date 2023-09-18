@@ -1,10 +1,10 @@
-package es.fjmarlop.pizzettApp.core.roomDatabase.dao
+package es.fjmarlop.pizzettApp.core.roomDB.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import es.fjmarlop.pizzettApp.entities.roomEntities.UserEntity
+import es.fjmarlop.pizzettApp.core.roomDB.entities.UserEntity
 
 @Dao
 interface UserDao {

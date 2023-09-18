@@ -1,7 +1,7 @@
 package es.fjmarlop.pizzettApp.screens.profile.domain
 
-import es.fjmarlop.pizzettApp.entities.roomEntities.toUserModel
-import es.fjmarlop.pizzettApp.models.roomModels.UserModel
+import es.fjmarlop.pizzettApp.core.roomDB.entities.toUserModel
+import es.fjmarlop.pizzettApp.core.roomDB.models.UserModel
 import es.fjmarlop.pizzettApp.screens.profile.data.ProfileRepository
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
 package es.fjmarlop.pizzettApp.screens.address.domain
 
-import es.fjmarlop.pizzettApp.models.roomModels.AddressModel
-import es.fjmarlop.pizzettApp.models.roomModels.toAddressEntity
+import es.fjmarlop.pizzettApp.core.roomDB.models.AddressModel
+import es.fjmarlop.pizzettApp.core.roomDB.models.toAddressEntity
 import es.fjmarlop.pizzettApp.screens.address.data.AddressRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

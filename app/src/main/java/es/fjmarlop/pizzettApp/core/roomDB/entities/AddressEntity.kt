@@ -1,10 +1,10 @@
-package es.fjmarlop.pizzettApp.entities.roomEntities
+package es.fjmarlop.pizzettApp.core.roomDB.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import es.fjmarlop.pizzettApp.models.roomModels.AddressModel
+import es.fjmarlop.pizzettApp.core.roomDB.models.AddressModel
 
 @Entity(tableName = "address_table", indices = [Index(value = ["name"], unique = true)])
 data class AddressEntity(
