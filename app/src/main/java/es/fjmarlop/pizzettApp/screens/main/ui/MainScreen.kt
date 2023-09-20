@@ -35,6 +35,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -101,10 +102,13 @@ fun VistaHome(
     val categoria by productoViewModel.categoria.collectAsState()
     val list by productoViewModel.productsList.collectAsState()
     val activateButtonAddLine by mainViewModel.activateButtonAddLine.collectAsState()
+    val recomendados by productoViewModel.productsListForRandom.collectAsState()
+    val showRecomendados by productoViewModel.showRecomendados.collectAsState()
 
     LaunchedEffect(true) {
         delay(500)
         mainViewModel.getUser()
+        productoViewModel.getProductosParaRecomendados()
     }
 
 
@@ -130,6 +134,7 @@ fun VistaHome(
             activar = activateButtonAddLine
         )
 
+        RecomendadosList(show = showRecomendados, list = recomendados)
     }
 
 
@@ -328,6 +333,72 @@ fun BottomBar(
             )
         }, label = { Text(text = "Cuenta") })
     }
+}
+
+@Composable
+fun RecomendadosList(show: Boolean, list: List<ProductoModel>) {
+
+    if (show) {
+        LazyColumn {
+            items(list) { producto -> RecomendadoItem(producto = producto) }
+        }
+    }
+}
+
+@Composable
+fun RecomendadoItem(producto: ProductoModel) {
+
+    val img = rememberAsyncImagePainter(producto.imagen_producto)
+    val ing = producto.ingredients.sortedBy { it.id }.joinToString(", ") { it.ingredientName }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+       )
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = img, contentDescription = null, modifier = Modifier
+                    .width(120.dp)
+                    .height(120.dp)
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                contentScale = ContentScale.Fit
+            )
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = producto.nombre_producto,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                if (producto.categoria.joinToString { it.nombre_categoria }.contains("Pizzas")) {
+                    Text(
+                        text = producto.descripcion + ing,
+                        fontSize = 10.sp,
+                        lineHeight = 12.sp,
+                        textAlign = TextAlign.Justify
+                    )
+                } else {
+                    Text(
+                        text = producto.descripcion,
+                        fontSize = 10.sp,
+                        lineHeight = 12.sp,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+            }
+        }
+    }
+    Spacer(modifier = Modifier.size(8.dp))
 }
 
 @Composable

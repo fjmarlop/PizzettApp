@@ -24,4 +24,7 @@ interface ProductoApi {
     @GET("/pizzettApp/productos")
     suspend fun getAllProducts():List<ProductoResponse>
 
+    @GET("/pizzettApp/recomendados")
+    suspend fun getProductosParaRecomendados(@Header("Authorization") authHeader: String):List<ProductoResponse>
+
 }

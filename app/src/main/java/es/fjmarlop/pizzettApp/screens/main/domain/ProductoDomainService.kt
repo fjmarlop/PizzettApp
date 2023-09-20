@@ -6,9 +6,12 @@ import javax.inject.Inject
 
 class ProductoDomainService @Inject constructor(private val productoRepository: ProductoRepository) {
 
-
     suspend fun getProductosPorCategoria(cat: String): List<ProductoModel>{
-        return productoRepository.getProductosPorCategoria(cat)
+        return productoRepository.getProductosPorCategoria(cat) ?: emptyList()
+    }
+
+    suspend fun getProductosParaRecomendados(): List<ProductoModel>{
+        return productoRepository.getProductosParaRecomendados() ?: emptyList()
     }
 
 }

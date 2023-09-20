@@ -1,7 +1,9 @@
 package es.fjmarlop.pizzettApp.core.retrofit.responses
 
 import com.google.gson.annotations.SerializedName
-import es.fjmarlop.pizzettApp.core.retrofit.models.NewProductoModel
+import es.fjmarlop.pizzettApp.core.retrofit.models.CategoriaModel
+import es.fjmarlop.pizzettApp.core.retrofit.models.IngredientsModel
+import es.fjmarlop.pizzettApp.core.retrofit.models.ProductoModel
 import es.fjmarlop.pizzettApp.core.retrofit.models.TamaniosModel
 
 data class ProductoResponse(
@@ -19,16 +21,18 @@ data class ProductoResponse(
     @SerializedName("ingredients") val ingredients: Set<IngredientsResponse>,
 
     @SerializedName("tamanios") val tamanios: Set<TamaniosResponse>
-) {
-    fun toModel(): NewProductoModel {
-        return NewProductoModel(
+)
+{
+    fun toModel():ProductoModel {
+        return ProductoModel(
             id_producto = id_producto,
             nombre_producto = nombre_producto,
             imagen_producto = imagen_producto,
             descripcion = descripcion,
-            categoria = categoria.map { it.nombre_categoria }.toString(),
-            ingredients = ingredients.map { it.ingredientName },
-            tamanios = tamanios.map { TamaniosModel(id = it.id, tamano = it.tamano, pvp = it.pvp) }
+            categoria = categoria.map { CategoriaModel(id_categoria = it.id_categoria, nombre_categoria = it.nombre_categoria) }.toSet(),
+            ingredients = ingredients.map { IngredientsModel(id = it.id, ingredientName = it.ingredientName) }.toSet(),
+            tamanios = tamanios.map { TamaniosModel(id = it.id, tamano = it.tamano, pvp = it.pvp) }.toSet()
+
         )
     }
 
