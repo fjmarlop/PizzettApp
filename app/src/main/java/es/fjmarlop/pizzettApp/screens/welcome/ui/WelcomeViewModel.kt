@@ -22,10 +22,5 @@ class WelcomeViewModel @Inject constructor(
         }
     }
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            welcomeDomainService.getRecomendados()
-        }
-    }
 
 }

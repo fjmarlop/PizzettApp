@@ -18,13 +18,15 @@ import retrofit2.http.Path
  **/
 interface ProductoApi {
 
-    @GET("/pizzettApp/{cat}")
-    suspend fun getProductosPorCategoria(@Header("Authorization") authHeader: String, @Path("cat") cat: String): List<ProductoModel>
+   @GET("/pizzettApp/{cat}")
+   suspend fun getProductosPorCategoria(@Header("Authorization") authHeader: String, @Path("cat") cat: String): List<ProductoModel>
+
 
     @GET("/pizzettApp/productos")
     suspend fun getAllProducts():List<ProductoResponse>
 
     @GET("/pizzettApp/recomendados")
     suspend fun getProductosParaRecomendados(@Header("Authorization") authHeader: String):List<ProductoResponse>
+
 
 }

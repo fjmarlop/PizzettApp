@@ -21,7 +21,7 @@ class Utils @Inject constructor(
      * @return Token en formato String
      *
      * Este método consigue el tokenId del usuario de Firebase
-     * para autentificar el token con el backEnd.
+     * para autentificar el token con la API.
      *
      * */
     suspend fun getToken(): String {

@@ -31,6 +31,7 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -109,6 +110,7 @@ fun VistaHome(
     LaunchedEffect(true) {
         delay(500)
         mainViewModel.getUser()
+        delay(2000)
         productoViewModel.getProductosParaRecomendados()
     }
 
@@ -134,6 +136,7 @@ fun VistaHome(
             mainViewModel = mainViewModel,
             activar = activateButtonAddLine
         )
+        if (recomendados.isEmpty()) CircularProgressIndicator()
 
         RecomendadosList(
             show = showRecomendados,
@@ -530,11 +533,11 @@ fun ItemSheet(
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        dragHandle = {  }) {
+        dragHandle = { }) {
 
-            LaunchedEffect(true) {
-                mainViewModel.resetValues()
-            }
+        LaunchedEffect(true) {
+            mainViewModel.resetValues()
+        }
         Box(Modifier.fillMaxSize()) {
             Column {
                 SheetImagen(producto = producto)

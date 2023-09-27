@@ -35,6 +35,7 @@ class ProductoViewModel @Inject constructor(
 
 
     fun getProductosParaRecomendados() {
+
         viewModelScope.launch {
             val list: List<ProductoModel>
             val listRandom = mutableSetOf<ProductoModel>()
