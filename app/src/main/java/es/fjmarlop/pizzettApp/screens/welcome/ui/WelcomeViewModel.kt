@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WelcomeViewModel @Inject constructor(private val utils: Utils, private val welcomeDomainService: WelcomeDomainService): ViewModel() {
+class WelcomeViewModel @Inject constructor(
+    private val utils: Utils, private val welcomeDomainService: WelcomeDomainService): ViewModel() {
 
 
     fun goToLoginScreen(navHostController: NavHostController) {
@@ -21,5 +22,10 @@ class WelcomeViewModel @Inject constructor(private val utils: Utils, private val
         }
     }
 
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            welcomeDomainService.getRecomendados()
+        }
+    }
 
 }

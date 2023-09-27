@@ -19,6 +19,10 @@ class CompraViewModel @Inject constructor(private val utils: Utils): ViewModel()
         utils.navigateToDetailsProfile(navHostController)
     }
 
+    fun msg(msg: String) {
+        utils.mensajeToast(msg)
+    }
+
 
     private val _tipoPedido = MutableStateFlow(false)
     val tipoPedido: StateFlow<Boolean> = _tipoPedido

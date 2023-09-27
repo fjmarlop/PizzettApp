@@ -39,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -116,7 +117,7 @@ fun VistaHome(
 
         user?.let {
             TextWelcome(
-                nombre = if (it.name.isNullOrEmpty()) mainViewModel.obtenerUsername(it.email) else mainViewModel.obtenerUsername(
+                nombre = if (it.name.isEmpty()) mainViewModel.obtenerUsername(it.email) else mainViewModel.obtenerUsername(
                     it.name
                 )
             )
@@ -134,7 +135,12 @@ fun VistaHome(
             activar = activateButtonAddLine
         )
 
-        RecomendadosList(show = showRecomendados, list = recomendados)
+        RecomendadosList(
+            show = showRecomendados,
+            list = recomendados,
+            mainViewModel,
+            activateButtonAddLine
+        )
     }
 
 
@@ -292,20 +298,26 @@ fun BottomBar(
     cantidadLineas: Int
 ) {
 
-    NavigationBar() {
-        NavigationBarItem(selected = index == 0, onClick = { onClickInicio() }, icon = {
+    NavigationBar(containerColor = Color.Transparent) {
+        NavigationBarItem(colors = NavigationBarItemDefaults.colors(
+            indicatorColor = MaterialTheme.colorScheme.inverseOnSurface
+        ), selected = index == 0, onClick = { onClickInicio() }, icon = {
             Icon(
                 imageVector = Icons.Default.Home,
                 contentDescription = "Inicio"
             )
         }, label = { Text(text = "Inicio") })
-        NavigationBarItem(selected = index == 1, onClick = { onClickOfertas() }, icon = {
+        NavigationBarItem(colors = NavigationBarItemDefaults.colors(
+            indicatorColor = MaterialTheme.colorScheme.inverseOnSurface
+        ), selected = index == 1, onClick = { onClickOfertas() }, icon = {
             Icon(
                 imageVector = Icons.Default.Percent,
                 contentDescription = "Ofertas"
             )
         }, label = { Text(text = "Ofertas") })
-        NavigationBarItem(selected = index == 2, onClick = { onClickCarrito() }, icon = {
+        NavigationBarItem(colors = NavigationBarItemDefaults.colors(
+            indicatorColor = MaterialTheme.colorScheme.inverseOnSurface
+        ), selected = index == 2, onClick = { onClickCarrito() }, icon = {
 
             BadgedBox(
                 badge = {
@@ -320,13 +332,17 @@ fun BottomBar(
             }
 
         }, label = { Text(text = "Compra") })
-        NavigationBarItem(selected = index == 3, onClick = { onClickMisPedidos() }, icon = {
+        NavigationBarItem(colors = NavigationBarItemDefaults.colors(
+            indicatorColor = MaterialTheme.colorScheme.inverseOnSurface
+        ), selected = index == 3, onClick = { onClickMisPedidos() }, icon = {
             Icon(
                 imageVector = Icons.Default.Wysiwyg,
                 contentDescription = "Mis Pedidos"
             )
         }, label = { Text(text = "Pedidos") })
-        NavigationBarItem(selected = index == 4, onClick = { onClickCuenta() }, icon = {
+        NavigationBarItem(colors = NavigationBarItemDefaults.colors(
+            indicatorColor = MaterialTheme.colorScheme.inverseOnSurface
+        ), selected = index == 4, onClick = { onClickCuenta() }, icon = {
             Icon(
                 imageVector = Icons.Default.Person,
                 contentDescription = "Cuenta"
@@ -336,29 +352,38 @@ fun BottomBar(
 }
 
 @Composable
-fun RecomendadosList(show: Boolean, list: List<ProductoModel>) {
+fun RecomendadosList(
+    show: Boolean,
+    list: List<ProductoModel>,
+    mainViewModel: MainViewModel,
+    activar: Boolean
+) {
 
     if (show) {
         LazyColumn {
-            items(list) { producto -> RecomendadoItem(producto = producto) }
+            items(list) { producto -> RecomendadoItem(producto = producto, mainViewModel, activar) }
         }
     }
 }
 
 @Composable
-fun RecomendadoItem(producto: ProductoModel) {
+fun RecomendadoItem(producto: ProductoModel, mainViewModel: MainViewModel, activar: Boolean) {
 
     val img = rememberAsyncImagePainter(producto.imagen_producto)
     val ing = producto.ingredients.sortedBy { it.id }.joinToString(", ") { it.ingredientName }
+    var isSheetOpen by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 8.dp)
+            .clickable {
+                isSheetOpen = true
+            },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-       )
+            containerColor = MaterialTheme.colorScheme.background
+        )
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
@@ -399,6 +424,15 @@ fun RecomendadoItem(producto: ProductoModel) {
         }
     }
     Spacer(modifier = Modifier.size(8.dp))
+
+    if (isSheetOpen) {
+        ItemSheet(
+            onDismiss = { isSheetOpen = false },
+            producto = producto,
+            mainViewModel = mainViewModel,
+            activar = activar
+        )
+    }
 }
 
 @Composable
@@ -410,7 +444,7 @@ fun ProductList(
 ) {
     TitleCarrusel(string = title)
     DividerMain()
-    LazyColumn() {
+    LazyColumn {
         items(list) { producto ->
             ProductItem(producto = producto, mainViewModel = mainViewModel, activar = activar)
         }
@@ -496,11 +530,12 @@ fun ItemSheet(
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        dragHandle = { false }) {
-        Box() {
+        dragHandle = {  }) {
+
             LaunchedEffect(true) {
                 mainViewModel.resetValues()
             }
+        Box(Modifier.fillMaxSize()) {
             Column {
                 SheetImagen(producto = producto)
                 Spacer(modifier = Modifier.size(18.dp))
@@ -538,8 +573,8 @@ fun SheetImagen(producto: ProductoModel) {
         Image(
             painter = img,
             contentDescription = null, modifier = Modifier
-                .height(220.dp)
-                .fillMaxWidth(), contentScale = ContentScale.FillWidth
+                .height(300.dp)
+                .fillMaxWidth(), contentScale = ContentScale.Crop
         )
     } else {
         Image(
