@@ -165,7 +165,7 @@ fun TextWelcome(nombre: String) {
 
 @Composable
 fun DividerMain() {
-    Divider(Modifier.padding(vertical = 6.dp), color = Color(0xFFBF0030), thickness = 2.dp)
+    Divider(Modifier.padding(vertical = 6.dp), color = MaterialTheme.colorScheme.primary, thickness = 2.dp)
 }
 
 @Composable
