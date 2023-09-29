@@ -16,6 +16,8 @@ interface AddressDao {
 
     @Query("Select * from address_table where email= :email")
     fun getAddress(email: String): Flow<List<AddressEntity>>
+    @Query("Select * from address_table where email= :email")
+    fun getListAddress(email: String):List<AddressEntity>
 
     @Delete
     suspend fun deleteAddress(addressEntity: AddressEntity)

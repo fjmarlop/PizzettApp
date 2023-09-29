@@ -108,8 +108,6 @@ fun VistaHome(
     LaunchedEffect(true) {
         delay(500)
         mainViewModel.getUser()
-       // delay(1000)
-       // mainViewModel.getProductosParaRecomendados()
     }
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -131,34 +129,35 @@ fun VistaHome(
 
         DividerMain()
 
-            ProductList(
-                list = list,
-                mainViewModel = mainViewModel,
-                activar = activateButtonAddLine
-            )
+        ProductList(
+            list = list,
+            mainViewModel = mainViewModel,
+            activar = activateButtonAddLine
+        )
 
-        if (recomendados.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
         /**
          * Cuando iniciamos sesión por primera vez, la creación de la vista es mas rápida
          * que la petición a la API por lo tanto la pantalla se inicia con la lista de recomendados vacía.
          * Para evitar que la vista aparezca en blanco, hago la petición a la API
          * mas tarde para intentar retardar la petición.
          * */
-        LaunchedEffect(true) {
-                delay(1000)
-                mainViewModel.getProductosParaRecomendados()
-        }
 
-        RecomendadosList(
-            show = showRecomendados,
-            list = recomendados,
-            mainViewModel,
-            activateButtonAddLine
-        )
+        if (recomendados.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+            LaunchedEffect(true) {
+                delay(1500)
+                mainViewModel.getProductosParaRecomendados()
+            }
+        } else {
+            RecomendadosList(
+                show = showRecomendados,
+                list = recomendados,
+                mainViewModel,
+                activateButtonAddLine
+            )
+        }
     }
 }
 
