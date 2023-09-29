@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -21,12 +22,12 @@ fun WelcomeScreen(welcomeViewModel: WelcomeViewModel, navHostController: NavHost
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Image(
-            painter = painterResource(id = R.drawable.fondo_bienvenida),
+            painter = painterResource(id = R.drawable.splash),
             contentDescription = "BackGround App",
             Modifier.fillMaxSize(),
             contentScale = ContentScale.FillHeight
         )
-        CircularProgressIndicator(modifier = Modifier.padding(32.dp))
+        CircularProgressIndicator(modifier = Modifier.padding(32.dp), color= Color.White)
         LaunchedEffect(key1 = true) {
             delay(1500)
             welcomeViewModel.goToLoginScreen(navHostController)

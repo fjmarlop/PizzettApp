@@ -11,6 +11,9 @@ class CacheInterceptor @Inject constructor(): Interceptor{
      * En la clase CacheInterceptor definimos en el response los criterios de cache.
      * Las cabeceras de cache de la petición que vamos a realizar.
      *
+     * 28/09/23
+     * De momento tanto CacheInterceptor y ForceCacheInterceptor no funcionan correctamente
+     * o relentizan la conexión con la API. ESTAN DESACTIVADOS ACTUALMENTE.
      * **/
 
     override fun intercept(chain: Interceptor.Chain): Response {

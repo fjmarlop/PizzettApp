@@ -157,6 +157,8 @@ fun TipoPedido(compraViewModel: CompraViewModel, selected: Boolean) {
 @Composable
 fun ListaPedido(listaPedido: List<LineaPedidoModel>) {
 
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -169,6 +171,7 @@ fun ListaPedido(listaPedido: List<LineaPedidoModel>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
+
             ) {
                 Column {
                     Text(
@@ -216,6 +219,16 @@ fun ListaPedido(listaPedido: List<LineaPedidoModel>) {
                                     modifier = Modifier.padding(vertical = 2.dp)
                                 )
                             }
+                            Row {
+                                Text(
+                                    text = "Gastos de envío: ",
+                                    modifier = Modifier.padding(vertical = 2.dp)
+                                )
+                                Text(
+                                    text = getGastosEnvio(1.5).toString() + " €",
+                                    modifier = Modifier.padding(vertical = 2.dp)
+                                )
+                            }
                             Row() {
                                 Text(
                                     text = "Total:   ",
@@ -241,11 +254,12 @@ fun ListaPedido(listaPedido: List<LineaPedidoModel>) {
         }
     }
 }
+private fun getGastosEnvio(gastos:Double) = gastos
 
 private fun getTotal(listaPedido: List<LineaPedidoModel>): Double {
     var total = 0.0
     listaPedido.forEach { ped -> total += (ped.cantidad * ped.producto.pvp) }
-    return (total * 100.0).roundToInt() / 100.0
+    return ((total + getGastosEnvio(1.5)) * 100.0).roundToInt() / 100.0
 }
 
 private fun getIva(listaPedido: List<LineaPedidoModel>): Double {
@@ -255,7 +269,7 @@ private fun getIva(listaPedido: List<LineaPedidoModel>): Double {
 
 private fun getSubTotal(listaPedido: List<LineaPedidoModel>): Double {
     val sub = getTotal(listaPedido) - getIva(listaPedido)
-    return (sub * 100.0).roundToInt() / 100.0
+    return (sub  * 100.0).roundToInt()  / 100.0
 }
 
 @Composable

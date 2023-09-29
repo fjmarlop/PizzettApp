@@ -20,7 +20,6 @@ import es.fjmarlop.pizzettApp.screens.login.ui.SignIn
 import es.fjmarlop.pizzettApp.screens.login.ui.SignInEmail
 import es.fjmarlop.pizzettApp.screens.main.ui.MainScreen
 import es.fjmarlop.pizzettApp.screens.main.ui.MainViewModel
-import es.fjmarlop.pizzettApp.screens.main.ui.ProductoViewModel
 import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasScreen
 import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasViewModel
 import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileScreen
@@ -48,7 +47,6 @@ fun Navegador(
     ofertasViewModel: OfertasViewModel,
     detailProfileViewModel: DetailProfileViewModel,
     addressViewModel: AddressViewModel,
-    productoViewModel: ProductoViewModel,
     compraViewModel: CompraViewModel
 ) {
 
@@ -88,8 +86,7 @@ fun Navegador(
         composable(Rutas.MainScreen.ruta) {
             MainScreen(
                 mainViewModel = mainViewModel,
-                navHostController = navigationController,
-                productoViewModel = productoViewModel
+                navHostController = navigationController
             )
         }
         composable(Rutas.OfferScreen.ruta) {

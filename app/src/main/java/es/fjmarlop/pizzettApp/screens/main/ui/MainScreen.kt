@@ -78,8 +78,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel,
-    navHostController: NavHostController,
-    productoViewModel: ProductoViewModel
+    navHostController: NavHostController
 ) {
 
     LaunchedEffect(true) {
@@ -88,7 +87,7 @@ fun MainScreen(
     }
 
     MainScafold(
-        content = { VistaHome(mainViewModel, productoViewModel) },
+        content = { VistaHome(mainViewModel) },
         navHostController = navHostController,
         mainViewModel
     )
@@ -96,24 +95,22 @@ fun MainScreen(
 
 @Composable
 fun VistaHome(
-    mainViewModel: MainViewModel,
-    productoViewModel: ProductoViewModel
+    mainViewModel: MainViewModel
 ) {
 
     val user by mainViewModel.user.observeAsState()
-    val categoria by productoViewModel.categoria.collectAsState()
-    val list by productoViewModel.productsList.collectAsState()
+    val categoria by mainViewModel.categoria.collectAsState()
+    val list by mainViewModel.productsList.collectAsState()
     val activateButtonAddLine by mainViewModel.activateButtonAddLine.collectAsState()
-    val recomendados by productoViewModel.productsListForRandom.collectAsState()
-    val showRecomendados by productoViewModel.showRecomendados.collectAsState()
+    val recomendados by mainViewModel.productsListForRandom.collectAsState()
+    val showRecomendados by mainViewModel.showRecomendados.collectAsState()
 
     LaunchedEffect(true) {
         delay(500)
         mainViewModel.getUser()
-        delay(2000)
-        productoViewModel.getProductosParaRecomendados()
+       // delay(1000)
+       // mainViewModel.getProductosParaRecomendados()
     }
-
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
 
@@ -127,16 +124,34 @@ fun VistaHome(
 
         TitleCarrusel(string = "¿Qué te apetece comer hoy?")
         DividerMain()
-        Carrusel(productoViewModel)
-        Spacer(modifier = Modifier.size(24.dp))
+        Carrusel(mainViewModel)
 
-        ProductList(
-            list = list,
-            title = categoria,
-            mainViewModel = mainViewModel,
-            activar = activateButtonAddLine
-        )
-        if (recomendados.isEmpty()) CircularProgressIndicator()
+        Spacer(modifier = Modifier.size(24.dp))
+        TitleCarrusel(string = categoria)
+
+        DividerMain()
+
+            ProductList(
+                list = list,
+                mainViewModel = mainViewModel,
+                activar = activateButtonAddLine
+            )
+
+        if (recomendados.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        /**
+         * Cuando iniciamos sesión por primera vez, la creación de la vista es mas rápida
+         * que la petición a la API por lo tanto la pantalla se inicia con la lista de recomendados vacía.
+         * Para evitar que la vista aparezca en blanco, hago la petición a la API
+         * mas tarde para intentar retardar la petición.
+         * */
+        LaunchedEffect(true) {
+                delay(1000)
+                mainViewModel.getProductosParaRecomendados()
+        }
 
         RecomendadosList(
             show = showRecomendados,
@@ -145,8 +160,6 @@ fun VistaHome(
             activateButtonAddLine
         )
     }
-
-
 }
 
 @Composable
@@ -162,10 +175,13 @@ fun TextWelcome(nombre: String) {
     )
 }
 
-
 @Composable
 fun DividerMain() {
-    Divider(Modifier.padding(vertical = 6.dp), color = MaterialTheme.colorScheme.primary, thickness = 2.dp)
+    Divider(
+        Modifier.padding(vertical = 6.dp),
+        color = MaterialTheme.colorScheme.primary,
+        thickness = 2.dp
+    )
 }
 
 @Composable
@@ -179,7 +195,7 @@ fun TitleCarrusel(string: String) {
 }
 
 @Composable
-fun Carrusel(productoViewModel: ProductoViewModel) {
+fun Carrusel(mainViewModel: MainViewModel) {
     val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
@@ -189,22 +205,22 @@ fun Carrusel(productoViewModel: ProductoViewModel) {
     )
     {
         ItemCarrusel("Ensaladas", imagen = R.drawable.ensalada) {
-            productoViewModel.onClickCategoria("Ensaladas")
+            mainViewModel.onClickCategoria("Ensaladas")
         }
         ItemCarrusel("Pizzas", imagen = R.drawable.pizzas) {
-            productoViewModel.onClickCategoria("Pizzas")
+            mainViewModel.onClickCategoria("Pizzas")
         }
         ItemCarrusel("Pastas", imagen = R.drawable.pastas) {
-            productoViewModel.onClickCategoria("Pastas")
+            mainViewModel.onClickCategoria("Pastas")
         }
         ItemCarrusel("Gratinados", imagen = R.drawable.gratinados) {
-            productoViewModel.onClickCategoria("Gratinados")
+            mainViewModel.onClickCategoria("Gratinados")
         }
         ItemCarrusel("Postres", imagen = R.drawable.postres) {
-            productoViewModel.onClickCategoria("Postres")
+            mainViewModel.onClickCategoria("Postres")
         }
         ItemCarrusel("Bebidas", imagen = R.drawable.bebidas) {
-            productoViewModel.onClickCategoria("Bebidas")
+            mainViewModel.onClickCategoria("Bebidas")
         }
     }
 }
@@ -441,17 +457,16 @@ fun RecomendadoItem(producto: ProductoModel, mainViewModel: MainViewModel, activ
 @Composable
 fun ProductList(
     list: List<ProductoModel>,
-    title: String,
     mainViewModel: MainViewModel,
     activar: Boolean
 ) {
-    TitleCarrusel(string = title)
-    DividerMain()
+
     LazyColumn {
         items(list) { producto ->
             ProductItem(producto = producto, mainViewModel = mainViewModel, activar = activar)
         }
     }
+
 }
 
 
