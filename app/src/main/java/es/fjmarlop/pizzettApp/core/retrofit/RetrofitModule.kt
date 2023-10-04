@@ -22,9 +22,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
-    //private val baseUrl = "http://192.168.0.171:8080/"      // Win localhost
+    private const val baseUrl = "http://192.168.0.171:8080/"      // Win localhost
     //private val baseUrl = "http://192.168.0.26:8080/"     // Mac localhost
-    private val baseUrl = "https://pizzettapp.ew.r.appspot.com"
+    //private val baseUrl = "https://pizzettapp.ew.r.appspot.com"
 
     @Singleton
     @Provides

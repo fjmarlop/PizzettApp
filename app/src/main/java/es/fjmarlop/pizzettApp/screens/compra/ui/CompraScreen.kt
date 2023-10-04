@@ -1,14 +1,22 @@
 package es.fjmarlop.pizzettApp.screens.compra.ui
 
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +28,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DirectionsBike
 import androidx.compose.material.icons.filled.Email
@@ -34,6 +43,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -45,13 +55,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import es.fjmarlop.pizzeta.R
 import es.fjmarlop.pizzettApp.core.retrofit.models.LineaPedidoModel
@@ -87,6 +100,15 @@ fun VistaCompra(
     navHostController: NavHostController
 ) {
 
+    //CONSEGUIR DATOS USER DE ROOM
+    val user by compraViewModel.user.observeAsState()
+
+    //CONSEGUIR LIBRETRA DE DIRECCIONES
+    val direcciones by compraViewModel.listAddress.observeAsState()
+
+    //lISTA DE PEDIDOS
+    val listaPedido by mainViewModel.listaLineasPedido.collectAsState()
+
     var showPedido by remember {
         mutableStateOf(true)
     }
@@ -95,34 +117,26 @@ fun VistaCompra(
         mutableStateOf(false)
     }
 
-    //CONSEGUIR DATOS USER DE ROOM
-    val user by compraViewModel.user.observeAsState()
+    var domicilio by remember {
+        mutableStateOf(true)
+    }
 
-    //CONSEGUIR LIBRETRA DE DIRECCIONES
-    val direcciones by compraViewModel.listAddress.observeAsState()
-
-    // SI SELECTED ES FALSE EL PEDIDO ES DOMICILIO (POR DEFECTO) -- TRUE PARA RECOGIDA
-    val selected by compraViewModel.tipoPedido.collectAsState()
-
-    //lISTA DE PEDIDOS
-    val listaPedido by mainViewModel.listaLineasPedido.collectAsState()
+    var local by remember {
+        mutableStateOf(false)
+    }
 
     Column(
-        modifier = Modifier
+        Modifier
             .fillMaxSize()
-            .padding(horizontal = 24.dp)
+            .padding(12.dp)
     ) {
-        TipoPedido(
-            compraViewModel = compraViewModel, selected = selected, modifier = Modifier
-                .weight(0.5f)
-                .padding(vertical = 12.dp)
-        )
 
         /**
          * Primera parte del pedido del cliente que corresponde con las líneas del pedido.
          * */
+
         if (showPedido) {
-            ListaPedido(listaPedido = listaPedido, Modifier.weight(2.5f))
+            ListaPedido(listaPedido = listaPedido, Modifier.weight(3f))
 
             if (listaPedido.isNotEmpty()) {
                 Box(
@@ -153,21 +167,48 @@ fun VistaCompra(
                 }
             }
         }
-
         /**
          * Segunda parte del pedido del cliente que corresponden a los datos y la forma de entrega.
          * */
 
         if (showTramitarCompra) {
-            Box (modifier = Modifier.weight(1f), contentAlignment = Alignment.TopStart){
-                user?.let {
-                    DatosUsuario(user = it, onClickDetalles = {})
-                }
-                Spacer(modifier = Modifier.size(12.dp))
-                if (!selected){
-                    direcciones?.let { DireccionesUsuario(list = it, onClickAddAddress = {}) }
-                } else {
-                    RecogidaSelected()
+
+            IconButton(onClick = { mainViewModel.onClickCarrito(2, navHostController) }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "volver", tint = MaterialTheme.colorScheme.primary)
+            }
+            Spacer(modifier = Modifier.size(12.dp))
+            TipoPedido(
+                local = local,
+                domicilio = domicilio,
+                modifier = Modifier.fillMaxWidth(),
+                onClickDomicilio = {
+                    local = true
+                    domicilio = false
+                },
+                onClickLocal = {
+                    domicilio = true
+                    local = false
+                })
+
+            LaunchedEffect(true) {
+                compraViewModel.getUser()
+                user?.let { compraViewModel.getListAddress(it.email) }
+            }
+            Spacer(modifier = Modifier.size(12.dp))
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.TopStart) {
+                Column {
+
+                    user?.let {
+                        DatosUsuario(user = it, onClickDetalles = {})
+                    }
+                    Spacer(modifier = Modifier.size(12.dp))
+
+                    if (!local) {
+                        RecogidaSelected()
+                    }
+                    if (!domicilio) {
+                        direcciones?.let { DireccionesUsuario(list = it, onClickAddAddress = {}) }
+                    }
                 }
             }
         }
@@ -176,7 +217,13 @@ fun VistaCompra(
 
 
 @Composable
-fun TipoPedido(compraViewModel: CompraViewModel, selected: Boolean, modifier: Modifier) {
+fun TipoPedido(
+    local: Boolean,
+    domicilio: Boolean,
+    modifier: Modifier,
+    onClickLocal: () -> Unit,
+    onClickDomicilio: () -> Unit
+) {
 
     Row(
         modifier = modifier
@@ -184,34 +231,33 @@ fun TipoPedido(compraViewModel: CompraViewModel, selected: Boolean, modifier: Mo
     ) {
         OutlinedButton(
             onClick = {
-                compraViewModel.onClickTipoPedido(selected)
-                compraViewModel.msg("Has seleccionado envio a domicilio")
+                //RECOGIDA EN LOCAL
+                onClickLocal()
             },
             modifier = Modifier.weight(1f),
-            enabled = selected
+            enabled = local
         ) {
-            Icon(imageVector = Icons.Filled.DirectionsBike, contentDescription = null)
-            Text(text = "A domicilio", modifier = Modifier.padding(horizontal = 8.dp))
+            Icon(imageVector = Icons.Filled.ShoppingBag, contentDescription = null)
+            Text(text = "Recogida", modifier = Modifier.padding(horizontal = 8.dp))
+
         }
         Spacer(modifier = Modifier.width(10.dp))
         OutlinedButton(
             onClick = {
-                compraViewModel.onClickTipoPedido(selected)
-                compraViewModel.msg("Has seleccionado recoger en local")
+                // PEDIDO A DOMICILIO
+                onClickDomicilio()
             },
-            enabled = !selected,
+            enabled = domicilio,
             modifier = Modifier.weight(1f)
         ) {
-            Icon(imageVector = Icons.Filled.ShoppingBag, contentDescription = null)
-            Text(text = "Recogida", modifier = Modifier.padding(horizontal = 8.dp))
+            Icon(imageVector = Icons.Filled.DirectionsBike, contentDescription = null)
+            Text(text = "A domicilio", modifier = Modifier.padding(horizontal = 8.dp))
         }
     }
 }
 
 @Composable
 fun ListaPedido(listaPedido: List<LineaPedidoModel>, modifier: Modifier) {
-
-
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -379,7 +425,7 @@ fun ListaPedidoItem(linea: LineaPedidoModel) {
 
 @Composable
 fun DatosUsuario(user: UserModel, onClickDetalles: () -> Unit) {
-    Column{
+    Column {
         Text(
             text = "Tus datos",
             fontSize = 18.sp,
@@ -436,18 +482,18 @@ fun DatosUsuario(user: UserModel, onClickDetalles: () -> Unit) {
                 modifier = Modifier.padding(end = 8.dp),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )
-        Text(
-            text = user.phone.ifBlank { "Teléfono" },
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    1.dp,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .padding(vertical = 8.dp, horizontal = 12.dp),
-            color = MaterialTheme.colorScheme.outline
-        )
+            Text(
+                text = user.phone.ifBlank { "Teléfono" },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        1.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(vertical = 8.dp, horizontal = 12.dp),
+                color = MaterialTheme.colorScheme.outline
+            )
         }
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -464,20 +510,96 @@ fun DatosUsuario(user: UserModel, onClickDetalles: () -> Unit) {
 }
 
 @Composable
-fun DireccionesUsuario(list: List<AddressModel>, onClickAddAddress: ()-> Unit){
+fun DireccionesUsuario(list: List<AddressModel>, onClickAddAddress: () -> Unit) {
     Column {
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             Text(text = "No tienes guardada ninguna dirección")
             Spacer(modifier = Modifier.size(8.dp))
-            Text(text = "Pulsa aquí para decirnos donde quieres tu pedido", modifier = Modifier.clickable { onClickAddAddress() })
+            Text(
+                text = "Pulsa aquí para decirnos donde quieres tu pedido",
+                modifier = Modifier.clickable { onClickAddAddress() })
+        } else if (list.size == 1) {
+            Text(text = list.map { it.address }.toString())
         } else {
             Text(text = "selecciona tu direccion")
         }
     }
 }
-
+// REFACTORIZAR CUANDO TENGA GANAS
+// PONER LOS DATOS DEL RESTAURANTE APARTE
+// Y HACER UN COMPOSABLE QUE RECIBA CADA TELEFONO COMO PARAMENTRO
 @Composable
-fun RecogidaSelected(){
-    Text(text = "MOSTRAR DATOS DEL RESTAURANTE")
+fun RecogidaSelected() {
+
+    val context = LocalContext.current
+
+    val numFijo = "957434482"
+    val numMovil = "677031515"
+
+    val launcherFijo =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                llamada(numFijo, context)
+            } else {
+                Toast.makeText(context, "Tienes que habilitar los permisos", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    val launcherMovil =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                llamada(numMovil, context)
+            } else {
+                Toast.makeText(context, "Tienes que habilitar los permisos", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+
+        Image(painter = painterResource(id = R.drawable.logo_la_pizzetta), contentDescription = "logo", modifier = Modifier.size(60.dp))
+        Text(text = "Restaurante La Pizzetta", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+        Text(text = "Plaza de Las Tendillas, 5. Córdoba, 14001", fontSize = 18.sp)
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Text(
+                text = "957 434 482",
+                fontSize = 18.sp,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
+                    when (PackageManager.PERMISSION_GRANTED) {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.CALL_PHONE
+                        ) -> {
+                            llamada(numFijo, context)
+                        }
+
+                        else -> launcherFijo.launch(Manifest.permission.CALL_PHONE)
+                    }
+                })
+            Text(text = " -- ")
+            Text(
+                text = "677 031 515",
+                fontSize = 18.sp,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
+                    when (PackageManager.PERMISSION_GRANTED) {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.CALL_PHONE
+                        ) -> {
+                            llamada(numMovil, context)
+                        }
+
+                        else -> launcherMovil.launch(Manifest.permission.CALL_PHONE)
+                    }
+                })
+        }
+    }
 }
+
+private fun llamada(num: String, context: Context) {
+    context.startActivity(Intent(Intent.ACTION_CALL, Uri.parse("tel:$num")))
+}
+
 

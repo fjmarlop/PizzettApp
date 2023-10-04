@@ -46,13 +46,21 @@ class CompraViewModel @Inject constructor(
 
     private val _listAddress = MutableLiveData<List<AddressModel>>()
     val listAddress: LiveData<List<AddressModel>> = _listAddress
-    init {
-        val email = _user.value?.email
+
+
+    fun getUser() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 _user.postValue(domainService.getUser())
-                _listAddress.postValue(email?.let { compraDomainService.getListAddres(it) })
+
             }
         }
+    }
+    fun getListAddress(email:String){
+       viewModelScope.launch {
+           withContext(Dispatchers.IO){
+               _listAddress.postValue(compraDomainService.getListAddres(email))
+           }
+       }
     }
 }
