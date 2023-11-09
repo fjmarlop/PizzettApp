@@ -7,9 +7,11 @@
         android:name="android.hardware.telephony"
         android:required="false" />
 
+    <!-- PERMISOS -->
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <!-- FIN PERMISOS -->
 
     <application
         android:name="es.fjmarlop.pizzettApp.PizzAppliaction"
@@ -22,7 +24,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pizzeta"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">  <!-- Texto en blanco probar seguridad en backEnd -->
+        tools:targetApi="31">
+
+        <!-- Texto en blanco probar seguridad en backEnd
+        android:usesCleartextTraffic="true"
+        -->
+
+        <!-- FACEBOOK -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -33,6 +41,11 @@
             android:value="false"/>
         <meta-data android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
             android:value="false"/>
+        <!-- FIN FACEBOOK -->
+
+        <!-- HORIENTACIÓN SIEMPRE EN VERTICAL
+       android:screenOrientation="portrait"
+       -->
 
         <activity
             android:name="es.fjmarlop.pizzettApp.MainActivity"

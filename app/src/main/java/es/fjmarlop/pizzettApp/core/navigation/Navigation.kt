@@ -4,29 +4,31 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import es.fjmarlop.pizzettApp.screens.address.ui.AddressScreen
-import es.fjmarlop.pizzettApp.screens.address.ui.AddressViewModel
-import es.fjmarlop.pizzettApp.screens.compra.ui.CompraScreen
-import es.fjmarlop.pizzettApp.screens.compra.ui.CompraViewModel
-import es.fjmarlop.pizzettApp.screens.conditions.PrivacyPolices
-import es.fjmarlop.pizzettApp.screens.conditions.TermsOfUses
-import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountScreen
-import es.fjmarlop.pizzettApp.screens.createAccount.ui.CreateAccountViewModel
-import es.fjmarlop.pizzettApp.screens.detailsAccount.ui.DetailProfileViewModel
-import es.fjmarlop.pizzettApp.screens.detailsAccount.ui.DetailsProfileScreen
-import es.fjmarlop.pizzettApp.screens.login.domain.googleLogin.GoogleAuthUiClient
-import es.fjmarlop.pizzettApp.screens.login.ui.LoginViewModel
-import es.fjmarlop.pizzettApp.screens.login.ui.SignIn
-import es.fjmarlop.pizzettApp.screens.login.ui.SignInEmail
-import es.fjmarlop.pizzettApp.screens.main.ui.MainScreen
-import es.fjmarlop.pizzettApp.screens.main.ui.MainViewModel
-import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasScreen
-import es.fjmarlop.pizzettApp.screens.offers.ui.OfertasViewModel
-import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileScreen
-import es.fjmarlop.pizzettApp.screens.profile.ui.ProfileViewModel
-import es.fjmarlop.pizzettApp.screens.recoveryPassword.RecuperarContrasenaScreen
-import es.fjmarlop.pizzettApp.screens.welcome.ui.WelcomeScreen
-import es.fjmarlop.pizzettApp.screens.welcome.ui.WelcomeViewModel
+import es.fjmarlop.pizzettApp.vistas.cliente.address.ui.AddressScreen
+import es.fjmarlop.pizzettApp.vistas.cliente.address.ui.AddressViewModel
+import es.fjmarlop.pizzettApp.vistas.cliente.compra.ui.CompraScreen
+import es.fjmarlop.pizzettApp.vistas.cliente.compra.ui.CompraViewModel
+import es.fjmarlop.pizzettApp.vistas.cliente.conditions.PrivacyPolices
+import es.fjmarlop.pizzettApp.vistas.cliente.conditions.TermsOfUses
+import es.fjmarlop.pizzettApp.vistas.cliente.createAccount.ui.CreateAccountScreen
+import es.fjmarlop.pizzettApp.vistas.cliente.createAccount.ui.CreateAccountViewModel
+import es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.ui.DetailProfileViewModel
+import es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.ui.DetailsProfileScreen
+import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainScreen
+import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainViewModel
+import es.fjmarlop.pizzettApp.vistas.cliente.offers.ui.OfertasScreen
+import es.fjmarlop.pizzettApp.vistas.cliente.offers.ui.OfertasViewModel
+import es.fjmarlop.pizzettApp.vistas.cliente.profile.ui.ProfileScreen
+import es.fjmarlop.pizzettApp.vistas.cliente.profile.ui.ProfileViewModel
+import es.fjmarlop.pizzettApp.vistas.cliente.recoveryPassword.RecuperarContrasenaScreen
+import es.fjmarlop.pizzettApp.vistas.gestion.mainGestion.ui.MainGestionScreen
+import es.fjmarlop.pizzettApp.vistas.gestion.mainGestion.ui.MainGestionViewModel
+import es.fjmarlop.pizzettApp.vistas.login.domain.googleLogin.GoogleAuthUiClient
+import es.fjmarlop.pizzettApp.vistas.login.ui.LoginViewModel
+import es.fjmarlop.pizzettApp.vistas.login.ui.SignIn
+import es.fjmarlop.pizzettApp.vistas.login.ui.SignInEmail
+import es.fjmarlop.pizzettApp.vistas.welcome.ui.WelcomeScreen
+import es.fjmarlop.pizzettApp.vistas.welcome.ui.WelcomeViewModel
 
 /**
  * @author Fco Javier Marmolejo López
@@ -47,7 +49,8 @@ fun Navegador(
     ofertasViewModel: OfertasViewModel,
     detailProfileViewModel: DetailProfileViewModel,
     addressViewModel: AddressViewModel,
-    compraViewModel: CompraViewModel
+    compraViewModel: CompraViewModel,
+    mainGestionViewModel: MainGestionViewModel
 ) {
 
     val navigationController = rememberNavController()
@@ -118,6 +121,9 @@ fun Navegador(
         }
         composable(Rutas.Compra.ruta){
             CompraScreen(mainViewModel = mainViewModel, compraViewModel = compraViewModel, navHostController = navigationController)
+        }
+        composable(Rutas.MainGestion.ruta){
+           MainGestionScreen(mainGestionViewModel, googleAuthUiClient)
         }
 
     }

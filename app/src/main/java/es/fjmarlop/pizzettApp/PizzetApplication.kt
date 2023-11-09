@@ -9,15 +9,18 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import es.fjmarlop.pizzettApp.core.roomDB.PizzettAppDB
-import es.fjmarlop.pizzettApp.core.roomDB.dao.AddressDao
-import es.fjmarlop.pizzettApp.core.roomDB.dao.ProductDao
-import es.fjmarlop.pizzettApp.core.roomDB.dao.UserDao
+import es.fjmarlop.pizzettApp.dataBase.local.roomDB.PizzettAppDB
+import es.fjmarlop.pizzettApp.dataBase.local.roomDB.dao.AddressDao
+import es.fjmarlop.pizzettApp.dataBase.local.roomDB.dao.ProductDao
+import es.fjmarlop.pizzettApp.dataBase.local.roomDB.dao.UserDao
 import javax.inject.Singleton
 
 @HiltAndroidApp
 class PizzAppliaction: Application() { }
 
+/**
+ * Proveer el contexto.
+ * **/
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -26,8 +29,12 @@ object AppModule {
         return application
     }
 }
+/** FIN CONTEXTO **/
 
 
+/**
+ * Proveer la base de datos ROOM.
+ * */
 @Module
 @InstallIn(SingletonComponent::class)
 object DataBaseRoomModule{
@@ -45,16 +52,16 @@ object DataBaseRoomModule{
     }
 
     @Provides
-    fun providesProductDao(pizzettAppDB: PizzettAppDB): ProductDao{
+    fun providesProductDao(pizzettAppDB: PizzettAppDB): ProductDao {
         return pizzettAppDB.productDao()
     }
 
     @Provides
     @Singleton
-    fun providePizzettAppDB(@ApplicationContext application: Context): PizzettAppDB{
+    fun providePizzettAppDB(@ApplicationContext application: Context): PizzettAppDB {
         return Room.databaseBuilder(application, PizzettAppDB::class.java, DATABASE_NAME).build()
     }
 }
-
+/** FIN ROOM **/
 
 
