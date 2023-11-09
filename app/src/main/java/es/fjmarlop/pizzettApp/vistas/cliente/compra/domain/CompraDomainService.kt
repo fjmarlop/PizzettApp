@@ -1,7 +1,7 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.compra.domain
 
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.entities.toAddressModel
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.AddressModel
+import es.fjmarlop.pizzettApp.dataBase.local.entities.toAddressModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.AddressModel
 import es.fjmarlop.pizzettApp.vistas.cliente.compra.data.CompraRespository
 import javax.inject.Inject
 

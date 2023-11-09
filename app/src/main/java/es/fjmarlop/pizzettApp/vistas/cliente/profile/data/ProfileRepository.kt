@@ -1,7 +1,7 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.profile.data
 
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.dao.UserDao
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.entities.UserEntity
+import es.fjmarlop.pizzettApp.dataBase.local.dao.UserDao
+import es.fjmarlop.pizzettApp.dataBase.local.entities.UserEntity
 import javax.inject.Inject
 import javax.inject.Singleton
 

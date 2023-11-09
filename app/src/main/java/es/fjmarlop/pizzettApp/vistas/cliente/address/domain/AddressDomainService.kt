@@ -1,7 +1,7 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.address.domain
 
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.AddressModel
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.toAddressEntity
+import es.fjmarlop.pizzettApp.dataBase.local.models.AddressModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.toAddressEntity
 import es.fjmarlop.pizzettApp.vistas.cliente.address.data.AddressRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

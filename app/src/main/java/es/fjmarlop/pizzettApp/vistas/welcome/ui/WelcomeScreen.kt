@@ -30,7 +30,20 @@ fun WelcomeScreen(welcomeViewModel: WelcomeViewModel, navHostController: NavHost
         CircularProgressIndicator(modifier = Modifier.padding(32.dp), color= Color.White)
         LaunchedEffect(key1 = true) {
             delay(1500)
-            welcomeViewModel.goToLoginScreen(navHostController)
+
+            val isEmpleado = welcomeViewModel.checkEmpleado()
+
+            when(welcomeViewModel.checkSession(isEmpleado)){
+                SplashDestination.Login -> {
+                    welcomeViewModel.navigateToLogin(navHostController)
+                }
+                SplashDestination.MainGestion -> {
+                    welcomeViewModel.navigateToMainGestion(navHostController)
+                }
+                SplashDestination.MainCliente -> {
+                    welcomeViewModel.navigateToMainCliente(navHostController)
+                }
+            }
         }
     }
 

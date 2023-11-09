@@ -1,7 +1,7 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.domain
 
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.entities.toUserModel
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.UserModel
+import es.fjmarlop.pizzettApp.dataBase.local.entities.toUserModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.UserModel
 import es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.data.DetailsProfileRepository
 import javax.inject.Inject
 

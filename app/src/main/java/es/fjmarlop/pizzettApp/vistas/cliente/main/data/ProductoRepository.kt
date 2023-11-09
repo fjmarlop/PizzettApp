@@ -2,9 +2,9 @@ package es.fjmarlop.pizzettApp.vistas.cliente.main.data
 
 import android.util.Log
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.apiServices.ProductoApi
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.models.ProductoModel
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.dao.ProductDao
+import es.fjmarlop.pizzettApp.dataBase.Remote.apiServices.ProductoApi
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.ProductoModel
+import es.fjmarlop.pizzettApp.dataBase.local.dao.ProductDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

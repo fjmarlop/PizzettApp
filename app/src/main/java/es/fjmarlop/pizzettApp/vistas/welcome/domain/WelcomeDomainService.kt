@@ -1,14 +1,12 @@
 package es.fjmarlop.pizzettApp.vistas.welcome.domain
 
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.models.ProductoModel
-import es.fjmarlop.pizzettApp.vistas.cliente.main.domain.ProductoDomainService
+import es.fjmarlop.pizzettApp.vistas.welcome.data.WelcomeRepository
 import javax.inject.Inject
 
 class WelcomeDomainService @Inject constructor(
-    private val productoDomainService: ProductoDomainService
+    private val repository: WelcomeRepository
 ) {
-
-    suspend fun getRecomendados(): List<ProductoModel>{
-       return productoDomainService.getProductosParaRecomendados()
+    suspend fun comprobarEmpleado(email: String): Int {
+        return repository.comprobarEmpleado(email)
     }
 }

@@ -10,7 +10,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.navigation.Navegadores
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.UserModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.UserModel
 import es.fjmarlop.pizzettApp.vistas.cliente.profile.domain.ProfileDomainService
 import es.fjmarlop.pizzettApp.vistas.login.domain.googleLogin.GoogleAuthUiClient
 import kotlinx.coroutines.Dispatchers

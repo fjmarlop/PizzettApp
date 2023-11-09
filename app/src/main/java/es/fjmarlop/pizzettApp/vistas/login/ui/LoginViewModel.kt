@@ -18,12 +18,10 @@ import es.fjmarlop.pizzettApp.vistas.login.domain.googleLogin.GoogleAuthUiClient
 import es.fjmarlop.pizzettApp.vistas.login.domain.googleLogin.SignInResult
 import es.fjmarlop.pizzettApp.vistas.login.domain.googleLogin.SignInState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,30 +70,27 @@ class LoginViewModel @Inject constructor(
     }
 
     fun loginSessionEmail(navHostController: NavHostController) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val isEmpleado = comprobarEmpleadoUseCase(_userEmail.value.toString())
+
             FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(_userEmail.value.toString(), _password.value.toString())
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        //utils.mensajeToast("Has iniciado sesión")
-                        navHostController.popBackStack()
-                        viewModelScope.launch(Dispatchers.IO) {
-                            if (comprobarEmpleadoUseCase(_userEmail.value.toString()) == 0) {
-                                withContext(Dispatchers.Main) {
-                                    navegadores.navigateToMain(
-                                        navHostController
-                                    )
-                                }
-                            } else {
-                                withContext(Dispatchers.Main) {
-                                    delay(1500)
-                                    utils.mensajeToast("INCIO SESION EMPLEADO")
-                                    navegadores.navigateToProfile(navHostController)
-                                }
+                        if (isEmpleado == 1) {
+                            viewModelScope.launch(Dispatchers.Main) {
+                                navHostController.popBackStack()
+                                navegadores.navigateToGestion(navHostController)
+                            }
+                        }
+                        if (isEmpleado == 0) {
+                            viewModelScope.launch(Dispatchers.Main) {
+                                navHostController.popBackStack()
+                                navegadores.navigateToMain(navHostController)
                             }
                         }
                     } else {
-                            utils.mensajeToast("Error inicio de sesión, el usuario o la contraseña no son válidos")
+                        utils.mensajeToast("Error inicio de sesión, el usuario o la contraseña no son válidos")
                     }
                 }
         }
@@ -131,8 +126,7 @@ class LoginViewModel @Inject constructor(
     ) {
         if (googleAuthUiClient.getSignedInUser() != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                val result = comprobarEmpleadoUseCase(userFirebase?.email.toString())
-                withContext(Dispatchers.Main) { navegadores.navigationLogin(navController, result) }
+                navegadores.navigateToLogin(navController)
             }
         }
     }
@@ -143,6 +137,10 @@ class LoginViewModel @Inject constructor(
         resetState()
     }
 
+    private fun clearTexts() {
+        _userEmail.value = ""
+        _password.value = ""
+    }
 
     private fun resetState() {
         _state.update { SignInState() }

@@ -1,6 +1,6 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.main.domain
 
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.models.ProductoModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.ProductoModel
 import es.fjmarlop.pizzettApp.vistas.cliente.main.data.ProductoRepository
 import javax.inject.Inject
 

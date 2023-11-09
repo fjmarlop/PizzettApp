@@ -123,7 +123,7 @@ fun Navegador(
             CompraScreen(mainViewModel = mainViewModel, compraViewModel = compraViewModel, navHostController = navigationController)
         }
         composable(Rutas.MainGestion.ruta){
-           MainGestionScreen(mainGestionViewModel, googleAuthUiClient)
+           MainGestionScreen(mainGestionViewModel, googleAuthUiClient, navHostController = navigationController)
         }
 
     }

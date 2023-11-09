@@ -1,14 +1,22 @@
 package es.fjmarlop.pizzettApp.vistas.welcome.data
 
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.apiServices.ProductoApi
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.dao.ProductDao
+import android.util.Log
+import es.fjmarlop.pizzettApp.dataBase.Remote.apiServices.EmpleadoApi
 import javax.inject.Inject
 
 class WelcomeRepository @Inject constructor(
-    private val productoApi: ProductoApi,
-    private val productDao: ProductDao
-) {
-
+    private val empleadoApi: EmpleadoApi)
+{
+    suspend fun comprobarEmpleado(email: String): Int {
+        runCatching {empleadoApi.comprobarEmpleado(email) }
+            .onSuccess { return it }
+            .onFailure {
+                Log.i("PizzApp Info", "Error: ${it.message}")
+                return  -1
+            }
+        return 0
+    }
 }
+
 
 

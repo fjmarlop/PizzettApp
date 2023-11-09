@@ -4,18 +4,21 @@ import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.navigation.Navegadores
 import es.fjmarlop.pizzettApp.core.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateAccountViewModel @Inject constructor(
     private val utils: Utils,
     private val navegadores: Navegadores,
-): ViewModel(){
+) : ViewModel() {
     fun onCreateEmailChanged(email: String) {
         _usuario.value = email
         _isEmailValido.value = isEmailValido(email)
@@ -61,16 +64,23 @@ class CreateAccountViewModel @Inject constructor(
     }
 
     fun createAccount(navHostController: NavHostController) {
-
-        FirebaseAuth.getInstance()
-            .createUserWithEmailAndPassword(_usuario.value.toString(), _password.value.toString())
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    navegadores.navigateToLogin(navHostController)
-                } else {
-                    utils.mensajeToast("No se ha podido crear la cuenta")
+        viewModelScope.launch(Dispatchers.IO) {
+            FirebaseAuth.getInstance()
+                .createUserWithEmailAndPassword(
+                    _usuario.value.toString(),
+                    _password.value.toString()
+                )
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                       viewModelScope.launch (Dispatchers.Main){
+                           navHostController.popBackStack()
+                           navegadores.navigateToLogin(navHostController)
+                       }
+                    } else {
+                        utils.mensajeToast("No se ha podido crear la cuenta")
+                    }
                 }
-            }
+        }
     }
 
     fun goToBack(navController: NavHostController) {

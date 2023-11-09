@@ -8,8 +8,8 @@ import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.navigation.Navegadores
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.AddressModel
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.UserModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.AddressModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.UserModel
 import es.fjmarlop.pizzettApp.vistas.cliente.compra.domain.CompraDomainService
 import es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.domain.DetailsProfileDomainService
 import kotlinx.coroutines.Dispatchers

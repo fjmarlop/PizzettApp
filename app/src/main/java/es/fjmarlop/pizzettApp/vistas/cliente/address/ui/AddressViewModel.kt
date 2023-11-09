@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.navigation.Navegadores
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.AddressModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.AddressModel
 import es.fjmarlop.pizzettApp.vistas.cliente.address.domain.AddressDomainService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

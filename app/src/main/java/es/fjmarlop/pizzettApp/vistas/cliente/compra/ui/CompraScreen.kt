@@ -67,9 +67,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import es.fjmarlop.pizzeta.R
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.models.LineaPedidoModel
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.AddressModel
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.UserModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.LineaPedidoModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.AddressModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.UserModel
 import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainScafold
 import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainViewModel
 import kotlin.math.roundToInt

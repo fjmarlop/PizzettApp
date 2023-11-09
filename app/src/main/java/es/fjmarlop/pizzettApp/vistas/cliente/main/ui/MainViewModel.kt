@@ -12,11 +12,11 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.navigation.Navegadores
 import es.fjmarlop.pizzettApp.core.utils.Utils
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.models.LineaPedidoModel
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.models.ProductoLineaPedidoModel
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.models.ProductoModel
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.models.TamaniosModel
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.models.UserModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.LineaPedidoModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.ProductoLineaPedidoModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.ProductoModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.TamaniosModel
+import es.fjmarlop.pizzettApp.dataBase.local.models.UserModel
 import es.fjmarlop.pizzettApp.vistas.cliente.main.domain.MainDomainService
 import es.fjmarlop.pizzettApp.vistas.cliente.main.domain.ProductoDomainService
 import kotlinx.coroutines.Dispatchers
@@ -76,6 +76,11 @@ class MainViewModel @Inject constructor(
     private var _listaLineasPedido = MutableStateFlow<List<LineaPedidoModel>>(emptyList())
     val listaLineasPedido: StateFlow<List<LineaPedidoModel>> = _listaLineasPedido
 
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            getProductosParaRecomendados()
+        }
+    }
 
     fun onClickInicio(int: Int, navHostController: NavHostController) {
         viewModelScope.launch {
@@ -127,6 +132,8 @@ class MainViewModel @Inject constructor(
     fun resetIndex() {
         viewModelScope.launch {
             _index.value = 0
+            _showRecomendados.value = true
+            _categoria.value = "Hoy te recomendamos..."
         }
     }
 
@@ -214,7 +221,7 @@ class MainViewModel @Inject constructor(
     val showRecomendados: StateFlow<Boolean> = _showRecomendados
 
 
-    fun getProductosParaRecomendados() {
+    private fun getProductosParaRecomendados() {
 
         viewModelScope.launch {
             val list: List<ProductoModel>

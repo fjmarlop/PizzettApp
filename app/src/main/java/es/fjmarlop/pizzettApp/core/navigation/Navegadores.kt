@@ -47,13 +47,7 @@ class Navegadores @Inject constructor(){
     fun navigateToCompra(navController: NavHostController){
         navController.navigate(Rutas.Compra.ruta)
     }
-
-    fun navigationLogin(navController: NavHostController, int: Int){
-        if (int == 0){
-            navController.navigate(Rutas.MainScreen.ruta)
-        }
-        if (int == 1){
-            navController.navigate(Rutas.MainGestion.ruta)
-        }
+    fun navigateToGestion(navController: NavHostController){
+        navController.navigate(Rutas.MainGestion.ruta)
     }
 }

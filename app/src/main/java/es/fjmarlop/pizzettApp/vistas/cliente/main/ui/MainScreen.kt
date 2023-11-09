@@ -71,7 +71,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import es.fjmarlop.pizzeta.R
-import es.fjmarlop.pizzettApp.dataBase.Remote.retrofit.models.ProductoModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.ProductoModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -128,12 +128,13 @@ fun VistaHome(
         TitleCarrusel(string = categoria)
 
         DividerMain()
-
-        ProductList(
-            list = list,
-            mainViewModel = mainViewModel,
-            activar = activateButtonAddLine
-        )
+        if (!showRecomendados) {
+            ProductList(
+                list = list,
+                mainViewModel = mainViewModel,
+                activar = activateButtonAddLine
+            )
+        }
 
         /**
          * Cuando iniciamos sesión por primera vez, la creación de la vista es mas rápida
@@ -146,10 +147,7 @@ fun VistaHome(
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
-            LaunchedEffect(true) {
-                delay(1500)
-                mainViewModel.getProductosParaRecomendados()
-            }
+
         } else {
             RecomendadosList(
                 show = showRecomendados,

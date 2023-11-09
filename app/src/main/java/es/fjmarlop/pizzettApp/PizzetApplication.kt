@@ -9,10 +9,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.PizzettAppDB
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.dao.AddressDao
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.dao.ProductDao
-import es.fjmarlop.pizzettApp.dataBase.local.roomDB.dao.UserDao
+import es.fjmarlop.pizzettApp.dataBase.local.PizzettAppDB
+import es.fjmarlop.pizzettApp.dataBase.local.dao.AddressDao
+import es.fjmarlop.pizzettApp.dataBase.local.dao.ProductDao
+import es.fjmarlop.pizzettApp.dataBase.local.dao.UserDao
 import javax.inject.Singleton
 
 @HiltAndroidApp
