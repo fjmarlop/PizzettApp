@@ -44,6 +44,7 @@ fun WelcomeScreen(welcomeViewModel: WelcomeViewModel, navHostController: NavHost
                     welcomeViewModel.navigateToMainCliente(navHostController)
                 }
             }
+
         }
     }
 

@@ -12,7 +12,6 @@ class WelcomeRepository @Inject constructor(
             .onSuccess { return it }
             .onFailure {
                 Log.i("PizzApp Info", "Error: ${it.message}")
-                return  -1
             }
         return 0
     }

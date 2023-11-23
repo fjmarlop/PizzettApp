@@ -125,7 +125,7 @@ class LoginViewModel @Inject constructor(
         googleAuthUiClient: GoogleAuthUiClient
     ) {
         if (googleAuthUiClient.getSignedInUser() != null) {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.Main) {
                 navegadores.navigateToLogin(navController)
             }
         }

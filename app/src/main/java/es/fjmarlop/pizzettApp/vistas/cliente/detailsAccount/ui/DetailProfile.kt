@@ -1,5 +1,6 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +20,8 @@ import androidx.compose.material.icons.filled.Rule
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -107,10 +108,10 @@ fun DetailsProfileScreen(
                                 navHostController
                             )
                         })
-                    Spacer(modifier = Modifier.size(12.dp))
-                    ProfileDetailPrivacy()
-                    Spacer(modifier = Modifier.size(12.dp))
-                    ProfileDetailTerms()
+                    Spacer(modifier = Modifier.size(24.dp))
+                    ProfileDetailPrivacy { detailProfileViewModel.gotoPrivacy(navHostController) }
+                    Spacer(modifier = Modifier.size(18.dp))
+                    ProfileDetailTerms { detailProfileViewModel.gotoTerms(navHostController) }
                 }
             }
         }
@@ -232,30 +233,29 @@ fun ProfilePhoneEdit(
 }
 
 @Composable
-fun ProfileDetailPrivacy() {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Icon(imageVector = Icons.Default.PrivacyTip, contentDescription = "privacity")
+fun ProfileDetailPrivacy(onClickPrivacyPolicy: () -> Unit) {
+    Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Icon(imageVector = Icons.Default.PrivacyTip, contentDescription = "privacity", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(35.dp))
         Text(
-            text = "Aceptar política de privacidad",
+            text = "Política de privacidad",
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 8.dp).clickable { onClickPrivacyPolicy()}, fontSize = 20.sp
         )
-        Switch(checked = true, onCheckedChange = {})
     }
 }
 
 @Composable
-fun ProfileDetailTerms() {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Icon(imageVector = Icons.Default.Rule, contentDescription = "Terms Use")
+fun ProfileDetailTerms(onClickTermsUse : () -> Unit) {
+    Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Icon(imageVector = Icons.Default.Rule, contentDescription = "Terms Use", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(35.dp))
         Text(
-            text = "Aceptar terminos de uso",
+            text = "Terminos de uso",
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 8.dp).clickable { onClickTermsUse() }, fontSize = 20.sp
         )
-        Switch(checked = true, onCheckedChange = {})
+
     }
 }
 

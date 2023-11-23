@@ -1,5 +1,6 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.compra.domain
 
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.PedidoModel
 import es.fjmarlop.pizzettApp.dataBase.local.entities.toAddressModel
 import es.fjmarlop.pizzettApp.dataBase.local.models.AddressModel
 import es.fjmarlop.pizzettApp.vistas.cliente.compra.data.CompraRespository
@@ -16,4 +17,9 @@ class CompraDomainService @Inject constructor(private val compraRespository: Com
             emptyList()
         }
     }
+
+   suspend fun finalizarPedido(pedido: PedidoModel):Int {
+        return compraRespository.finalizarPedido(pedido)
+    }
+
 }

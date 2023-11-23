@@ -7,7 +7,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import es.fjmarlop.pizzettApp.core.navigation.Navegadores
-import es.fjmarlop.pizzettApp.vistas.welcome.domain.WelcomeDomainService
+import es.fjmarlop.pizzettApp.vistas.welcome.domain.ComprobarEmpleadoUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,7 +17,7 @@ import kotlin.coroutines.suspendCoroutine
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
     private val navegadores: Navegadores,
-    private val domainService: WelcomeDomainService
+    private val comprobarEmpleado: ComprobarEmpleadoUseCase
 ) : ViewModel() {
 
     private val isLoggedIn = Firebase.auth.currentUser != null
@@ -29,7 +29,7 @@ class WelcomeViewModel @Inject constructor(
      */
     suspend fun checkEmpleado(): Int = suspendCoroutine { continuation ->
         viewModelScope.launch(Dispatchers.IO) {
-            val result = domainService.comprobarEmpleado(email)
+            val result =comprobarEmpleado(email)
             continuation.resume(result)
         }
     }

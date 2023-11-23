@@ -14,6 +14,8 @@ import es.fjmarlop.pizzettApp.vistas.cliente.createAccount.ui.CreateAccountScree
 import es.fjmarlop.pizzettApp.vistas.cliente.createAccount.ui.CreateAccountViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.ui.DetailProfileViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.ui.DetailsProfileScreen
+import es.fjmarlop.pizzettApp.vistas.cliente.historial.ui.HistoricoScreen
+import es.fjmarlop.pizzettApp.vistas.cliente.historial.ui.HistoricoViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainScreen
 import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.offers.ui.OfertasScreen
@@ -50,7 +52,8 @@ fun Navegador(
     detailProfileViewModel: DetailProfileViewModel,
     addressViewModel: AddressViewModel,
     compraViewModel: CompraViewModel,
-    mainGestionViewModel: MainGestionViewModel
+    mainGestionViewModel: MainGestionViewModel,
+    historicoViewModel: HistoricoViewModel
 ) {
 
     val navigationController = rememberNavController()
@@ -124,6 +127,9 @@ fun Navegador(
         }
         composable(Rutas.MainGestion.ruta){
            MainGestionScreen(mainGestionViewModel, googleAuthUiClient, navHostController = navigationController)
+        }
+        composable(Rutas.Historico.ruta){
+            HistoricoScreen(historicoViewModel = historicoViewModel, navHostController = navigationController, mainViewModel = mainViewModel)
         }
 
     }

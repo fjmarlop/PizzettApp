@@ -1,10 +1,12 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.compra.ui
 
 import android.Manifest
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,13 +31,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DirectionsBike
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.PermIdentity
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,6 +54,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +62,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -64,6 +71,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import es.fjmarlop.pizzeta.R
@@ -72,6 +80,8 @@ import es.fjmarlop.pizzettApp.dataBase.local.models.AddressModel
 import es.fjmarlop.pizzettApp.dataBase.local.models.UserModel
 import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainScafold
 import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainViewModel
+import kotlinx.coroutines.delay
+import java.util.Calendar
 import kotlin.math.roundToInt
 
 @Composable
@@ -80,6 +90,14 @@ fun CompraScreen(
     compraViewModel: CompraViewModel,
     navHostController: NavHostController
 ) {
+
+    val user by compraViewModel.user.observeAsState()
+
+    LaunchedEffect(true) {
+        compraViewModel.getListAddress(user?.email.toString())
+        compraViewModel.getUser()
+    }
+
     MainScafold(
         content = {
             VistaCompra(
@@ -93,6 +111,7 @@ fun CompraScreen(
     )
 }
 
+
 @Composable
 fun VistaCompra(
     mainViewModel: MainViewModel,
@@ -104,22 +123,22 @@ fun VistaCompra(
     val user by compraViewModel.user.observeAsState()
 
     //CONSEGUIR LIBRETRA DE DIRECCIONES
-    val direcciones by compraViewModel.listAddress.observeAsState()
+    val direcciones by compraViewModel.listAddress.collectAsState()
 
     //lISTA DE PEDIDOS
     val listaPedido by mainViewModel.listaLineasPedido.collectAsState()
 
-    var showPedido by remember {
-        mutableStateOf(true)
-    }
+    val showPedido by compraViewModel.showPedido.collectAsState()
 
-    var showTramitarCompra by remember {
-        mutableStateOf(false)
-    }
+    val showTramitarCompra by compraViewModel.tramitarCompra.collectAsState()
 
     val domicilio by compraViewModel.domicilio.collectAsState()
 
     val local by compraViewModel.local.collectAsState()
+
+    val direccionEnTexto by compraViewModel.direccionEnTexto.collectAsState()
+
+    val showHorno by compraViewModel.showHorno.collectAsState()
 
     Column(
         Modifier
@@ -145,12 +164,13 @@ fun VistaCompra(
                         .weight(2f), contentAlignment = Alignment.BottomCenter
                 ) {
                     Column {
-                        TotalesCarrito(listaPedido = listaPedido)
+                        TotalesCarrito(listaPedido = listaPedido) {
+                            compraViewModel.totalPedido = it
+                        }
                         Spacer(modifier = Modifier.size(8.dp))
                         Button(
                             onClick = {
-                                showPedido = false
-                                showTramitarCompra = true
+                                compraViewModel.mostrarTramitar()
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -192,27 +212,207 @@ fun VistaCompra(
 
                 })
 
-            LaunchedEffect(true) {
-                compraViewModel.getUser()
-                user?.let { compraViewModel.getListAddress(it.email) }
+            var showDirecciones by remember {
+                mutableStateOf(false)
             }
+
             Spacer(modifier = Modifier.size(12.dp))
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.TopStart) {
                 Column {
 
                     user?.let {
-                        DatosUsuario(user = it, onClickDetalles = {/*TODO navegar pantalla de detalles*/})
+                        DatosUsuario(
+                            user = it,
+                            onClickDetalles = { compraViewModel.goToDetalles(navHostController) })
                     }
                     Spacer(modifier = Modifier.size(12.dp))
 
                     if (!local) {
                         RecogidaSelected()
+                    } else {
+                        Text(
+                            text = "Dirección de envio.",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Start
+                        )
+                        direcciones?.let {
+                            if (showDirecciones) {
+                                SelectAdrres(
+                                    show = showDirecciones,
+                                    list = it,
+                                    onDismiss = { showDirecciones = !showDirecciones },
+                                    onSelected = {
+                                        compraViewModel.direccionSelected(it)
+                                    }
+                                )
+                            }
+                            DireccionesUsuario(
+                                list = it,
+                                onClickAddAddress = {
+                                    compraViewModel.goTolistAddress(navHostController)
+                                },
+                                onClickOtraDireccion = { showDirecciones = !showDirecciones },
+                                direccion = direccionEnTexto
+
+                            )
+                        }
+
+
                     }
-                    else {
-                        direcciones?.let { DireccionesUsuario(list = it, onClickAddAddress = {}) }
+                    Spacer(modifier = Modifier.size(12.dp))
+                    FechaSelected(onSendeFecha = {
+                        compraViewModel.fechaPedido = it
+                    })
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(), contentAlignment = Alignment.BottomCenter
+            ) {
+                Column {
+                    Button(
+                        onClick = {
+                            compraViewModel.finalizar(
+                                listaPedido,
+                                mainViewModel,
+                                navHostController
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = "Finalizar pedido", fontSize = 24.sp,
+                            fontFamily = FontFamily(
+                                Font(R.font.roboto_condensed)
+                            ),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
+        }
+        if (showHorno) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(dimensionResource(id = R.dimen.margen)),
+                contentAlignment = Alignment.TopCenter){
+                Column(
+                    Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.horno),
+                        contentDescription = "horno",
+                    )
+                    Spacer(modifier = Modifier.size(12.dp))
+                    Text(
+                        text = "Tu pedido está en el horno",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.size(12.dp))
+                    CircularProgressIndicator()
+                    LaunchedEffect(true) {
+                        delay(3000)
+                        compraViewModel.goToHistory(navHostController)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SelectAdrres(
+    show: Boolean,
+    list: List<AddressModel>,
+    onDismiss: () -> Unit,
+    onSelected: (Int) -> Unit
+) {
+    if (show) {
+        Dialog(onDismissRequest = { onDismiss() }) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(
+                        dimensionResource(id = R.dimen.margen)
+                    )
+            ) {
+                Text(
+                    text = "Elige una dirección",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.size(6.dp))
+                list.forEach { address ->
+                    Text(
+                        text = address.name,
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .clickable {
+                                onSelected(address.id)
+                                onDismiss()
+                            }
+                            .padding(vertical = 8.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FechaSelected(onSendeFecha: (String) -> Unit) {
+
+    var fecha by rememberSaveable { mutableStateOf("Elige una fecha") }
+
+    val year: Int
+    val mes: Int
+    val dia: Int
+    val mCalendar = Calendar.getInstance()
+    year = mCalendar.get(Calendar.YEAR)
+    mes = mCalendar.get(Calendar.MONTH)
+    dia = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+    val mDatePickerDialog = DatePickerDialog(
+        LocalContext.current, R.style.DatePickerStyle,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            fecha = "$mDayOfMonth/${mMonth + 1}/$mYear"
+        }, year, mes, dia
+    ).apply {
+        datePicker.minDate = System.currentTimeMillis() - 1000
+    }
+
+    Column(Modifier.fillMaxWidth()) {
+        Text(text = "Cuando quieres tu pedido", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.size(6.dp))
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Default.CalendarMonth,
+                contentDescription = "calendar",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .clickable {
+                        mDatePickerDialog.show()
+                    })
+            Text(
+                text = fecha, color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        1.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(vertical = 8.dp, horizontal = 12.dp),
+            )
+            onSendeFecha(fecha)
         }
     }
 }
@@ -267,7 +467,6 @@ fun ListaPedido(
     Box(
         modifier = modifier
             .fillMaxWidth()
-        // .padding(horizontal = 16.dp)
     ) {
         if (listaPedido.isEmpty()) {
             Column(
@@ -324,7 +523,7 @@ fun ListaPedido(
 }
 
 @Composable
-fun TotalesCarrito(listaPedido: List<LineaPedidoModel>) {
+fun TotalesCarrito(listaPedido: List<LineaPedidoModel>, onSendTotal: (Double) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Total pedido",
@@ -380,6 +579,7 @@ fun TotalesCarrito(listaPedido: List<LineaPedidoModel>) {
                     )
                 }
             }
+            onSendTotal(getTotal(listaPedido))
         }
         Divider(
             color = MaterialTheme.colorScheme.primary,
@@ -523,7 +723,7 @@ fun DatosUsuario(user: UserModel, onClickDetalles: () -> Unit) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = "Pulsa aquí para añadir o modificar tus datos",
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.tertiary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .clickable { onClickDetalles() }
@@ -535,39 +735,116 @@ fun DatosUsuario(user: UserModel, onClickDetalles: () -> Unit) {
 }
 
 @Composable
-fun DireccionesUsuario(list: List<AddressModel>, onClickAddAddress: () -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun DireccionesUsuario(
+    list: List<AddressModel>,
+    onClickAddAddress: () -> Unit,
+    onClickOtraDireccion: () -> Unit,
+    direccion: String
+) {
+    Column {
         if (list.isEmpty()) {
-            Text(
-                text = "Error 404 - No hay direcciones",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                textAlign =
-                TextAlign.Center,
-                color = MaterialTheme.colorScheme.error
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                text = "No tienes guardada ninguna dirección",
-                fontWeight = FontWeight.Bold, fontSize = 20.sp, textAlign =
-                TextAlign.Center
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                text = "Pulsa aquí para añadir una",
-                modifier = Modifier.clickable { onClickAddAddress() },
-                textDecoration = TextDecoration.Underline,
-                fontSize = 12.sp
-            )
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = "No tienes guardada ninguna dirección",
+                    fontWeight = FontWeight.Bold, fontSize = 20.sp, textAlign =
+                    TextAlign.Center
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = "Pulsa aquí para añadir una",
+                    modifier = Modifier.clickable { onClickAddAddress() },
+                    textDecoration = TextDecoration.Underline,
+                    fontSize = 12.sp, color = MaterialTheme.colorScheme.tertiary
+                )
+            }
         } else if (list.size == 1) {
-            val name = list.map { it.name }
-            Text(text = name.toString())
-            Text(text = list.map { it.address }.toString())
+            Spacer(modifier = Modifier.size(6.dp))
+            SeleccionaDireccion(list = list)
         } else {
-            Text(text = "selecciona tu direccion")
+            Spacer(modifier = Modifier.size(6.dp))
+            SeleccionaVariasDirecciones(list = list, direccion = direccion)
+            Spacer(modifier = Modifier.size(6.dp))
+            Text(
+                text = "Seleccione otra dirección",
+                textAlign = TextAlign.Center,
+                textDecoration = TextDecoration.Underline,
+                color = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onClickOtraDireccion() },
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }
+
+@Composable
+fun SeleccionaDireccion(list: List<AddressModel>) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        val direccion = list[0].address + ", " + list[0].city + ", " + list[0].codPostal
+        Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.LocationCity,
+                    contentDescription = null,
+                    Modifier.padding(end = 8.dp), tint = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = direccion,
+                    textAlign = TextAlign.Start, modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(vertical = 8.dp, horizontal = 12.dp),
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SeleccionaVariasDirecciones(
+    list: List<AddressModel>,
+    direccion: String
+) {
+    val addressModel = list[0]
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Default.LocationCity,
+                contentDescription = null,
+                Modifier.padding(end = 8.dp), tint = MaterialTheme.colorScheme.primary
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        1.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(vertical = 8.dp, horizontal = 12.dp)
+            ) {
+                if (direccion.isBlank()) {
+                    Text(
+                        text = addressModel.address + ", " + addressModel.city + ", " + addressModel.codPostal,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                } else {
+                    Text(text = direccion, color = MaterialTheme.colorScheme.outline)
+                }
+
+            }
+
+        }
+    }
+}
+
 
 @Composable
 fun RecogidaSelected() {

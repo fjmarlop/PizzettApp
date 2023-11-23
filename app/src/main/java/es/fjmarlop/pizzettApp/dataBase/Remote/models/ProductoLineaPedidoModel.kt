@@ -2,7 +2,8 @@ package es.fjmarlop.pizzettApp.dataBase.Remote.models
 
 data class ProductoLineaPedidoModel (
 
-    val id_producto: Int,
+
+    val idProducto: Int,
 
     val nombre_producto: String,
 

@@ -16,6 +16,7 @@ import es.fjmarlop.pizzettApp.vistas.cliente.address.ui.AddressViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.compra.ui.CompraViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.createAccount.ui.CreateAccountViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.ui.DetailProfileViewModel
+import es.fjmarlop.pizzettApp.vistas.cliente.historial.ui.HistoricoViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.offers.ui.OfertasViewModel
 import es.fjmarlop.pizzettApp.vistas.cliente.profile.ui.ProfileViewModel
@@ -45,6 +46,7 @@ class MainActivity : ComponentActivity() {
     private val addressViewModel: AddressViewModel by viewModels()
     private val compraViewModel: CompraViewModel by viewModels()
     private val mainGestionViewModel: MainGestionViewModel by viewModels()
+    private val historicoViewModel: HistoricoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +70,8 @@ class MainActivity : ComponentActivity() {
                         googleAuthUiClient = googleAuthUiClient,
                         addressViewModel = addressViewModel,
                         compraViewModel = compraViewModel,
-                        mainGestionViewModel = mainGestionViewModel
+                        mainGestionViewModel = mainGestionViewModel,
+                        historicoViewModel = historicoViewModel
                     )
 
                 }

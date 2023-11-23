@@ -48,16 +48,16 @@ class MainViewModel @Inject constructor(
     val activateButtonAddLine: StateFlow<Boolean> = _activateButtonAddLine
 
     //valor que recoge el número de unidades elegidas por el usuario
-    private val _cantidad = MutableStateFlow(0)
+    var _cantidad = MutableStateFlow(0)
     val cantidad: StateFlow<Int> = _cantidad
 
     //estado para manejar el total de lineas introducidas para que aparezcan en el
     //Badge del carrito
-    private val _lineasTotal = MutableStateFlow(0)
+    val _lineasTotal = MutableStateFlow(0)
     val lineasTotal: StateFlow<Int> = _lineasTotal
 
     // variable que recoge todas las línea de pedido que introduzca el usuario
-    private var lineasPedido: MutableList<LineaPedidoModel> =
+    var lineasPedido: MutableList<LineaPedidoModel> =
         emptyList<LineaPedidoModel>().toMutableList()
 
     // variable que recoge el tamaño seleccionado por el cliente,
@@ -73,7 +73,7 @@ class MainViewModel @Inject constructor(
     private var isTamanoSelected = false
 
     //estado para comprobar las líneas totales del pedido del usuario.
-    private var _listaLineasPedido = MutableStateFlow<List<LineaPedidoModel>>(emptyList())
+    var _listaLineasPedido = MutableStateFlow<List<LineaPedidoModel>>(emptyList())
     val listaLineasPedido: StateFlow<List<LineaPedidoModel>> = _listaLineasPedido
 
     init {
@@ -107,7 +107,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _index.emit(int)
         }
-        //utils.navigateTo(navHostController, Rutas.MainScreen)
+        navegadores.navigateToHistorico(navHostController)
     }
 
     fun onClickCuenta(int: Int, navHostController: NavHostController) {
@@ -132,8 +132,8 @@ class MainViewModel @Inject constructor(
     fun resetIndex() {
         viewModelScope.launch {
             _index.value = 0
-            _showRecomendados.value = true
             _categoria.value = "Hoy te recomendamos..."
+            _showRecomendados.value = true
         }
     }
 
@@ -191,7 +191,7 @@ class MainViewModel @Inject constructor(
         tamanoSeleccionado.add(tamanoSelected)
 
         val productoElegido = ProductoLineaPedidoModel(
-            id_producto = producto.id_producto,
+            idProducto = producto.id_producto,
             nombre_producto = producto.nombre_producto,
             categoria = producto.categoria.joinToString { it.nombre_categoria },
             tamano = tamanoSelected.tamano,
@@ -253,8 +253,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun onClickCategoria(categoria: String) {
-        _categoria.value = categoria
         getProductosPorCategoria(categoria)
+        _categoria.value = categoria
         _showRecomendados.value = false
     }
 

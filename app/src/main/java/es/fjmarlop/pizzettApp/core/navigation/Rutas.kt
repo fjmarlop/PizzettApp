@@ -26,4 +26,5 @@ sealed class Rutas(val ruta: String) {
     object Address: Rutas("AddressScreen")
     object Compra: Rutas("CompraScreen")
     object MainGestion: Rutas("MainGestionScreen")
+    object Historico: Rutas("HistoricoScreen")
 }

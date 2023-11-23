@@ -3,7 +3,6 @@
     <string name="web_client_id">465713776753-84f1k21q2kbr4a1csiui4bt0aaciglfr.apps.googleusercontent.com</string>
 
     <string name="facebook_app_id">845462663525625</string>
-    <string name="fb_login_protocol_scheme">fb845462663525625</string>
     <string name="facebook_client_token">90f0392c960ae01ab94ad95f3576e040</string>
 
 </resources>

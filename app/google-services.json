@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "465713776753",
+    "firebase_url": "https://pizzetapp-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "pizzetapp",
     "storage_bucket": "pizzetapp.appspot.com"
   },
@@ -22,7 +23,7 @@
           }
         },
         {
-          "client_id": "465713776753-vfh3p9dggaampbvs1r8ugrcjtmlulpa8.apps.googleusercontent.com",
+          "client_id": "465713776753-84f1k21q2kbr4a1csiui4bt0aaciglfr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -35,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "465713776753-vfh3p9dggaampbvs1r8ugrcjtmlulpa8.apps.googleusercontent.com",
+              "client_id": "465713776753-84f1k21q2kbr4a1csiui4bt0aaciglfr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

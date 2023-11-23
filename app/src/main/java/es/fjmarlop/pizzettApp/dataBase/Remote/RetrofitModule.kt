@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import es.fjmarlop.pizzettApp.dataBase.Remote.apiServices.EmpleadoApi
+import es.fjmarlop.pizzettApp.dataBase.Remote.apiServices.PedidoApi
 import es.fjmarlop.pizzettApp.dataBase.Remote.apiServices.ProductoApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -57,6 +58,11 @@ object RetrofitModule {
     @Provides
     fun provideEmpeladoDao(retrofit: Retrofit): EmpleadoApi {
         return retrofit.create(EmpleadoApi::class.java)
+    }
+    @Singleton
+    @Provides
+    fun providePedidoDao(retrofit: Retrofit): PedidoApi {
+        return retrofit.create(PedidoApi::class.java)
     }
 
 }

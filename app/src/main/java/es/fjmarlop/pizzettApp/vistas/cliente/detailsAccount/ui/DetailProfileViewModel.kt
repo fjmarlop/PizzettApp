@@ -80,19 +80,27 @@ class DetailProfileViewModel @Inject constructor(
         }
     }
 
-    fun updateUserName(name: String, email: String, navHostController: NavHostController){
-        viewModelScope.launch(Dispatchers.IO){
+    fun updateUserName(name: String, email: String, navHostController: NavHostController) {
+        viewModelScope.launch(Dispatchers.IO) {
             domainService.updateUserName(name, email)
         }
         onClickNameEdit()
         navegadores.navigateToDetailsProfile(navHostController)
     }
 
-    fun updatePhone(phone: String, email: String, navHostController: NavHostController){
-        viewModelScope.launch(Dispatchers.IO){
+    fun updatePhone(phone: String, email: String, navHostController: NavHostController) {
+        viewModelScope.launch(Dispatchers.IO) {
             domainService.updatePhone(phone, email)
         }
         onClickPhoneEdit()
         navegadores.navigateToDetailsProfile(navHostController)
+    }
+
+    fun gotoPrivacy(navHostController: NavHostController) {
+        navegadores.navigateToPrivacyPolices(navHostController)
+    }
+
+    fun gotoTerms(navHostController: NavHostController) {
+        navegadores.navigateToTermsOfUses(navHostController)
     }
 }

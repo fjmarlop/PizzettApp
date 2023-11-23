@@ -50,4 +50,8 @@ class Navegadores @Inject constructor(){
     fun navigateToGestion(navController: NavHostController){
         navController.navigate(Rutas.MainGestion.ruta)
     }
+
+    fun navigateToHistorico(navController: NavHostController){
+        navController.navigate(Rutas.Historico.ruta)
+    }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="DatePickerStyle" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="colorAccent">#FFBE0A0F</item>
+    </style>
+</resources>

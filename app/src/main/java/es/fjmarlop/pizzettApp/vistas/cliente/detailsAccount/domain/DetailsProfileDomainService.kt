@@ -1,5 +1,6 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.domain
 
+
 import es.fjmarlop.pizzettApp.dataBase.local.entities.toUserModel
 import es.fjmarlop.pizzettApp.dataBase.local.models.UserModel
 import es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.data.DetailsProfileRepository
@@ -14,13 +15,13 @@ class DetailsProfileDomainService @Inject constructor(private val repository: De
     }
 
     suspend fun updateUserName(name: String, email: String) {
-        if (!name.isNullOrEmpty() && !email.isNullOrEmpty()) {
+        if (name.isNotEmpty() && email.isNotEmpty()) {
             repository.updateUserName(name, email)
         }
     }
 
     suspend fun updatePhone(phone: String, email: String) {
-        if (!phone.isNullOrEmpty() && !email.isNullOrEmpty()) {
+        if (phone.isNotEmpty() && email.isNotEmpty()) {
             repository.updatePhone(phone, email)
         }
     }

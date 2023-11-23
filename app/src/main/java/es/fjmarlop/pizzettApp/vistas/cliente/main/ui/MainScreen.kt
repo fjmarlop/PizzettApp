@@ -72,7 +72,6 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import es.fjmarlop.pizzeta.R
 import es.fjmarlop.pizzettApp.dataBase.Remote.models.ProductoModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -106,7 +105,6 @@ fun VistaHome(
     val showRecomendados by mainViewModel.showRecomendados.collectAsState()
 
     LaunchedEffect(true) {
-        delay(500)
         mainViewModel.getUser()
     }
 
@@ -135,13 +133,6 @@ fun VistaHome(
                 activar = activateButtonAddLine
             )
         }
-
-        /**
-         * Cuando iniciamos sesión por primera vez, la creación de la vista es mas rápida
-         * que la petición a la API por lo tanto la pantalla se inicia con la lista de recomendados vacía.
-         * Para evitar que la vista aparezca en blanco, hago la petición a la API
-         * mas tarde para intentar retardar la petición.
-         * */
 
         if (recomendados.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

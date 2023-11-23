@@ -11,14 +11,14 @@ data class UserEntity(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,
-    @ColumnInfo(name = "email") val email: String?,
+    @ColumnInfo(name = "email") val email: String,
     @ColumnInfo(name = "name") val name: String?,
     @ColumnInfo(name = "phone") val phone:String?
 
 )
 
 fun UserEntity.toUserModel(): UserModel {
-    return UserModel(email ?: "", name ?: "", phone ?: "")
+    return UserModel(email , name ?:"", phone ?: "")
 }
 
 
