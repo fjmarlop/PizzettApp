@@ -16,6 +16,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel para la visualización y gestión de detalles del perfil de usuario.
+ *
+ * Este ViewModel interactúa con el servicio del dominio [DetailsProfileDomainService] para obtener
+ * y actualizar información relacionada con el perfil de usuario, además de manejar la navegación en la aplicación.
+ *
+ * @property navegadores Instancia de [Navegadores] utilizada para la navegación en la aplicación.
+ * @property domainService Instancia de [DetailsProfileDomainService] utilizado para acceder a la lógica de dominio del perfil.
+ */
 @HiltViewModel
 class DetailProfileViewModel @Inject constructor(
     private val navegadores: Navegadores,
@@ -44,6 +53,9 @@ class DetailProfileViewModel @Inject constructor(
     val phone: StateFlow<String> = _phone.asStateFlow()
 
 
+    /**
+     * Obtine la información del usuario.
+     */
     fun getUser() {
         viewModelScope.launch(Dispatchers.IO) {
             val user = domainService.getUser()
@@ -51,35 +63,56 @@ class DetailProfileViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Reconoce los cambios en el campo nombre del usuario.
+     */
     fun onTextNameChange(name: String) {
         viewModelScope.launch {
             _name.emit(name)
         }
     }
 
-
+    /**
+     * Actualiza el campo nombre del usuario.
+     */
     fun onClickNameEdit() {
         viewModelScope.launch {
             _isNameEditable.emit(!_isNameEditable.value)
         }
     }
 
+    /**
+     * Actualiza el campo teléfono del usuario.
+     */
     fun onClickPhoneEdit() {
         viewModelScope.launch {
             _isPhoneEditable.emit(!_isPhoneEditable.value)
         }
     }
 
+    /**
+     * Vuelve hacia atrás
+     */
     fun goBack(navHostController: NavHostController) {
         navegadores.navigateToProfile(navHostController)
     }
 
+    /**
+     * Reconoce los cambios en el campo teléfono del usuario.
+     */
     fun onTextPhoneChange(phone: String) {
         viewModelScope.launch {
             _phone.emit(phone)
         }
     }
 
+    /**
+     * Actualiza el nombre del usuario y navega de regreso a los detalles del perfil.
+     *
+     * @param name Nuevo nombre del usuario.
+     * @param email Correo electrónico del usuario cuyo nombre se va a actualizar.
+     * @param navHostController Instancia de [NavHostController] para gestionar la navegación.
+     */
     fun updateUserName(name: String, email: String, navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {
             domainService.updateUserName(name, email)
@@ -88,6 +121,13 @@ class DetailProfileViewModel @Inject constructor(
         navegadores.navigateToDetailsProfile(navHostController)
     }
 
+    /**
+     * Actualiza el número de teléfono del usuario y navega de regreso a los detalles del perfil.
+     *
+     * @param phone Nuevo número de teléfono del usuario.
+     * @param email Correo electrónico del usuario cuyo número de teléfono se va a actualizar.
+     * @param navHostController Instancia de [NavHostController] para gestionar la navegación.
+     */
     fun updatePhone(phone: String, email: String, navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {
             domainService.updatePhone(phone, email)
@@ -96,10 +136,18 @@ class DetailProfileViewModel @Inject constructor(
         navegadores.navigateToDetailsProfile(navHostController)
     }
 
+    /**
+     * Navega hacia la pantalla de privacidad.
+     * @param navHostController Controlador de navegación de Jetpack Compose.
+     */
     fun gotoPrivacy(navHostController: NavHostController) {
         navegadores.navigateToPrivacyPolices(navHostController)
     }
 
+    /**
+     * Navega hacia la pantalla de terminos de uso.
+     * @param navHostController Controlador de navegación de Jetpack Compose.
+     */
     fun gotoTerms(navHostController: NavHostController) {
         navegadores.navigateToTermsOfUses(navHostController)
     }

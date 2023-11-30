@@ -647,7 +647,7 @@ fun SheetTamanoPvp(producto: ProductoModel, mainViewModel: MainViewModel) {
             RadioButton(
                 selected = tamanoSelected == item.id,
                 onClick = {
-                    tamanoSelected = item.id
+                    tamanoSelected = item.id!!
                     /* TODO FALTA IMPLEMENTAR GUARDAR ELECCION */
                     mainViewModel.onTamanoSelected(item)
                 })

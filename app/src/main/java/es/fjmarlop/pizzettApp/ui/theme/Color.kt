@@ -83,3 +83,8 @@ val dark_Ecru = Color(0xFFF9BC49)
 val dark_onEcru = Color(0xFF422C00)
 val dark_EcruContainer = Color(0xFF5F4100)
 val dark_onEcruContainer = Color(0xFFFFDEAA)
+//color para estados del pedido
+
+val light_green = Color(0x808BC34A)
+val dark_green = Color(0xFF696969)
+val light_onGreen = Color(0xFFFFEB3B)

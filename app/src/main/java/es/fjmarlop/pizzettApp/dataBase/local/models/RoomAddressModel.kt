@@ -2,6 +2,12 @@ package es.fjmarlop.pizzettApp.dataBase.local.models
 
 import es.fjmarlop.pizzettApp.dataBase.local.entities.AddressEntity
 
+
+/**
+ * @author Fco Javier Marmolejo.
+ * Modelo para la base de datos Room de la aplicación que almacenan
+ * los datos de las direcciones del cliente.
+ * */
 data class AddressModel(
     val id: Int,
     val name: String,

@@ -306,6 +306,8 @@ fun VistaCompra(
                     Image(
                         painter = painterResource(id = R.drawable.horno),
                         contentDescription = "horno",
+                        modifier = Modifier.size(300.dp)
+                            .clip(RoundedCornerShape(30.dp))
                     )
                     Spacer(modifier = Modifier.size(12.dp))
                     Text(

@@ -1,7 +1,6 @@
 package es.fjmarlop.pizzettApp.core.utils
 
 import android.content.Context
-import android.util.Patterns
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
@@ -9,7 +8,11 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-
+/**
+ * @author Fco Javier Marmolejo López
+ * Esta clase contiene diferentes métodos de utilidad para la aplicación,
+ * como mensajes de toast, token de autenticación, etc.
+ * */
 class Utils @Inject constructor(
     private val context: Context
 ){
@@ -20,7 +23,6 @@ class Utils @Inject constructor(
      *
      * Este método consigue el tokenId del usuario de Firebase
      * para autentificar el token con la API.
-     *
      * */
     suspend fun getToken(): String {
         return suspendCoroutine { continuation ->
@@ -55,11 +57,6 @@ class Utils @Inject constructor(
             msg,
             Toast.LENGTH_LONG
         ).show()
-    }
-
-    fun isEmailValid(email: String): Boolean {
-        val emailPattern = Patterns.EMAIL_ADDRESS.matcher(email)
-        return emailPattern.matches()
     }
 
 }

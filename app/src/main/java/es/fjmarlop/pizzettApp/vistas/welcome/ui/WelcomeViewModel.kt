@@ -14,6 +14,15 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * ViewModel para la pantalla de bienvenida.
+ *
+ * Este ViewModel utiliza el servicio de navegación [Navegadores] y el caso de uso [ComprobarEmpleadoUseCase]
+ * para gestionar la lógica de la pantalla de bienvenida.
+ *
+ * @property navegadores Instancia de [Navegadores] utilizada para la navegación en la aplicación.
+ * @property comprobarEmpleado Instancia de [ComprobarEmpleadoUseCase] utilizada para comprobar la existencia de un empleado.
+ */
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
     private val navegadores: Navegadores,
@@ -23,9 +32,11 @@ class WelcomeViewModel @Inject constructor(
     private val isLoggedIn = Firebase.auth.currentUser != null
     private val email = Firebase.auth.currentUser?.email.toString()
 
-    /** Comprueba que el usuario logueado exista en la tabla de Empleados
+    /**
+     * Comprueba que el usuario logueado exista en la tabla de Empleados
      * Al hacerlo con una corutina suspendida esperamos que se resuelva
      * la consulta antes de continuar.
+     * @return Int si el empleado existe (1) o no (0)
      */
     suspend fun checkEmpleado(): Int = suspendCoroutine { continuation ->
         viewModelScope.launch(Dispatchers.IO) {
@@ -34,7 +45,8 @@ class WelcomeViewModel @Inject constructor(
         }
     }
 
-    /** Chequea que haya un usuario logueado.
+    /**
+     *  Chequea que haya un usuario logueado.
      *  Dependiendo del tipo de usuario navegaremos a una vista diferente.
      *  Si falla nos mandará a la vista de login.
      **/
@@ -46,6 +58,10 @@ class WelcomeViewModel @Inject constructor(
         } else SplashDestination.Login
     }
 
+    /**
+     * Método para navegar a la vista de login
+     * @param navHostController
+     * */
     fun navigateToLogin(navHostController: NavHostController) {
         viewModelScope.launch {
             navHostController.popBackStack()
@@ -53,6 +69,10 @@ class WelcomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     *  Método para navegar a la vista de gestión
+     *  @param navHostController
+     * */
     fun navigateToMainGestion(navHostController: NavHostController) {
         viewModelScope.launch {
             navHostController.popBackStack()
@@ -60,6 +80,10 @@ class WelcomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Método para navegar a la vista de cliente
+     * @param navHostController
+     * */
     fun navigateToMainCliente(navHostController: NavHostController) {
         viewModelScope.launch {
             navHostController.popBackStack()

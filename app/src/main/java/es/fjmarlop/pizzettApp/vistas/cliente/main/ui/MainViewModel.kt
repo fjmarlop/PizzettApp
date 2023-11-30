@@ -27,6 +27,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * ViewModel principal para la gestión de la lógica de la interfaz de usuario.
+ *
+ * Este ViewModel utiliza servicios del dominio [MainDomainService] y [ProductoDomainService] para gestionar
+ * la lógica relacionada con los usuarios y productos en la interfaz de usuario.
+ *
+ * @property utils Instancia de [Utils] utilizada para funciones de utilidad.
+ * @property navegadores Instancia de [Navegadores] utilizada para la navegación en la aplicación.
+ * @property mainDomainService Instancia de [MainDomainService] utilizado para acceder a la lógica principal del usuario.
+ * @property productoDomainService Instancia de [ProductoDomainService] utilizado para acceder a la lógica del dominio de productos.
+ */
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val utils: Utils,
@@ -76,12 +87,20 @@ class MainViewModel @Inject constructor(
     var _listaLineasPedido = MutableStateFlow<List<LineaPedidoModel>>(emptyList())
     val listaLineasPedido: StateFlow<List<LineaPedidoModel>> = _listaLineasPedido
 
+    /**
+     * Obtiene los productos recomendados al iniciar el viewModel.
+     */
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getProductosParaRecomendados()
         }
     }
 
+    /**
+     * función para navegar entre las vistas del buttomBar navigation
+     * @param int: Int para indicar la vista que queremos mostrar
+     * @param navHostController: NavHostController para navegar entre las vistas
+     */
     fun onClickInicio(int: Int, navHostController: NavHostController) {
         viewModelScope.launch {
             _index.emit(int)
@@ -89,6 +108,11 @@ class MainViewModel @Inject constructor(
         navegadores.navigateToMain(navHostController)
     }
 
+    /**
+     * función para navegar entre las vistas del buttomBar navigation
+     * @param int: Int para indicar la vista que queremos mostrar
+     * @param navHostController: NavHostController para navegar entre las vistas
+     */
     fun onClickOfertas(int: Int, navHostController: NavHostController) {
         viewModelScope.launch {
             _index.emit(int)
@@ -96,6 +120,11 @@ class MainViewModel @Inject constructor(
         navegadores.navigateToOfertas(navHostController)
     }
 
+    /**
+     * función para navegar entre las vistas del buttomBar navigation
+     * @param int: Int para indicar la vista que queremos mostrar
+     * @param navHostController: NavHostController para navegar entre las vistas
+     */
     fun onClickCarrito(int: Int, navHostController: NavHostController) {
         viewModelScope.launch {
             _index.emit(int)
@@ -103,6 +132,11 @@ class MainViewModel @Inject constructor(
         navegadores.navigateToCompra(navHostController)
     }
 
+    /**
+     * función para navegar entre las vistas del buttomBar navigation
+     * @param int: Int para indicar la vista que queremos mostrar
+     * @param navHostController: NavHostController para navegar entre las vistas
+     */
     fun onClickPedidos(int: Int, navHostController: NavHostController) {
         viewModelScope.launch {
             _index.emit(int)
@@ -110,6 +144,11 @@ class MainViewModel @Inject constructor(
         navegadores.navigateToHistorico(navHostController)
     }
 
+    /**
+     * función para navegar entre las vistas del buttomBar navigation
+     * @param int: Int para indicar la vista que queremos mostrar
+     * @param navHostController: NavHostController para navegar entre las vistas
+     */
     fun onClickCuenta(int: Int, navHostController: NavHostController) {
         viewModelScope.launch {
             _index.emit(int)
@@ -118,6 +157,12 @@ class MainViewModel @Inject constructor(
         navegadores.navigateToProfile(navHostController)
     }
 
+    /**
+     * Obtiene el nombre del usuario, si no exite el nombre de usuario
+     * usará el correo que se ha usado para el inicio de sesión.
+     * @param email: Correo del usuario
+     * @return String con el nombre
+     */
     fun obtenerUsername(email: String): String {
         val emailPattern = Patterns.EMAIL_ADDRESS.matcher(email)
         return if (emailPattern.matches()) {
@@ -129,6 +174,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Resetea valores
+     */
     fun resetIndex() {
         viewModelScope.launch {
             _index.value = 0
@@ -137,6 +185,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Guarda el usuario en la base de datos (se lanza cuando el usuario inicia sesión).
+     */
     fun addUser() {
         viewModelScope.launch(Dispatchers.IO) {
             val user = Firebase.auth.currentUser
@@ -152,6 +203,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Obtiene el usuario de la base de datos.
+     */
     fun getUser() {
         viewModelScope.launch(Dispatchers.IO) {
             if (mainDomainService.getUserCount() > 0) {
@@ -186,6 +240,9 @@ class MainViewModel @Inject constructor(
         _activateButtonAddLine.value = comprobarCantidad()
     }
 
+    /**
+     * Añade Linea de pedido a la lista de lineas de pedido
+     */
     fun addOrderLine(producto: ProductoModel) {
 
         tamanoSeleccionado.add(tamanoSelected)

@@ -36,7 +36,8 @@ import es.fjmarlop.pizzettApp.vistas.welcome.ui.WelcomeViewModel
  * @author Fco Javier Marmolejo López
  *
  * Fichero encargado de controlar la navegación dentro de la aplicación.
- * Controla todas las vistas que tiene la app.
+ * Controla todas las vistas que tiene la app,  así como los viewmodels que corresponden a cada vista.
+ * Cada método de la clase se encarga de navegar a la pantalla correspondiente mediante su ruta.
  *
  * */
 

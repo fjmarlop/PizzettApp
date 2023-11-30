@@ -14,24 +14,27 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 /**
- * @author Fco Javier Marmolejo López
- *
- * Módulo que carga Retrofit, biblioteca de peticiones Http
- *
- **/
-
+ * Módulo Dagger que proporciona instancias de objetos relacionados con Retrofit.
+ * Biblioteca de peticiones Http
+ * @see SingletonComponent
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
     private const val baseUrl = "http://192.168.0.171:8080/"      // Win localhost
     //private const val baseUrl = "http://192.168.0.26:8080/"     // Mac localhost
-    //private const val  baseUrl = " https://pizzappi.fly.dev:8080/" //API GOOGLE CLOUD
+    //private const val baseUrl = " https://pizzappi.fly.dev:8080/" //API GOOGLE CLOUD
 
+    /**
+     * Proporciona una instancia de Retrofit.
+     *
+     * @param okHttpClient Cliente HTTP utilizado por Retrofit.
+     * @return Instancia de Retrofit configurada con la URL base, el cliente HTTP y el convertidor Gson.
+     */
     @Singleton
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
@@ -39,6 +42,11 @@ object RetrofitModule {
             .build()
     }
 
+    /**
+     * Proporciona una instancia de OkHttpClient.
+     *
+     * @return Instancia de OkHttpClient con un interceptor para el registro de solicitudes y respuestas.
+     */
     @Provides
     @Singleton
     fun provideHttClient(): OkHttpClient {
@@ -48,21 +56,39 @@ object RetrofitModule {
             .build()
     }
 
+    /**
+     * Proporciona una instancia de la interfaz ProductoApi.
+     *
+     * @param retrofit Instancia de Retrofit utilizada para crear la interfaz.
+     * @return Implementación de ProductoApi generada por Retrofit.
+     */
     @Singleton
     @Provides
     fun provideProductoDao(retrofit: Retrofit): ProductoApi {
         return retrofit.create(ProductoApi::class.java)
     }
 
+    /**
+     * Proporciona una instancia de la interfaz EmpleadoApi.
+     *
+     * @param retrofit Instancia de Retrofit utilizada para crear la interfaz.
+     * @return Implementación de EmpleadoApi generada por Retrofit.
+     */
     @Singleton
     @Provides
-    fun provideEmpeladoDao(retrofit: Retrofit): EmpleadoApi {
+    fun provideEmpleadoDao(retrofit: Retrofit): EmpleadoApi {
         return retrofit.create(EmpleadoApi::class.java)
     }
+
+    /**
+     * Proporciona una instancia de la interfaz PedidoApi.
+     *
+     * @param retrofit Instancia de Retrofit utilizada para crear la interfaz.
+     * @return Implementación de PedidoApi generada por Retrofit.
+     */
     @Singleton
     @Provides
     fun providePedidoDao(retrofit: Retrofit): PedidoApi {
         return retrofit.create(PedidoApi::class.java)
     }
-
 }

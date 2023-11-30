@@ -1,5 +1,6 @@
 package es.fjmarlop.pizzettApp.vistas.gestion.mainGestion.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,28 +12,55 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Update
-import androidx.compose.material.icons.filled.ViewList
+import androidx.compose.material.icons.filled.Discount
+import androidx.compose.material.icons.filled.EmojiPeople
+import androidx.compose.material.icons.filled.Inventory
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Reorder
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,51 +69,287 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import es.fjmarlop.pizzeta.R
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.EmpleadoModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.PedidoModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.ProductoModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.TamaniosModel
 import es.fjmarlop.pizzettApp.vistas.login.domain.googleLogin.GoogleAuthUiClient
 
 @Composable
-fun MainGestionScreen(mainGestionViewModel: MainGestionViewModel,googleAuthUiClient: GoogleAuthUiClient, navHostController: NavHostController) {
+fun MainGestionScreen(
+    mainGestionViewModel: MainGestionViewModel,
+    googleAuthUiClient: GoogleAuthUiClient,
+    navHostController: NavHostController
+) {
+
+    var selectedItem by remember { mutableIntStateOf(0) }
+
+    val productos by mainGestionViewModel.listaProductos.collectAsState()
+    val pedidos by mainGestionViewModel.listaPedidos.collectAsState()
+    val empleados by mainGestionViewModel.listaEmpleados.collectAsState()
 
     val nombreEmpleado by mainGestionViewModel.nombreEmpleado.collectAsState()
     val emailEmpleado by mainGestionViewModel.emailEmpleado.collectAsState()
     val validarEmail by mainGestionViewModel.validarEmail.collectAsState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Pantalla principal de gestion",
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.margen)),
-                style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.size(12.dp))
-            Productos()
-            Spacer(modifier = Modifier.size(8.dp))
-            Pedidos()
-            Spacer(modifier = Modifier.size(8.dp))
-            Ofertas()
-            Spacer(modifier = Modifier.size(8.dp))
-            Empleados(
-                onNameChange = { mainGestionViewModel.onTextEmpleadoChange(it, emailEmpleado) },
-                onEmailChange = { mainGestionViewModel.onTextEmpleadoChange(nombreEmpleado, it) },
-                nombre = nombreEmpleado,
-                email = emailEmpleado,
-                validarEmail = validarEmail,
-                onClickAgregar = { /* TODO */ }
-            )
-            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.BottomEnd) {
-                Button(
-                    onClick = { mainGestionViewModel.cerrarSesion(googleAuthUiClient, navHostController) },
-                    modifier = Modifier
-                        .padding(dimensionResource(id = R.dimen.margen))
-                        .fillMaxWidth()
+    var showAddEmpleado by remember { mutableStateOf(false) }
+    var showAddProducto by remember { mutableStateOf(false) }
+
+    val ingredientes by mainGestionViewModel.listaIngredientes.collectAsState()
+
+
+    //CAMBIAR
+    var nombreProducto by remember { mutableStateOf("") }
+    var descripcionProducto by remember { mutableStateOf("") }
+    var urlImagenProducto by remember { mutableStateOf("") }
+    var pvp by remember { mutableStateOf("") }
+
+
+    Scaffold(
+        floatingActionButton = {
+            ExtendedFloatingActionButton(onClick = {
+                if (selectedItem == 0) {
+                    showAddProducto = true
+                }
+                if (selectedItem == 1) {
+                }
+                if (selectedItem == 2) {
+                }
+                if (selectedItem == 3) {
+                    showAddEmpleado = true
+                }
+            }) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Add, contentDescription = "add")
+                    Text(text = "Añadir")
+                }
+            }
+        },
+
+        topBar = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Modo gestión la PizzettApp",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+                IconButton(
+                    onClick = {
+                        mainGestionViewModel.cerrarSesion(
+                            googleAuthUiClient,
+                            navHostController
+                        )
+                    }, Modifier
+                        .padding(horizontal = 8.dp)
+                        .weight(1f)
                 ) {
-                    Text(text = "Cerrar Sesion", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Icon(
+                        imageVector = Icons.Default.Logout,
+                        contentDescription = "Logout",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        },
+        bottomBar = {
+            MyNavigationBar(selectedItem) {
+                selectedItem = it
+            }
+        })
+    { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    bottom = paddingValues.calculateBottomPadding(),
+                    top = paddingValues.calculateBottomPadding()
+                )
+        ) {
+            ProductosFrame(
+                show = selectedItem,
+                list = productos
+            ) { mainGestionViewModel.eliminarProducto(it) }
+            OfertasFrame(show = selectedItem)
+            PedidosFrame(show = selectedItem, list = pedidos){ mainGestionViewModel.actualizarEstado(it) }
+            EmpleadosFrame(
+                show = selectedItem,
+                list = empleados
+            ) { mainGestionViewModel.eliminarEmpleado(it) }
+            //FUNCIONES AÑADIR TODAS DESDE EL MISMO BOTÓN
+            if (showAddEmpleado) {
+                AddEmpleado(
+                    onDismissRequest = { showAddEmpleado = false },
+                    onNameChange = { mainGestionViewModel.onTextEmpleadoChange(it, emailEmpleado) },
+                    onEmailChange = {
+                        mainGestionViewModel.onTextEmpleadoChange(
+                            nombreEmpleado,
+                            it
+                        )
+                    },
+                    nombre = nombreEmpleado,
+                    email = emailEmpleado,
+                    validarEmail = validarEmail,
+                    onClickAgregar = {
+                        mainGestionViewModel.agregarEmpleado(emailEmpleado, nombreEmpleado)
+                        showAddEmpleado = false
+                    }
+                )
+            }
+            if (showAddProducto) {
+                AddProducto(
+                    onDismissRequest = { showAddProducto = false },
+                    nombre = nombreProducto,
+                    onNombreChange = { mainGestionViewModel.onNombreProductoChange(it) },
+                    descripcion = descripcionProducto,
+                    onDescripcionChange = { mainGestionViewModel.onDescripcionProductoChange(it) },
+                    urlImagen = urlImagenProducto,
+                    onUrlImagenChange = { mainGestionViewModel.onUrlImagenProductoChange(it) },
+                    ingredientes = ingredientes,
+                    onClickIngrediente = { mainGestionViewModel.saveIngredientes(it) },
+                    pvp = pvp,
+                    onPvpChange = { },
+                    onSaveTamano = { mainGestionViewModel.saveTamano(it) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PedidosFrame(show: Int, list: List<PedidoModel>, onClickActualizarEstado: (PedidoModel) -> Unit) {
+
+    if (show == 2) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(), contentAlignment = Alignment.TopCenter
+        ) {
+            Column(Modifier.padding(horizontal = dimensionResource(id = R.dimen.margen))) {
+                Text(
+                    text = "PEDIDOS",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                ListadoPedidos(list = list){ onClickActualizarEstado(it) }
+            }
+        }
+    }
+}
+
+@Composable
+fun ListadoPedidos(list: List<PedidoModel>, onClickActualizarEstado: (PedidoModel) -> Unit) {
+    LazyColumn { items(list.sortedByDescending { it.fechaPedido }) { pedido -> PedidoItem(pedido = pedido){ onClickActualizarEstado(it) } } }
+
+}
+
+@Composable
+fun PedidoItem(pedido: PedidoModel, onClickActualizarEstado: (PedidoModel) -> Unit) {
+
+    var color = Color(0x20BE0A0F)
+
+    when (pedido.estado) {
+        "Confirmado" -> {
+            color = Color(0xBAF7E656)
+        }
+        "Entregado" -> {
+            color = Color(0x508BC34A)
+        }
+        "Cancelado" -> {
+            color = Color(0x30696969)
+        }
+    }
+
+    Card(colors = CardDefaults.cardColors(containerColor = color)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                .fillMaxWidth()
+                .padding(6.dp)
+        ) {
+            if (pedido.estado == "Confirmado" || pedido.estado == "En proceso") {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(onClick = { onClickActualizarEstado(pedido) }) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircleOutline,
+                            contentDescription = "Confirmar"
+                        )
+                    }
+                    if (pedido.estado == "En proceso") Text(
+                        text = "Confirmar",
+                        fontSize = 8.sp
+                    )
+                    if (pedido.estado == "Confirmado") Text(
+                        text = "Entregar",
+                        fontSize = 8.sp
+                    )
+                }
+            }
+            Column {
+                Text(
+                    text = "Correo: " + pedido.emailCliente,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                Text(
+                    text = "Nombre: " + pedido.nombreCliente,
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    maxLines = 1
+                )
+                Text(
+                    text = "Tipo de entrega: " + pedido.tipoEntrega,
+                    modifier = Modifier.padding(horizontal = 8.dp), fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Fecha: " + pedido.fechaPedido,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                Text(
+                    text = "Total: " + pedido.total + " €", modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth(), textAlign = TextAlign.End
+                )
+            }
+
+        }
+    }
+
+    Divider(Modifier.padding(8.dp))
+}
+
+@Composable
+fun OfertasFrame(show: Int) {
+    if (show == 1) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(), contentAlignment = Alignment.TopCenter
+        ) {
+            Text(text = "OFERTAS", style = MaterialTheme.typography.titleLarge)
+        }
+    }
+}
+
+@Composable
+fun EmpleadosFrame(show: Int, list: List<EmpleadoModel>, onClickDelete: (Int) -> Unit) {
+    if (show == 3) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(), contentAlignment = Alignment.TopCenter
+        ) {
+            Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.margen))) {
+                Text(text = "EMPLEADOS", style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.size(12.dp))
+                LazyColumn {
+                    items(list) { item ->
+                        EmpleadoItem(
+                            empleado = item,
+                            onClickDelete = { onClickDelete(it) })
+                    }
                 }
             }
         }
@@ -94,138 +358,439 @@ fun MainGestionScreen(mainGestionViewModel: MainGestionViewModel,googleAuthUiCli
 
 
 @Composable
-fun Empleados(
-    onNameChange: (String) -> Unit,
-    onEmailChange: (String) -> Unit,
-    nombre: String, email: String,
-    validarEmail: Boolean,
-    onClickAgregar: () -> Unit,
-) {
-
-    var showAdd by remember { mutableStateOf(false) }
-
-    Column {
-        Text(
-            text = "Empleados",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.margen))
-        )
-        BarraIconos(
-            onClickAgregar = { showAdd = !showAdd },
-            onClickBorrar = { /*TODO*/ },
-            onClickActualizar = { /*TODO*/ },
-            onClickListar = { /*TODO*/ })
-    }
-    AddEmpleado(
-        show = showAdd,
-        onDismissRequest = { showAdd = false },
-        onNameChange = { onNameChange(it) },
-        onEmailChange = { onEmailChange(it) },
-        nombre = nombre,
-        email = email,
-        validarEmail = validarEmail,
-        onClickAgregar = {
-            onClickAgregar()
-            showAdd = false
-        }
-    )
-
-}
-
-
-@Composable
-fun Ofertas() {
-    Column {
-        Text(
-            text = "Ofertas",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.margen))
-        )
-        BarraIconos(
-            onClickAgregar = { /*TODO*/ },
-            onClickBorrar = { /*TODO*/ },
-            onClickActualizar = { /*TODO*/ },
-            onClickListar = { /*TODO*/ })
-    }
-}
-
-
-@Composable
-fun Pedidos() {
-    Column {
-        Text(
-            text = "Pedidos",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.margen))
-        )
-        BarraIconos(
-            onClickAgregar = { /*TODO*/ },
-            onClickBorrar = { /*TODO*/ },
-            onClickActualizar = { /*TODO*/ },
-            onClickListar = { /*TODO*/ })
-    }
-}
-
-@Composable
-fun Productos() {
-    Column {
-        Text(
-            text = "Productos",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.margen))
-        )
-        BarraIconos(
-            onClickAgregar = { /*TODO*/ },
-            onClickBorrar = { /*TODO*/ },
-            onClickActualizar = { /*TODO*/ },
-            onClickListar = { /*TODO*/ })
-    }
-}
-
-@Composable
-fun BarraIconos(
-    onClickAgregar: () -> Unit,
-    onClickBorrar: () -> Unit,
-    onClickActualizar: () -> Unit,
-    onClickListar: () -> Unit
-) {
-    Row(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.margen))) {
-        IconButton(onClick = { onClickAgregar() }, modifier = Modifier.weight(1f)) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary
+fun EmpleadoItem(empleado: EmpleadoModel, onClickDelete: (Int) -> Unit) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Email: " + empleado.empleadoEmail,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            Text(
+                text = "Nombre: " + empleado.empleadoName,
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
-        IconButton(onClick = { onClickActualizar() }, modifier = Modifier.weight(1f)) {
-            Icon(
-                imageVector = Icons.Default.Update,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary
-            )
-        }
-        IconButton(onClick = { onClickBorrar() }, modifier = Modifier.weight(1f)) {
+        IconButton(onClick = { empleado.id?.let { onClickDelete(it) } }) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary
-            )
-        }
-        IconButton(onClick = { onClickListar() }, modifier = Modifier.weight(1f)) {
-            Icon(
-                imageVector = Icons.Default.ViewList,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary
+                contentDescription = "delete",
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }
-    Divider(modifier = Modifier.padding(dimensionResource(id = R.dimen.margen)))
+
+    Divider(Modifier.padding(8.dp))
 }
 
+@Composable
+fun ProductosFrame(show: Int, list: List<ProductoModel>, onClickEliminar: (Int) -> Unit) {
+    if (show == 0) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White), contentAlignment = Alignment.TopCenter
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "PRODUCTOS", style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.size(12.dp))
+                GetListadoProductos(list = list) { onClickEliminar(it) }
+            }
+
+        }
+    }
+}
+
+@Composable
+fun GetListadoProductos(list: List<ProductoModel>, onClickEliminar: (Int) -> Unit) {
+    LazyColumn { items(list) { item -> ProductoItem(item = item) { onClickEliminar(item.id_producto) } } }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProductoItem(item: ProductoModel, onClickEliminar: (Int) -> Unit) {
+
+    var show by remember { mutableStateOf(false) }
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { show = !show }, verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = rememberAsyncImagePainter(item.imagen_producto),
+            contentDescription = null,
+            modifier = Modifier
+                .size(80.dp)
+                .clip(shape = RoundedCornerShape(10.dp)),
+        )
+        Column(Modifier.padding(horizontal = 8.dp)) {
+            Row {
+                Text(text = "Categoria: ", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = item.categoria.map { cat -> cat.nombre_categoria }.toString()
+                        .replace("[", "").replace("]", "")
+                )
+            }
+            Row {
+                Text(text = "Nombre: ", style = MaterialTheme.typography.titleMedium)
+                Text(text = item.nombre_producto)
+            }
+        }
+    }
+    if (show) {
+        ModalBottomSheet(
+            onDismissRequest = { show = !show },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 16.dp),
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        ) {
+            Column {
+                Text(
+                    text = "PRODUCTO",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    textAlign = TextAlign.Center
+                )
+                Image(
+                    painter = rememberAsyncImagePainter(item.imagen_producto),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(150.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.size(12.dp))
+            }
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 24.dp)) {
+                Text(text = "Categoria: ", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = item.categoria.map { cat -> cat.nombre_categoria }.toString()
+                        .replace("[", "").replace("]", "")
+                )
+            }
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 24.dp)) {
+                Text(text = "Nombre: ", style = MaterialTheme.typography.titleMedium)
+                Text(text = item.nombre_producto)
+            }
+            Text(
+                text = "Descripción: ",
+                modifier = Modifier.padding(horizontal = 24.dp),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = item.descripcion,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp)
+            )
+            Text(
+                text = "Ingredientes: ",
+                modifier = Modifier.padding(horizontal = 24.dp),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = item.ingredients.map { ing -> ing.ingredientName }.toString()
+                    .replace("[", "").replace("]", ""),
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp)
+            )
+            Text(
+                text = "Tamaños y precios: ",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp)
+            )
+            item.tamanios.sortedBy { it.tamano }.forEach { tam ->
+                Text(
+                    text = tam.tamano + " - " + tam.pvp + " €",
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp)
+                )
+            }
+            Spacer(modifier = Modifier.size(32.dp))
+            OutlinedButton(
+                onClick = { onClickEliminar(item.id_producto) }, Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "delete",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "Eliminar",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MyNavigationBar(
+    selectedItem: Int,
+    onselectedItem: (Int) -> Unit
+) {
+    val icProductos = Pair("Productos", Icons.Default.Inventory)
+    val icOfertas = Pair("Ofertas", Icons.Default.Discount)
+    val icPedidos = Pair("Pedidos", Icons.Default.Reorder)
+    val icEmpleados = Pair("Empleados", Icons.Default.EmojiPeople)
+
+    val items = listOf(icProductos, icOfertas, icPedidos, icEmpleados)
+
+    NavigationBar {
+        items.forEachIndexed { index, item ->
+            NavigationBarItem(
+                icon = { Icon(item.second, "null") },
+                label = { Text(text = item.first) },
+                selected = selectedItem == index,
+                onClick = { onselectedItem(index) }
+            )
+        }
+    }
+}
+
+@Composable
+fun AddProducto(
+    onDismissRequest: () -> Unit,
+    nombre: String,
+    onNombreChange: (String) -> Unit,
+    descripcion: String,
+    onDescripcionChange: (String) -> Unit,
+    urlImagen: String,
+    onUrlImagenChange: (String) -> Unit,
+    ingredientes: List<String>,
+    onClickIngrediente: (List<String>) -> Unit,
+    pvp: String,
+    onPvpChange: (String) -> Unit,
+    onSaveTamano: (TamaniosModel) -> Unit
+) {
+
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(imageVector = Icons.Default.Close, contentDescription = "close",
+                modifier = Modifier
+                    .clickable { onDismissRequest() }
+                    .align(Alignment.End)
+                    .padding(8.dp)
+            )
+            Text(text = "Añadir Producto", style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.size(8.dp))
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = { onNombreChange(it) },
+                label = { Text(text = "Nombre del producto") },
+                maxLines = 1,
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            OutlinedTextField(
+                value = descripcion,
+                onValueChange = { onDescripcionChange(it) },
+                label = { Text(text = "Descripción del producto") },
+                maxLines = 1,
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            OutlinedTextField(
+                value = urlImagen,
+                onValueChange = { onUrlImagenChange(it) },
+                label = { Text(text = "Dirección de la imagen") },
+                maxLines = 1,
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column {
+                    Text(
+                        text = "Seleccionar ingredientes",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        textAlign = TextAlign.Start
+                    )
+                    Ingredientes(ingredientes) { onClickIngrediente(it) }
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+
+            ) {
+                Column {
+                    Text(
+                        text = "Seleccionar Tamaños y PVP",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        textAlign = TextAlign.Start
+                    )
+                    Tamanos(
+                        pvp = pvp,
+                        onPvpChanged = { onPvpChange(it) },
+                        onSaveTamano = { onSaveTamano(it) })
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Tamanos(pvp: String, onPvpChanged: (String) -> Unit, onSaveTamano: (TamaniosModel) -> Unit) {
+
+    // Estado para realizar un seguimiento del elemento seleccionado
+    var selectedIndex by remember { mutableIntStateOf(0) }
+
+    // Estado para rastrear si el menú está abierto o cerrado
+    var expanded by remember { mutableStateOf(false) }
+
+    val tamanos = listOf("Normal", "Mediana", "Familiar", "Único")
+
+    Column {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
+            tamanos.forEachIndexed { index, item ->
+                DropdownMenuItem(
+                    text = { Text(text = item) },
+                    onClick = {
+                        selectedIndex = index
+                        expanded = false
+                    })
+            }
+        }
+        Surface(
+            modifier = Modifier.clickable(
+                onClick = { expanded = true }
+            )) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = tamanos[selectedIndex],
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            OutlinedTextField(
+                value = pvp,
+                onValueChange = { onPvpChanged(it) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                label = { Text(text = "PVP") },
+                suffix = { Text(text = " €") },
+                trailingIcon = {
+                    IconButton(onClick = {
+                        val tam = TamaniosModel(null, tamanos[selectedIndex], pvp.toDouble())
+                        onSaveTamano(tam)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Save,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                    }
+                }
+            )
+
+        }
+    }
+}
+
+@Composable
+fun Ingredientes(ingredientes: List<String>, onSaveIngrediente: (List<String>) -> Unit) {
+
+    // Estado para realizar un seguimiento del elemento seleccionado
+    var selectedIndex by remember { mutableIntStateOf(0) }
+
+    // Estado para rastrear si el menú está abierto o cerrado
+    var expanded by remember { mutableStateOf(false) }
+
+    var selectedIngredients by remember { mutableStateOf(emptyList<String>()) }
+
+    Column {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
+            ingredientes.forEachIndexed { index, item ->
+                DropdownMenuItem(
+                    text = { Text(text = item) }, onClick = {
+                        selectedIndex = index
+                        expanded = false
+                        selectedIngredients = selectedIngredients + item
+                        onSaveIngrediente(selectedIngredients)
+                    }
+                )
+            }
+        }
+        Surface(
+            modifier = Modifier.clickable(
+                onClick = { expanded = true },
+            )
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = ingredientes[selectedIndex],
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+        LazyRow(
+            modifier = Modifier
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            items(selectedIngredients) { ingredient ->
+                Text(text = "$ingredient,")
+            }
+        }
+    }
+}
 
 @Composable
 fun AddEmpleado(
-    show: Boolean,
     onDismissRequest: () -> Unit,
     onNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
@@ -234,52 +799,52 @@ fun AddEmpleado(
     onClickAgregar: () -> Unit
 ) {
 
-    if (show) {
-        Dialog(onDismissRequest = { onDismissRequest() }) {
 
-            Column(
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(imageVector = Icons.Default.Close, contentDescription = "close",
                 modifier = Modifier
+                    .clickable { onDismissRequest() }
+                    .align(Alignment.End)
+                    .padding(8.dp)
+            )
+            Text(text = "Añadir Empleado", style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.size(8.dp))
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = { onNameChange(it) },
+                label = { Text(text = "Nombre") },
+                maxLines = 1,
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.size(6.dp))
+            OutlinedTextField(
+                value = email,
+                onValueChange = { onEmailChange(it) },
+                label = { Text(text = "Email") },
+                maxLines = 1,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email
+                )
+            )
+            Spacer(modifier = Modifier.size(12.dp))
+            Button(
+                onClick = { onClickAgregar() }, modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 12.dp), enabled = validarEmail
             ) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "close",
-                    modifier = Modifier
-                        .clickable { onDismissRequest() }
-                        .align(Alignment.End)
-                        .padding(8.dp)
-                )
-                Text(text = "Añadir Empleado", style = MaterialTheme.typography.titleLarge)
-                Spacer(modifier = Modifier.size(8.dp))
-                OutlinedTextField(
-                    value = nombre,
-                    onValueChange = { onNameChange(it) },
-                    label = { Text(text = "Nombre") },
-                    maxLines = 1,
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.size(6.dp))
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { onEmailChange(it) },
-                    label = { Text(text = "Email") },
-                    maxLines = 1,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email
-                    )
-                )
-                Spacer(modifier = Modifier.size(12.dp))
-                Button(
-                    onClick = { onClickAgregar() }, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp), enabled = validarEmail
-                ) {
-                    Text(text = "Añadir", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                }
-                Spacer(modifier = Modifier.size(12.dp))
+                Text(text = "Añadir", fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
+            Spacer(modifier = Modifier.size(12.dp))
         }
+
     }
 }
