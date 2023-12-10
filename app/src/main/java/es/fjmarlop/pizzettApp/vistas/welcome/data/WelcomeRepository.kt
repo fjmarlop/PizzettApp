@@ -22,10 +22,11 @@ class WelcomeRepository @Inject constructor(
      * @return Código de resultado que indica el estado de la comprobación del empleado.
      */
     suspend fun comprobarEmpleado(email: String): Int {
-        runCatching {empleadoApi.comprobarEmpleado(email) }
-            .onSuccess { return it }
+        runCatching { empleadoApi.comprobarEmpleado(email) }
+            .onSuccess { return 1 }
             .onFailure {
                 Log.i("PizzApp Info", "Error: ${it.message}")
+               // return -1
             }
         return 0
     }

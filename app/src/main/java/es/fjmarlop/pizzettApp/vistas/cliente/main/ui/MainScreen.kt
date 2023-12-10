@@ -106,6 +106,9 @@ fun VistaHome(
 
     LaunchedEffect(true) {
         mainViewModel.getUser()
+        if (recomendados.isEmpty()) {
+            mainViewModel.getProductosParaRecomendados()
+        }
     }
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {

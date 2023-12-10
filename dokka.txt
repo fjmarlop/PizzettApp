@@ -1,0 +1,1 @@
+java -jar dokka-cli-1.9.10.jar -pluginsClasspath "./dokka-base-1.9.10.jar;./analysis-kotlin-descriptors-1.9.10.jar;./kotlinx-html-jvm-0.8.0.jar;./freemarker-2.3.31.jar" -sourceSet "-src D:\proyectos\PizzettApp\ANDROID\PizzettApp\app\src\main\java" -outputDir "D:\proyectos\PizzettApp\ANDROID\PizzettApp\build\dokka\html"

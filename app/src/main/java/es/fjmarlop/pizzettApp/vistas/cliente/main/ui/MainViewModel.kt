@@ -20,6 +20,7 @@ import es.fjmarlop.pizzettApp.dataBase.local.models.UserModel
 import es.fjmarlop.pizzettApp.vistas.cliente.main.domain.MainDomainService
 import es.fjmarlop.pizzettApp.vistas.cliente.main.domain.ProductoDomainService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -92,6 +93,7 @@ class MainViewModel @Inject constructor(
      */
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            delay(3000)
             getProductosParaRecomendados()
         }
     }
@@ -218,16 +220,17 @@ class MainViewModel @Inject constructor(
     fun onTamanoSelected(item: TamaniosModel) {
         tamanoSelected = item
         isTamanoSelected = true
+        _activateButtonAddLine.value = comprobarCantidad() && isTamanoSelected
     }
 
     fun restarCantidad() {
         _cantidad.value -= 1
-        _activateButtonAddLine.value = comprobarCantidad()
+        _activateButtonAddLine.value = comprobarCantidad() && isTamanoSelected
     }
 
     fun aumentarCantidad() {
         _cantidad.value += 1
-        _activateButtonAddLine.value = comprobarCantidad()
+        _activateButtonAddLine.value = comprobarCantidad() && isTamanoSelected
     }
 
     private fun comprobarCantidad(): Boolean {
@@ -237,7 +240,8 @@ class MainViewModel @Inject constructor(
     fun resetValues() {
         _cantidad.value = 0
         isTamanoSelected = false
-        _activateButtonAddLine.value = comprobarCantidad()
+        _activateButtonAddLine.value = false
+        tamanoSeleccionado.clear()
     }
 
     /**
@@ -247,21 +251,31 @@ class MainViewModel @Inject constructor(
 
         tamanoSeleccionado.add(tamanoSelected)
 
-        val productoElegido = ProductoLineaPedidoModel(
-            idProducto = producto.id_producto,
-            nombre_producto = producto.nombre_producto,
-            categoria = producto.categoria.joinToString { it.nombre_categoria },
-            tamano = tamanoSelected.tamano,
-            pvp = tamanoSelected.pvp
-        )
+        val productoElegido = producto.id_producto?.let {
+            ProductoLineaPedidoModel(
+                idProducto = it,
+                nombre_producto = producto.nombre_producto,
+                categoria = producto.categoria.joinToString { it.nombre_categoria },
+                tamano = tamanoSelected.tamano,
+                pvp = tamanoSelected.pvp
+            )
+        }
 
-        val linea = LineaPedidoModel(lineasPedido.size + 1, productoElegido, _cantidad.value)
+        val linea = productoElegido?.let {
+            LineaPedidoModel(
+                lineasPedido.size + 1,
+                it, _cantidad.value
+            )
+        }
 
-        lineasPedido.add(linea)
+        if (linea != null) {
+            lineasPedido.add(linea)
+        }
         _lineasTotal.value = lineasPedido.size
 
         //para controla el estado para engancharlo a la UI
         _listaLineasPedido.value = lineasPedido
+        resetValues()
     }
 
     private val _categoria = MutableStateFlow("Hoy te recomendamos...")
@@ -278,8 +292,7 @@ class MainViewModel @Inject constructor(
     val showRecomendados: StateFlow<Boolean> = _showRecomendados
 
 
-    private fun getProductosParaRecomendados() {
-
+    fun getProductosParaRecomendados() {
         viewModelScope.launch {
             val list: List<ProductoModel>
             val listRandom = mutableSetOf<ProductoModel>()

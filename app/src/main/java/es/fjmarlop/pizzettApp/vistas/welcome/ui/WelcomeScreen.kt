@@ -15,7 +15,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import es.fjmarlop.pizzeta.R
-import kotlinx.coroutines.delay
 
 @Composable
 fun WelcomeScreen(welcomeViewModel: WelcomeViewModel, navHostController: NavHostController){
@@ -29,7 +28,6 @@ fun WelcomeScreen(welcomeViewModel: WelcomeViewModel, navHostController: NavHost
         )
         CircularProgressIndicator(modifier = Modifier.padding(32.dp), color= Color.White)
         LaunchedEffect(key1 = true) {
-            delay(1500)
 
             val isEmpleado = welcomeViewModel.checkEmpleado()
 

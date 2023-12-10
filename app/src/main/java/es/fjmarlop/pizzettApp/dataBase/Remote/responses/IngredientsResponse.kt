@@ -20,7 +20,10 @@ data class IngredientsResponse(
      * @return Objeto [IngredientsModel] creado a partir de la respuesta de ingrediente.
      */
     fun toModel(): IngredientsModel {
-        return IngredientsModel(id = this.id, ingredientName = this.ingredientName)
+        return IngredientsModel(
+            ingredientName = this.ingredientName,
+            id = this.id,
+        )
     }
 }
 

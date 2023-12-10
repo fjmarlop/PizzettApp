@@ -28,9 +28,9 @@ class PedidosGestionRepository @Inject constructor(
      * @return Lista de [PedidoModel] que representa a todos los pedidos.
      */
     suspend fun getAllPedidos(): List<PedidoModel> {
-        val token = withContext(Dispatchers.IO){ utils.getToken() }
+        val token = withContext(Dispatchers.IO) { utils.getToken() }
         runCatching { pedidoApi.obtenerTodosLosPedidos("Bearer $token") }
-            .onSuccess { return it.map{ item -> item.toModel()} }
+            .onSuccess { return it.map { item ->  item.toModel()  } }
             .onFailure { Log.i("PizzettApp info", "Ha habido un error al obtener los pedidos") }
         return emptyList()
     }
@@ -43,10 +43,15 @@ class PedidosGestionRepository @Inject constructor(
      * @return `true` si la actualización del estado es exitosa, `false` en caso de error.
      */
     suspend fun actualizarEstado(id: Int, estado: String): Boolean {
-        val token = withContext(Dispatchers.IO){ utils.getToken() }
-        runCatching {pedidoApi.actualizarEstado("Bearer $token", id, estado) }
+        val token = withContext(Dispatchers.IO) { utils.getToken() }
+        runCatching { pedidoApi.actualizarEstado("Bearer $token", id, estado) }
             .onSuccess { return true }
-            .onFailure { Log.i("PizzettApp info", "Ha habido un error al actualizar el estado del pedido") }
+            .onFailure {
+                Log.i(
+                    "PizzettApp info",
+                    "Ha habido un error al actualizar el estado del pedido"
+                )
+            }
         return false
     }
 }

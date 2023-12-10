@@ -53,8 +53,8 @@ fun HistoricoScreen(
     navHostController: NavHostController,
     mainViewModel: MainViewModel
 ) {
-    LaunchedEffect(true) {
-        historicoViewModel.getPedidos()
+    LaunchedEffect(true){
+        historicoViewModel.startUpdating()
     }
 
     MainScafold(

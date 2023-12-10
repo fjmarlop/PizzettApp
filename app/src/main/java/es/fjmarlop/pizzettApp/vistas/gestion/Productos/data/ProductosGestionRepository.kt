@@ -61,4 +61,30 @@ class ProductosGestionRepository @Inject constructor(
             .onFailure { Log.i("PizzettApp info", "Ha habido un error al obtener los tamaños") }
         return emptyList()
     }
+
+    /**
+     * Inserta un producto en la base de datos.
+     * @param producto objeto [ProductoModel] que representa el nuevo producto.
+     * @return [Int] con el valor que indica el estado de la inserción.
+     */
+    suspend fun addProducto(producto: ProductoModel):Int{
+        val token = withContext(Dispatchers.IO){ utils.getToken() }
+        runCatching { productoApi.addProducto("Bearer $token", producto) }
+            .onSuccess { return 1 }
+            .onFailure { Log.i("PizzettApp info", "Ha habido un error al añadir el producto") }
+        return 0
+    }
+
+    /**
+     * Elimina un producto de la base de datos.
+     * @param id ID del producto a borrar.
+     * @return [Int] con el valor que indica el estado de la inserción.
+     */
+    suspend fun borrarProducto(id: Int):Int{
+        val token = withContext(Dispatchers.IO){ utils.getToken() }
+        runCatching { productoApi.borrarProducto("Bearer $token", id) }
+            .onSuccess { return  1 }
+            .onFailure { Log.i("PizzettApp info", "Ha habido un error al borrar el producto") }
+        return 0
+    }
 }

@@ -2,6 +2,7 @@ package es.fjmarlop.pizzettApp.vistas.gestion.mainGestion.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,8 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -58,6 +61,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -72,6 +76,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import es.fjmarlop.pizzeta.R
 import es.fjmarlop.pizzettApp.dataBase.Remote.models.EmpleadoModel
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.IngredientsModel
 import es.fjmarlop.pizzettApp.dataBase.Remote.models.PedidoModel
 import es.fjmarlop.pizzettApp.dataBase.Remote.models.ProductoModel
 import es.fjmarlop.pizzettApp.dataBase.Remote.models.TamaniosModel
@@ -99,13 +104,21 @@ fun MainGestionScreen(
 
     val ingredientes by mainGestionViewModel.listaIngredientes.collectAsState()
 
+    val nombreProducto by mainGestionViewModel.nombreProducto.collectAsState()
+    val descripcionProducto by mainGestionViewModel.descripcionProducto.collectAsState()
+    val urlImagenProducto by mainGestionViewModel.urlImagenProducto.collectAsState()
+    val pvp by mainGestionViewModel.pvp.collectAsState()
 
-    //CAMBIAR
-    var nombreProducto by remember { mutableStateOf("") }
-    var descripcionProducto by remember { mutableStateOf("") }
-    var urlImagenProducto by remember { mutableStateOf("") }
-    var pvp by remember { mutableStateOf("") }
+    var ocultarFav = 1f
 
+    when (selectedItem){
+        1 -> {
+            ocultarFav = 0f
+        }
+        2 -> {
+            ocultarFav = 0f
+        }
+    }
 
     Scaffold(
         floatingActionButton = {
@@ -114,13 +127,15 @@ fun MainGestionScreen(
                     showAddProducto = true
                 }
                 if (selectedItem == 1) {
+                    /* TODO */
                 }
                 if (selectedItem == 2) {
+                    /* TODO */
                 }
                 if (selectedItem == 3) {
                     showAddEmpleado = true
                 }
-            }) {
+            }, Modifier.alpha(ocultarFav)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Add, contentDescription = "add")
                     Text(text = "Añadir")
@@ -175,13 +190,24 @@ fun MainGestionScreen(
             ProductosFrame(
                 show = selectedItem,
                 list = productos
-            ) { mainGestionViewModel.eliminarProducto(it) }
+            ) {
+                //Cuando cambio de vista se detiene la actualización de pedidos
+                mainGestionViewModel.stopUpdating()
+                mainGestionViewModel.eliminarProducto(it, navHostController)
+            }
             OfertasFrame(show = selectedItem)
-            PedidosFrame(show = selectedItem, list = pedidos){ mainGestionViewModel.actualizarEstado(it) }
+
+            PedidosFrame(
+                show = selectedItem,
+                list = pedidos
+            ) { mainGestionViewModel.actualizarEstado(it) }
             EmpleadosFrame(
                 show = selectedItem,
                 list = empleados
-            ) { mainGestionViewModel.eliminarEmpleado(it) }
+            ) {
+                //Cuando cambio de vista se detiene la actualización de pedidos
+                mainGestionViewModel.stopUpdating()
+                mainGestionViewModel.eliminarEmpleado(it) }
             //FUNCIONES AÑADIR TODAS DESDE EL MISMO BOTÓN
             if (showAddEmpleado) {
                 AddEmpleado(
@@ -214,8 +240,15 @@ fun MainGestionScreen(
                     ingredientes = ingredientes,
                     onClickIngrediente = { mainGestionViewModel.saveIngredientes(it) },
                     pvp = pvp,
-                    onPvpChange = { },
+                    onPvpChange = { mainGestionViewModel.onPvpChange(it) },
                     onSaveTamano = { mainGestionViewModel.saveTamano(it) },
+                    onSaveCategoria = { mainGestionViewModel.saveCategoria(it) },
+                    onSaveProducto = {
+                        mainGestionViewModel.saveProducto(
+                            nombreProducto,descripcionProducto,urlImagenProducto)
+                        showAddProducto = false
+
+                    }
                 )
             }
         }
@@ -223,9 +256,15 @@ fun MainGestionScreen(
 }
 
 @Composable
-fun PedidosFrame(show: Int, list: List<PedidoModel>, onClickActualizarEstado: (PedidoModel) -> Unit) {
+fun PedidosFrame(
+    show: Int,
+    list: List<PedidoModel>,
+    onClickActualizarEstado: (PedidoModel) -> Unit
+) {
+
 
     if (show == 2) {
+
         Box(
             modifier = Modifier
                 .fillMaxSize(), contentAlignment = Alignment.TopCenter
@@ -238,7 +277,7 @@ fun PedidosFrame(show: Int, list: List<PedidoModel>, onClickActualizarEstado: (P
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.size(8.dp))
-                ListadoPedidos(list = list){ onClickActualizarEstado(it) }
+                ListadoPedidos(list = list) { onClickActualizarEstado(it) }
             }
         }
     }
@@ -246,7 +285,15 @@ fun PedidosFrame(show: Int, list: List<PedidoModel>, onClickActualizarEstado: (P
 
 @Composable
 fun ListadoPedidos(list: List<PedidoModel>, onClickActualizarEstado: (PedidoModel) -> Unit) {
-    LazyColumn { items(list.sortedByDescending { it.fechaPedido }) { pedido -> PedidoItem(pedido = pedido){ onClickActualizarEstado(it) } } }
+    LazyColumn {
+        items(list.sortedByDescending { it.fechaPedido }) { pedido ->
+            PedidoItem(pedido = pedido) {
+                onClickActualizarEstado(
+                    it
+                )
+            }
+        }
+    }
 
 }
 
@@ -254,26 +301,37 @@ fun ListadoPedidos(list: List<PedidoModel>, onClickActualizarEstado: (PedidoMode
 fun PedidoItem(pedido: PedidoModel, onClickActualizarEstado: (PedidoModel) -> Unit) {
 
     var color = Color(0x20BE0A0F)
+    var showDetalles by remember { mutableStateOf(false) }
 
     when (pedido.estado) {
         "Confirmado" -> {
             color = Color(0xBAF7E656)
         }
+
         "Entregado" -> {
             color = Color(0x508BC34A)
         }
+
         "Cancelado" -> {
             color = Color(0x30696969)
         }
     }
 
-    Card(colors = CardDefaults.cardColors(containerColor = color)) {
+    Card(colors = CardDefaults.cardColors(containerColor = color), modifier = Modifier.clickable { showDetalles = !showDetalles }) {
+        // reutilizo el detalle de pedido de la vista cliente.
+        if (showDetalles) es.fjmarlop.pizzettApp.vistas.cliente.historial.ui.PedidoDetalle(
+            pedido = pedido,
+            show = showDetalles
+        ) {
+            showDetalles = !showDetalles
+        }
+
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .fillMaxWidth()
                 .padding(6.dp)
         ) {
-            if (pedido.estado == "Confirmado" || pedido.estado == "En proceso") {
+            if (pedido.estado == "Confirmado" || pedido.estado == "Sin confirmar") {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     IconButton(onClick = { onClickActualizarEstado(pedido) }) {
                         Icon(
@@ -281,7 +339,7 @@ fun PedidoItem(pedido: PedidoModel, onClickActualizarEstado: (PedidoModel) -> Un
                             contentDescription = "Confirmar"
                         )
                     }
-                    if (pedido.estado == "En proceso") Text(
+                    if (pedido.estado == "Sin confirmar") Text(
                         text = "Confirmar",
                         fontSize = 8.sp
                     )
@@ -384,11 +442,12 @@ fun EmpleadoItem(empleado: EmpleadoModel, onClickDelete: (Int) -> Unit) {
 
 @Composable
 fun ProductosFrame(show: Int, list: List<ProductoModel>, onClickEliminar: (Int) -> Unit) {
+
     if (show == 0) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White), contentAlignment = Alignment.TopCenter
+                .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.TopCenter
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "PRODUCTOS", style = MaterialTheme.typography.titleLarge)
@@ -402,7 +461,17 @@ fun ProductosFrame(show: Int, list: List<ProductoModel>, onClickEliminar: (Int) 
 
 @Composable
 fun GetListadoProductos(list: List<ProductoModel>, onClickEliminar: (Int) -> Unit) {
-    LazyColumn { items(list) { item -> ProductoItem(item = item) { onClickEliminar(item.id_producto) } } }
+    LazyColumn {
+        items(list) { item ->
+            ProductoItem(item = item) {
+                item.id_producto?.let { it1 ->
+                    onClickEliminar(
+                        it1
+                    )
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -508,7 +577,7 @@ fun ProductoItem(item: ProductoModel, onClickEliminar: (Int) -> Unit) {
             }
             Spacer(modifier = Modifier.size(32.dp))
             OutlinedButton(
-                onClick = { onClickEliminar(item.id_producto) }, Modifier
+                onClick = { item.id_producto?.let { onClickEliminar(it) } }, Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
             ) {
@@ -568,20 +637,25 @@ fun AddProducto(
     onDescripcionChange: (String) -> Unit,
     urlImagen: String,
     onUrlImagenChange: (String) -> Unit,
-    ingredientes: List<String>,
+    ingredientes: List<IngredientsModel>,
     onClickIngrediente: (List<String>) -> Unit,
     pvp: String,
+    onSaveCategoria: (String) -> Unit,
     onPvpChange: (String) -> Unit,
-    onSaveTamano: (TamaniosModel) -> Unit
+    onSaveTamano: (TamaniosModel) -> Unit,
+    onSaveProducto: () -> Unit
 ) {
+
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+
         ) {
             Icon(imageVector = Icons.Default.Close, contentDescription = "close",
                 modifier = Modifier
@@ -615,8 +689,26 @@ fun AddProducto(
                 singleLine = true
             )
             Spacer(modifier = Modifier.size(8.dp))
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)) {
+                Column {
+                    Text(
+                        text = "Seleccionar categoría",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        textAlign = TextAlign.Start
+                    )
+                    Categorias { onSaveCategoria(it) }
+                }
+            }
+            Spacer(modifier = Modifier.size(8.dp))
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
             ) {
                 Column {
                     Text(
@@ -624,7 +716,7 @@ fun AddProducto(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
                         textAlign = TextAlign.Start
                     )
                     Ingredientes(ingredientes) { onClickIngrediente(it) }
@@ -633,6 +725,7 @@ fun AddProducto(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
 
             ) {
                 Column {
@@ -641,13 +734,27 @@ fun AddProducto(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
                         textAlign = TextAlign.Start
                     )
                     Tamanos(
                         pvp = pvp,
                         onPvpChanged = { onPvpChange(it) },
                         onSaveTamano = { onSaveTamano(it) })
+                }
+            }
+            OutlinedButton(onClick = { onSaveProducto() }, modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(imageVector = Icons.Default.Save, contentDescription = "save")
+                    Text(
+                        text = "Guardar",
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        fontSize = 18.sp
+                    )
                 }
             }
         }
@@ -663,7 +770,7 @@ fun Tamanos(pvp: String, onPvpChanged: (String) -> Unit, onSaveTamano: (Tamanios
     // Estado para rastrear si el menú está abierto o cerrado
     var expanded by remember { mutableStateOf(false) }
 
-    val tamanos = listOf("Normal", "Mediana", "Familiar", "Único")
+    val tamanos = listOf("normal", "mediana", "familiar", "único")
 
     Column {
         DropdownMenu(
@@ -682,12 +789,14 @@ fun Tamanos(pvp: String, onPvpChanged: (String) -> Unit, onSaveTamano: (Tamanios
             }
         }
         Surface(
-            modifier = Modifier.clickable(
-                onClick = { expanded = true }
-            )) {
+            modifier = Modifier
+                .clickable(
+                    onClick = { expanded = true }
+                )
+                .border(0.5.dp, MaterialTheme.colorScheme.primary)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(8.dp)
             ) {
                 Text(
                     text = tamanos[selectedIndex],
@@ -701,11 +810,12 @@ fun Tamanos(pvp: String, onPvpChanged: (String) -> Unit, onSaveTamano: (Tamanios
                 )
             }
         }
+        Spacer(modifier = Modifier.size(4.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             OutlinedTextField(
                 value = pvp,
                 onValueChange = { onPvpChanged(it) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 label = { Text(text = "PVP") },
                 suffix = { Text(text = " €") },
                 trailingIcon = {
@@ -728,7 +838,62 @@ fun Tamanos(pvp: String, onPvpChanged: (String) -> Unit, onSaveTamano: (Tamanios
 }
 
 @Composable
-fun Ingredientes(ingredientes: List<String>, onSaveIngrediente: (List<String>) -> Unit) {
+fun Categorias(onSaveCategoria: (String) -> Unit) {
+
+    val categorias = listOf("Ensaladas", "Pizzas", "Pastas", "Gratinados", "Postres", "Bebidas")
+
+    // Estado para realizar un seguimiento del elemento seleccionado
+    var selectedIndex by remember { mutableIntStateOf(0) }
+
+    // Estado para rastrear si el menú está abierto o cerrado
+    var expanded by remember { mutableStateOf(false) }
+
+    Column {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+        ) {
+            categorias.forEachIndexed { index, item ->
+                DropdownMenuItem(
+                    text = { Text(text = item) },
+                    onClick = {
+                        selectedIndex = index
+                        expanded = false
+                        onSaveCategoria(item)
+                    }
+                )
+            }
+        }
+        Surface(
+            modifier = Modifier
+                .clickable(
+                    onClick = { expanded = true },
+                )
+                .border(0.5.dp, MaterialTheme.colorScheme.primary)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(
+                    text = categorias[selectedIndex],
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    }
+
+}
+
+@Composable
+fun Ingredientes(ingredientes: List<IngredientsModel>, onSaveIngrediente: (List<String>) -> Unit) {
 
     // Estado para realizar un seguimiento del elemento seleccionado
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -747,26 +912,28 @@ fun Ingredientes(ingredientes: List<String>, onSaveIngrediente: (List<String>) -
         ) {
             ingredientes.forEachIndexed { index, item ->
                 DropdownMenuItem(
-                    text = { Text(text = item) }, onClick = {
+                    text = { Text(text = item.ingredientName) }, onClick = {
                         selectedIndex = index
                         expanded = false
-                        selectedIngredients = selectedIngredients + item
+                        selectedIngredients = selectedIngredients + item.ingredientName
                         onSaveIngrediente(selectedIngredients)
                     }
                 )
             }
         }
         Surface(
-            modifier = Modifier.clickable(
-                onClick = { expanded = true },
-            )
+            modifier = Modifier
+                .clickable(
+                    onClick = { expanded = true },
+                )
+                .border(0.5.dp, MaterialTheme.colorScheme.primary)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(8.dp)
             ) {
                 Text(
-                    text = ingredientes[selectedIndex],
+                    text = ingredientes[selectedIndex].ingredientName,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )

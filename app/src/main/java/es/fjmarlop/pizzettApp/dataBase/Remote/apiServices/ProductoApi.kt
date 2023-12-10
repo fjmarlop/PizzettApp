@@ -4,8 +4,12 @@ import es.fjmarlop.pizzettApp.dataBase.Remote.models.ProductoModel
 import es.fjmarlop.pizzettApp.dataBase.Remote.responses.IngredientsResponse
 import es.fjmarlop.pizzettApp.dataBase.Remote.responses.ProductoResponse
 import es.fjmarlop.pizzettApp.dataBase.Remote.responses.TamaniosResponse
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 
@@ -61,4 +65,22 @@ interface ProductoApi {
      */
     @GET("/pizzettApp/tamanos")
     suspend fun getTamanos(@Header("Authorization") authHeader: String): List<TamaniosResponse>
+
+    /**
+     * Inserta un nuevo producto en la base de datos.
+     * @param authHeader Encabezado de autorización para autenticar la solicitud.
+     * @param producto objeto [ProductoModel] que representa el nuevo producto.
+     * @return Objeto [ProductoResponse] con la respuesta de la API.
+     */
+    @POST("/pizzettApp/addProducto")
+    suspend fun addProducto(@Header("Authorization") authHeader: String, @Body producto :ProductoModel): Response<ProductoResponse>
+
+    /**
+     * Elimina un producto de la base de datos.
+     * @param authHeader Encabezado de autorización para autenticar la solicitud.
+     * @param id ID del producto a borrar.
+     * @return Objeto [ProductoResponse] con la respuesta de la API.
+     */
+    @DELETE("/pizzettApp/borrarProducto/{id}")
+    suspend fun borrarProducto(@Header("Authorization") authHeader: String, @Path("id") id: Int): Response<ProductoResponse>
 }

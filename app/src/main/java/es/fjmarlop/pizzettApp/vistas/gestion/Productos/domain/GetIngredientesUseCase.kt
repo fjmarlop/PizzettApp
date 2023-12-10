@@ -1,5 +1,6 @@
 package es.fjmarlop.pizzettApp.vistas.gestion.Productos.domain
 
+import es.fjmarlop.pizzettApp.dataBase.Remote.models.IngredientsModel
 import es.fjmarlop.pizzettApp.vistas.gestion.Productos.data.ProductosGestionRepository
 import javax.inject.Inject
 
@@ -18,8 +19,7 @@ class GetIngredientesUseCase @Inject constructor(private val repository: Product
      *
      * @return Lista de nombres de ingredientes.
      */
-    suspend operator fun invoke(): List<String> {
-        val list = repository.getIngredientes()
-        return list.map { it.ingredientName }
+    suspend operator fun invoke(): List<IngredientsModel> {
+        return repository.getIngredientes()
     }
 }

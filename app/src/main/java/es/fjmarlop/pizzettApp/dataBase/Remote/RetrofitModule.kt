@@ -22,9 +22,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
-    private const val baseUrl = "http://192.168.0.171:8080/"      // Win localhost
+    //private const val baseUrl = "http://192.168.0.171:8080/"      // Win localhost
     //private const val baseUrl = "http://192.168.0.26:8080/"     // Mac localhost
-    //private const val baseUrl = " https://pizzappi.fly.dev:8080/" //API GOOGLE CLOUD
+    private const val baseUrl = "https://pizzettapapi.lm.r.appspot.com/" //API GOOGLE CLOUD
+
 
     /**
      * Proporciona una instancia de Retrofit.

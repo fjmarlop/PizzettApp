@@ -10,7 +10,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-/**
+/**import java.util.concurrent.
  * Interfaz que define las operaciones de la API relacionadas con los pedidos.
  */
 interface PedidoApi {
@@ -52,6 +52,7 @@ interface PedidoApi {
     * @param estado Nuevo estado que se asignará al pedido.
     * @return Objeto [Response] que contiene la respuesta de la actualización y un objeto [PedidoResponse].
     */
+
    @PUT("/pizzettApp/actualizarEstado/{id}/{estado}")
    suspend fun actualizarEstado(@Header("Authorization") authHeader: String, @Path("id") id: Int, @Path("estado") estado: String): Response<PedidoResponse>
 }

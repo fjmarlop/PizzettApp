@@ -13,7 +13,7 @@ package es.fjmarlop.pizzettApp.dataBase.Remote.models
  * @property tamanios Conjunto de modelos [TamaniosModel] que representan los tamaños disponibles del producto.
  */
 data class ProductoModel(
-    val id_producto: Int,
+    val id_producto: Int?,
     val nombre_producto: String,
     val imagen_producto: String,
     val descripcion: String,

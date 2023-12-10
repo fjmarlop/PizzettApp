@@ -1,6 +1,7 @@
 package es.fjmarlop.pizzettApp.vistas.cliente.historial.ui
 
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
@@ -32,6 +33,11 @@ class HistoricoViewModel @Inject constructor(
     private val _pedidos = MutableStateFlow<List<PedidoModel>>(emptyList())
     val pedidos: StateFlow<List<PedidoModel>> = _pedidos
 
+
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var runnable: Runnable
+
+
     /**
      * Obtiene la lista de pedidos del usuario actualmente autenticado.
      *
@@ -41,7 +47,21 @@ class HistoricoViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO){
             val email = Firebase.auth.currentUser?.email
             _pedidos.value = obtenerPedidos(email!!)
-            Log.i("PizzettApp", _pedidos.value.toString())
         }
+    }
+
+    /**
+     *  Método para iniciar la actualización periódica de pedidos.
+     */
+    fun startUpdating() {
+        runnable = object : Runnable {
+            override fun run() {
+               getPedidos()
+                // Programar la próxima ejecución después de x segundos
+                handler.postDelayed(this, 10000)
+            }
+        }
+        // Iniciar la actualización periódica
+        handler.postDelayed(runnable, 0)
     }
 }

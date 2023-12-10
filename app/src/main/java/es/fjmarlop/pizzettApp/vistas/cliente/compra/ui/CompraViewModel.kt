@@ -12,7 +12,8 @@ import es.fjmarlop.pizzettApp.dataBase.Remote.models.LineaPedidoModel
 import es.fjmarlop.pizzettApp.dataBase.Remote.models.PedidoModel
 import es.fjmarlop.pizzettApp.dataBase.local.models.AddressModel
 import es.fjmarlop.pizzettApp.dataBase.local.models.UserModel
-import es.fjmarlop.pizzettApp.vistas.cliente.compra.domain.CompraDomainService
+import es.fjmarlop.pizzettApp.vistas.cliente.compra.domain.FinalizarPedidoUseCase
+import es.fjmarlop.pizzettApp.vistas.cliente.compra.domain.GetListAddressUseCase
 import es.fjmarlop.pizzettApp.vistas.cliente.detailsAccount.domain.DetailsProfileDomainService
 import es.fjmarlop.pizzettApp.vistas.cliente.main.ui.MainViewModel
 import kotlinx.coroutines.Dispatchers
@@ -29,27 +30,29 @@ import javax.inject.Inject
  * @param utils Utilidades para funciones comunes.
  * @param navegadores Clase que maneja la navegación entre pantallas.
  * @param domainService Servicio de dominio para operaciones relacionadas con el perfil del usuario.
- * @param compraDomainService Servicio de dominio para operaciones relacionadas con la compra.
+ * @param getListAddres UseCase para obtener una lista de direcciones.
+ * @param finalizarPedido UseCase para finalizar un pedido.
  */
 @HiltViewModel
 class CompraViewModel @Inject constructor(
     private val utils: Utils,
     private val navegadores: Navegadores,
     private val domainService: DetailsProfileDomainService,
-    private val compraDomainService: CompraDomainService
+    private val finalizarPedido: FinalizarPedidoUseCase,
+    private val getListAddres: GetListAddressUseCase
 ) : ViewModel() {
 
 
-    private val _local = MutableStateFlow(false)
+    val _local = MutableStateFlow(false)
     val local: StateFlow<Boolean> = _local
 
-    private val _domicilio = MutableStateFlow(true)
+    val _domicilio = MutableStateFlow(true)
     val domicilio: StateFlow<Boolean> = _domicilio
 
     private val _user = MutableLiveData<UserModel>()
     val user: LiveData<UserModel> = _user
 
-    private val _listAddress = MutableStateFlow<List<AddressModel>?>(null)
+    val _listAddress = MutableStateFlow<List<AddressModel>?>(null)
     val listAddress: StateFlow<List<AddressModel>?> = _listAddress
 
     private val _direccionEnTexto = MutableStateFlow("")
@@ -69,7 +72,7 @@ class CompraViewModel @Inject constructor(
     private var indexDireccion = 0
 
     //probar antes de subir, posible solución a las fallas de carga de direcciones multiples
-    init{
+    init {
         getListAddress(_user.value?.email.toString())
     }
 
@@ -87,7 +90,7 @@ class CompraViewModel @Inject constructor(
         _local.value = false
         _domicilio.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            _listAddress.value = compraDomainService.getListAddres(_user.value?.email.toString())
+            _listAddress.value = getListAddres(_user.value?.email.toString())
         }
 
     }
@@ -120,7 +123,7 @@ class CompraViewModel @Inject constructor(
     fun getListAddress(email: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                _listAddress.value = (compraDomainService.getListAddres(email))
+                _listAddress.value = (getListAddres(email))
             }
         }
     }
@@ -156,12 +159,10 @@ class CompraViewModel @Inject constructor(
      *
      * @param listaPedido Lista de modelos de líneas de pedido.
      * @param mainViewModel ViewModel principal que gestiona la información del carrito de compras.
-     * @param navHostController Controlador de navegación de Jetpack Compose.
      */
     fun finalizar(
         listaPedido: List<LineaPedidoModel>,
-        mainViewModel: MainViewModel,
-        navHostController: NavHostController
+        mainViewModel: MainViewModel
     ) {
 
         val tipoDeEntrega = if (!_domicilio.value) "Domicilio" else "Local"
@@ -203,7 +204,7 @@ class CompraViewModel @Inject constructor(
         if (validarFinalizar(nombre, email, totalPedido, fechaCompromiso)) {
             viewModelScope.launch(Dispatchers.IO)
             {
-                val response = compraDomainService.finalizarPedido(pedido)
+                val response = finalizarPedido(pedido)
                 if (response > 0) withContext(Dispatchers.Main) {
                     utils.mensajeToast("Tu pedido se ha enviado con exito")
                     /* LIMPIAR LOS CAMPOS Y PASAR A LA PANTALLA DE PEDIDOS */
@@ -237,6 +238,7 @@ class CompraViewModel @Inject constructor(
             _showHorno.value = false
         }
     }
+
     /**
      * Activa el botón de tramitar compra.
      * */
@@ -254,6 +256,13 @@ class CompraViewModel @Inject constructor(
         mainViewModel._lineasTotal.value = 0
         _tramitarCompra.value = false
         _showPedido.value = true
+    }
+
+    fun mostrarPedido() {
+        viewModelScope.launch {
+            _showPedido.value = true;
+            _tramitarCompra.value = false;
+        }
     }
 
 }

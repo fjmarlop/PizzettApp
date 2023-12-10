@@ -34,13 +34,13 @@ class WelcomeViewModel @Inject constructor(
 
     /**
      * Comprueba que el usuario logueado exista en la tabla de Empleados
-     * Al hacerlo con una corutina suspendida esperamos que se resuelva
+     * Al hacerlo con una corrutina suspendida esperamos que se resuelva
      * la consulta antes de continuar.
      * @return Int si el empleado existe (1) o no (0)
      */
     suspend fun checkEmpleado(): Int = suspendCoroutine { continuation ->
         viewModelScope.launch(Dispatchers.IO) {
-            val result =comprobarEmpleado(email)
+            val result = comprobarEmpleado(email)
             continuation.resume(result)
         }
     }

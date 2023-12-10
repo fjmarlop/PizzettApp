@@ -192,7 +192,10 @@ fun VistaCompra(
 
         if (showTramitarCompra) {
 
-            IconButton(onClick = { mainViewModel.onClickCarrito(2, navHostController) }) {
+            IconButton(onClick = {
+                mainViewModel.onClickCarrito(2, navHostController)
+                compraViewModel.mostrarPedido();
+            }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "volver",
@@ -275,8 +278,7 @@ fun VistaCompra(
                         onClick = {
                             compraViewModel.finalizar(
                                 listaPedido,
-                                mainViewModel,
-                                navHostController
+                                mainViewModel
                             )
                         },
                         modifier = Modifier.fillMaxWidth(),

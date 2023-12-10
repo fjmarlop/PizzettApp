@@ -7,6 +7,6 @@ package es.fjmarlop.pizzettApp.dataBase.Remote.models
  * @property nombre_categoria Nombre de la categoría.
  */
 data class CategoriaModel(
-    val id_categoria: Int,
+    val id_categoria: Int?,
     val nombre_categoria: String
 )
