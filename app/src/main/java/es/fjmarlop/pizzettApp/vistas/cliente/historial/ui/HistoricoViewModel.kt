@@ -46,7 +46,7 @@ class HistoricoViewModel @Inject constructor(
     fun getPedidos() {
         viewModelScope.launch(Dispatchers.IO){
             val email = Firebase.auth.currentUser?.email
-            _pedidos.value = obtenerPedidos(email!!)
+            if (email != null) _pedidos.value = obtenerPedidos(email)
         }
     }
 

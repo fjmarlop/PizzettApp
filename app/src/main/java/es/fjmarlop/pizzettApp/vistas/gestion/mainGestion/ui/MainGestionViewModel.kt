@@ -135,13 +135,13 @@ class MainGestionViewModel @Inject constructor(
         }
     }
 
-    private fun getAllEmpleados() {
+    fun getAllEmpleados() {
         viewModelScope.launch(Dispatchers.IO) {
             _listaEmpleados.value = getEmpleados()
         }
     }
 
-    private fun getAllProductos() {
+    fun getAllProductos() {
         viewModelScope.launch(Dispatchers.IO) {
             _listaProductos.value = getProductos()
         }
@@ -149,7 +149,8 @@ class MainGestionViewModel @Inject constructor(
 
     private fun getAllPedidos() {
         viewModelScope.launch(Dispatchers.IO) {
-            _listaPedidos.value = getPedidos().sortedByDescending { it.id }
+            _listaPedidos.value = getPedidos()
+            _listaPedidos.value = _listaPedidos.value.sortedByDescending { it.id }
         }
     }
 
@@ -184,7 +185,7 @@ class MainGestionViewModel @Inject constructor(
     fun eliminarProducto(it: Int, navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {
             borrarProducto(it)
-            delay(1000)
+            delay(1500)
             getAllProductos()
         }
 

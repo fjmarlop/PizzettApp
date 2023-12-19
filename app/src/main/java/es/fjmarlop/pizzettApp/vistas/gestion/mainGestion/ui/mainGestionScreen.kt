@@ -53,6 +53,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -111,12 +112,25 @@ fun MainGestionScreen(
 
     var ocultarFav = 1f
 
-    when (selectedItem){
+    when (selectedItem) {
         1 -> {
             ocultarFav = 0f
         }
+
         2 -> {
             ocultarFav = 0f
+        }
+    }
+
+    if (productos.isEmpty()) {
+        LaunchedEffect(true) {
+            mainGestionViewModel.getAllProductos()
+        }
+    }
+
+    if (empleados.isEmpty()) {
+        LaunchedEffect(true) {
+            mainGestionViewModel.getAllEmpleados()
         }
     }
 
@@ -125,12 +139,6 @@ fun MainGestionScreen(
             ExtendedFloatingActionButton(onClick = {
                 if (selectedItem == 0) {
                     showAddProducto = true
-                }
-                if (selectedItem == 1) {
-                    /* TODO */
-                }
-                if (selectedItem == 2) {
-                    /* TODO */
                 }
                 if (selectedItem == 3) {
                     showAddEmpleado = true
@@ -207,7 +215,8 @@ fun MainGestionScreen(
             ) {
                 //Cuando cambio de vista se detiene la actualización de pedidos
                 mainGestionViewModel.stopUpdating()
-                mainGestionViewModel.eliminarEmpleado(it) }
+                mainGestionViewModel.eliminarEmpleado(it)
+            }
             //FUNCIONES AÑADIR TODAS DESDE EL MISMO BOTÓN
             if (showAddEmpleado) {
                 AddEmpleado(
@@ -245,7 +254,8 @@ fun MainGestionScreen(
                     onSaveCategoria = { mainGestionViewModel.saveCategoria(it) },
                     onSaveProducto = {
                         mainGestionViewModel.saveProducto(
-                            nombreProducto,descripcionProducto,urlImagenProducto)
+                            nombreProducto, descripcionProducto, urlImagenProducto
+                        )
                         showAddProducto = false
 
                     }
@@ -317,7 +327,9 @@ fun PedidoItem(pedido: PedidoModel, onClickActualizarEstado: (PedidoModel) -> Un
         }
     }
 
-    Card(colors = CardDefaults.cardColors(containerColor = color), modifier = Modifier.clickable { showDetalles = !showDetalles }) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = color),
+        modifier = Modifier.clickable { showDetalles = !showDetalles }) {
         // reutilizo el detalle de pedido de la vista cliente.
         if (showDetalles) es.fjmarlop.pizzettApp.vistas.cliente.historial.ui.PedidoDetalle(
             pedido = pedido,
@@ -447,7 +459,8 @@ fun ProductosFrame(show: Int, list: List<ProductoModel>, onClickEliminar: (Int) 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.TopCenter
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.TopCenter
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "PRODUCTOS", style = MaterialTheme.typography.titleLarge)
@@ -656,7 +669,7 @@ fun AddProducto(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
+            ) {
             Icon(imageVector = Icons.Default.Close, contentDescription = "close",
                 modifier = Modifier
                     .clickable { onDismissRequest() }
@@ -689,9 +702,11 @@ fun AddProducto(
                 singleLine = true
             )
             Spacer(modifier = Modifier.size(8.dp))
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
+            ) {
                 Column {
                     Text(
                         text = "Seleccionar categoría",
