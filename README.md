@@ -7,7 +7,6 @@ La pizzettapp es mi proyecto final para el Ciclo de Grado Superior de diseño de
 La PizzettApp pretende ser una solución para restaurantes, bares y pequeños negocios de comida para llevar. Los elevados costes que suponen las grandes plataformas de comida a domicilio hacen inviable que pequeños negocios puedan ofrecer este servicio. La idea principal de La PizzettApp es automatizar la recepción de pedidos para recoger en el propio local o a domicilio y establecer presencia y promoción en el canal online.
 
 La aplicación consta de 2 roles:
-
 - Modo cliente
 - Modo administrador
 
@@ -19,7 +18,8 @@ El modo administrador permite al usuario administrador acceder a los datos de la
 
 - Kotlin y Jetpack Compose
   - Patrón MVVM
-  - Hilt
-  - Retrofit
-  - Room
+  - Inyección de dependencias con Hilt
+  - Consumo de API Rest con Retrofit
+  - Almacenamiento interno con Room
 - Firebase
+- API: [PizzAPI](https://github.com/fjmarlop/PizzettAppBackEnd)
